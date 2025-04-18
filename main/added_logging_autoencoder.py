@@ -336,6 +336,8 @@ def main():
         ds = ds.drop_vars(['ssrd', 'tp']).fillna(0)
         variables = list(ds.data_vars.keys())
         logger.info("Using variables: %s", variables)
+
+        load_start = time.time()  # Changed variable name
         
         # Initialize empty list to store normalized chunks
         normalized_chunks = []
