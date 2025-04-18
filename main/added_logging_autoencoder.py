@@ -32,9 +32,9 @@ def setup_logging(rank):
 PATCH_SIZE = 3
 TIME_STEPS = 5  # Creates t-4, t-3, t-2, t-1, t patterns
 LATENT_DIM = 9
-NUM_TILES_PER_TIME = 500
-BATCH_SIZE = 8192
-NUM_WORKERS = 8
+NUM_TILES_PER_TIME = 50000
+BATCH_SIZE = 131072
+NUM_WORKERS = 16
 EARLY_STOPPING_PATIENCE = 25
 MIN_LR = 1e-6
 
@@ -229,7 +229,7 @@ def train(rank, world_size, data):
             
             total_loss += loss.item()
             
-            if rank == 0:
+            if batch_idx%100==0 & rank == 0:
                 logger.info("Epoch %d, Batch %d, Current Loss: %.4f", epoch+1, batch_idx, loss.item())
         
         avg_loss = total_loss / len(train_loader)
@@ -420,6 +420,7 @@ if __name__ == "__main__":
     logger = setup_logging(0)  # Make sure logger is defined
     try:
         latent_ds = main()
+        latent_ds.to_zarr(f"latent_ds_t2m_{LATENT_DIM}.zarr")
         logger.info("✅ Successfully completed execution")
         logger.info("Final latent array shape: %s", latent_ds)
     except Exception as e:
