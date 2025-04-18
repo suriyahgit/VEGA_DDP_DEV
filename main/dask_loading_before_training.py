@@ -403,7 +403,8 @@ def main():
         
         # 5. Create dask array stack without loading into memory
         logger.info("Creating dask array stack...")
-        dask_data = da.stack([normalized[var].data for var in variables], axis=-1)
+        dask_data = da.stack([normalized[var].data for var in variables], axis=-1).squeeze()
+
         logger.info("Dask array shape: %s", dask_data.shape)
         
         # Multi-GPU training
