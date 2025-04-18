@@ -324,7 +324,7 @@ def main():
     try:
         logger.info("Loading and preprocessing data...")
 
-        # 1. Open Zarr dataset with Dask chunks
+       # 1. Open Zarr dataset with Dask chunks
         ds = xr.open_zarr(
             "/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr",
             chunks={}  # Let Dask determine optimal chunking
@@ -337,25 +337,38 @@ def main():
         variables = list(ds.data_vars.keys())
         logger.info("Using variables: %s", variables)
         
-        # 3. Compute normalization parameters (memory efficient)
-        logger.info("Computing normalization parameters...")
-        with ProgressBar():
-            # Stack variables along new dimension and compute stats
-            means = ds[variables].to_array().mean(dim=['time', 'lat', 'lon']).compute()
-            stds = ds[variables].to_array().std(dim=['time', 'lat', 'lon']).compute()
+        # Initialize empty list to store normalized chunks
+        normalized_chunks = []
         
-        logger.info("Computed means: %s", means.values)
-        logger.info("Computed stds: %s", stds.values)
+        # 3. Process each variable separately to minimize memory usage
+        for var in variables:
+            logger.info(f"Processing variable: {var}")
+            
+            # Compute normalization parameters for this variable only
+            with ProgressBar():
+                var_mean = ds[var].mean(dim=['time', 'lat', 'lon']).compute()
+                var_std = ds[var].std(dim=['time', 'lat', 'lon']).compute()
+            
+            logger.info(f"Computed mean for {var}: {var_mean.values}")
+            logger.info(f"Computed std for {var}: {var_std.values}")
+            
+            # Normalize this variable (still lazy)
+            normalized_var = (ds[var] - var_mean) / (var_std + 1e-8)
+            
+            # Compute this variable and add new dimension for stacking
+            with ProgressBar():
+                normalized_array = normalized_var.compute().expand_dims('variable')
+            
+            # Append to our list (now in memory)
+            normalized_chunks.append(normalized_array)
+            
+            # Clean up to free memory
+            del normalized_var, normalized_array
         
-        # 4. Apply normalization (still lazy)
-        normalized = (ds - means) / (stds + 1e-8)
-        
-        # 5. Load all data into memory at once
-        logger.info("Loading all data into memory...")
-        load_start = time.time()  # Changed variable name
-        
-        # Stack variables along last dimension and compute
-        data = np.stack([normalized[var].compute() for var in variables], axis=-1)
+        # 4. Combine all normalized variables along the new dimension
+        logger.info("Combining all normalized variables...")
+        data = xr.concat(normalized_chunks, dim='variable')
+        data = data.transpose('time', 'lat', 'lon', 'variable')
         
         logger.info("Data loaded in %.2f seconds", time.time() - load_start)
         logger.info("Final data shape: %s", data.shape)
