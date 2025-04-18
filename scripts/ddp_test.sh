@@ -11,5 +11,5 @@ srun --ntasks=8 --nodes=2 --ntasks-per-node=4 \
        --node_rank=$SLURM_NODEID \
        --master_addr=$MASTER_ADDR \
        --master_port=$MASTER_PORT \
-       ddp_test.py
+       ../test/ddp_test.py
 
