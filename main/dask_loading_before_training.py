@@ -437,6 +437,10 @@ def main():
         
         return latent_ds
 
+    except Exception as e:
+        logger.error("Error in main execution: %s", str(e), exc_info=True)
+        raise
+
 if __name__ == "__main__":
     logger = setup_logging(0)
     try:
