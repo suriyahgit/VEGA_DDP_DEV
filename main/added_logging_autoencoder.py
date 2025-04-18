@@ -29,7 +29,7 @@ PATCH_SIZE = 3
 TIME_STEPS = 5  # Creates t-4, t-3, t-2, t-1, t patterns
 LATENT_DIM = 9
 NUM_TILES_PER_TIME = 500
-BATCH_SIZE = 2048
+BATCH_SIZE = 8192
 NUM_WORKERS = 8
 EARLY_STOPPING_PATIENCE = 25
 MIN_LR = 1e-6
@@ -225,7 +225,7 @@ def train(rank, world_size, data):
             
             total_loss += loss.item()
             
-            if batch_idx % 100 == 0 and rank == 0:
+            if rank == 0:
                 logger.info("Epoch %d, Batch %d, Current Loss: %.4f", epoch+1, batch_idx, loss.item())
         
         avg_loss = total_loss / len(train_loader)
