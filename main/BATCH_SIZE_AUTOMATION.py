@@ -177,16 +177,7 @@ def train(rank, world_size, data):
     os.environ['MASTER_ADDR'] = 'localhost'
     os.environ['MASTER_PORT'] = '12355'
     dist.init_process_group("nccl", rank=rank, world_size=world_size)
-    
-    # --- Memory Configuration ---
     torch.cuda.set_device(rank)
-    torch.cuda.empty_cache()
-    
-    # Calculate available GPU memory
-    total_mem = torch.cuda.get_device_properties(rank).total_memory
-    reserved_mem = torch.cuda.memory_reserved(rank)
-    available_mem = total_mem - reserved_mem
-    logger.info(f"GPU {rank} available memory: {available_mem/1e9:.2f} GB")
     
     # --- Model Setup ---
     input_dim = PATCH_SIZE * PATCH_SIZE * TIME_STEPS * data.shape[-1]
@@ -197,28 +188,23 @@ def train(rank, world_size, data):
     logger.info(f"Number of parameters: {sum(p.numel() for p in model.parameters()):,}")
     
     # --- Optimizer Setup ---
-    base_lr = 1e-3
-    optimizer = optim.AdamW(model.parameters(), lr=base_lr)
-    scaler = torch.cuda.amp.GradScaler()
+    optimizer = optim.Adam(model.parameters(), lr=1e-3 * world_size)
+    loss_fn = nn.MSELoss()
     
     # --- Data Loading ---
     train_dataset = XarrayWeatherDataset(data)
     train_sampler = torch.utils.data.distributed.DistributedSampler(
         train_dataset, num_replicas=world_size, rank=rank, shuffle=True)
     
-    # --- Automatic Batch Size Tuning ---
+    # --- Batch Size Determination ---
     def find_max_batch_size():
         model.eval()
         batch_size = TRAIN_BATCH_SIZE
-        while batch_size >= 256:  # Don't go below 256
+        while batch_size >= 256:  # Minimum batch size threshold
             try:
                 # Test memory with dummy batch
-                dummy_input = torch.randn(
-                    (batch_size, input_dim), 
-                    device=f'cuda:{rank}'
-                )
-                with torch.cuda.amp.autocast():
-                    _ = model(dummy_input)
+                dummy_input = torch.randn((batch_size, input_dim), device=f'cuda:{rank}')
+                _ = model(dummy_input)
                 torch.cuda.empty_cache()
                 return batch_size
             except RuntimeError as e:
@@ -231,7 +217,7 @@ def train(rank, world_size, data):
         return batch_size
     
     effective_batch_size = find_max_batch_size()
-    logger.info(f"Using effective batch size: {effective_batch_size}")
+    logger.info(f"Using batch size: {effective_batch_size}")
     
     train_loader = DataLoader(
         train_dataset,
@@ -245,7 +231,6 @@ def train(rank, world_size, data):
     # --- Training Loop ---
     best_loss = float('inf')
     patience_counter = 0
-    global_step = 0
     
     logger.info("Starting training loop...")
     
@@ -258,41 +243,26 @@ def train(rank, world_size, data):
         for batch_idx, batch in enumerate(train_loader):
             batch = batch.to(rank, non_blocking=True)
             
-            # Gradient accumulation
-            for micro_step in range(GRADIENT_ACCUMULATION_STEPS):
-                micro_batch = batch[
-                    micro_step*effective_batch_size:(micro_step+1)*effective_batch_size
-                ]
-                
-                with torch.cuda.amp.autocast():
-                    recon, _ = model(micro_batch)
-                    loss = loss_fn(recon, micro_batch) / GRADIENT_ACCUMULATION_STEPS
-                
-                scaler.scale(loss).backward()
+            # Forward pass
+            recon, _ = model(batch)
+            loss = loss_fn(recon, batch)
             
-            # Gradient clipping
-            scaler.unscale_(optimizer)
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-            
-            # Optimizer step
-            scaler.step(optimizer)
-            scaler.update()
+            # Backward pass
             optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
             
-            total_loss += loss.item() * GRADIENT_ACCUMULATION_STEPS
-            global_step += 1
+            total_loss += loss.item()
             
             # Logging
             if batch_idx % 100 == 0 and rank == 0:
                 batch_time = time.time() - batch_start_time
                 samples_sec = effective_batch_size * 100 / batch_time
-                current_lr = optimizer.param_groups[0]['lr']
                 mem_usage = torch.cuda.memory_allocated(rank)/1e9
                 
                 logger.info(
                     f"Epoch {epoch+1}, Batch {batch_idx}, "
                     f"Loss: {loss.item():.4f}, "
-                    f"LR: {current_lr:.2e}, "
                     f"Speed: {samples_sec:.0f} samples/sec, "
                     f"GPU Mem: {mem_usage:.2f}GB"
                 )
