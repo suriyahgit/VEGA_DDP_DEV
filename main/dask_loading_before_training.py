@@ -14,7 +14,7 @@ import os
 from dask.diagnostics import ProgressBar
 import gc
 import time
-
+import dask.array as da
 
 # --- Configure logging ---
 def setup_logging(rank):
@@ -30,40 +30,33 @@ def setup_logging(rank):
 
 # --- Constants ---
 PATCH_SIZE = 3
-TIME_STEPS = 5  # Creates t-4, t-3, t-2, t-1, t patterns
+TIME_STEPS = 5
 LATENT_DIM = 9
 NUM_TILES_PER_TIME = 500
 BATCH_SIZE = 8192
 NUM_WORKERS = 8
 EARLY_STOPPING_PATIENCE = 25
 MIN_LR = 1e-6
+CHUNK_SIZE = 1000  # Process 1000 time steps at a time
 
-class XarrayWeatherDataset(Dataset):
-    def __init__(self, data, patch_size=PATCH_SIZE, time_steps=TIME_STEPS, num_tiles_per_time=NUM_TILES_PER_TIME):
+class ChunkedXarrayWeatherDataset(Dataset):
+    def __init__(self, dask_data, patch_size=PATCH_SIZE, time_steps=TIME_STEPS, 
+                 num_tiles_per_time=NUM_TILES_PER_TIME, chunk_size=CHUNK_SIZE):
         self.logger = logging.getLogger(__name__)
-        self.logger.info("Initializing dataset with patch_size=%d, time_steps=%d", patch_size, time_steps)
+        self.logger.info("Initializing chunked dataset with patch_size=%d, time_steps=%d", patch_size, time_steps)
         
-        self.data = data
+        self.dask_data = dask_data
         self.patch_size = patch_size
         self.time_steps = time_steps
         self.pad = patch_size // 2
         self.num_tiles_per_time = num_tiles_per_time
+        self.chunk_size = chunk_size
 
-        # Log dataset stats before padding
-        self.logger.info("Original data shape: %s", data.shape)
+        # Get dimensions from dask array
+        self.total_time = self.dask_data.shape[0]
+        self.H, self.W = self.dask_data.shape[1], self.dask_data.shape[2]
         
-        # Pad data (time, space)
-        self.data = np.pad(
-            data,
-            ((time_steps-1, 0), (self.pad, self.pad), (self.pad, self.pad), (0, 0)),
-            mode='wrap'
-        )
-        self.logger.info("Padded data shape: %s", self.data.shape)
-
         # Precompute random tile indices
-        self.total_time = self.data.shape[0]
-        self.H, self.W = self.data.shape[1], self.data.shape[2]
-        
         self.logger.info("Generating %d random tiles per time step", num_tiles_per_time)
         self.indices = []
         for t in range(time_steps - 1, self.total_time):
@@ -72,44 +65,72 @@ class XarrayWeatherDataset(Dataset):
             self.indices.extend([(t, lat[i], lon[i]) for i in range(num_tiles_per_time)])
 
         self.logger.info("Total samples generated: %d", len(self.indices))
+        
+        # Pre-load the first chunk to initialize
+        self.current_chunk_idx = -1
+        self.current_chunk_data = None
+        self.load_chunk(0)
+
+    def load_chunk(self, chunk_idx):
+        """Load a chunk of time steps into memory"""
+        start = chunk_idx * self.chunk_size
+        end = min((chunk_idx + 1) * self.chunk_size, self.total_time)
+        
+        if start >= self.total_time:
+            return False
+            
+        self.logger.info(f"Loading time steps {start} to {end-1}")
+        chunk_data = self.dask_data[start:end].compute()
+        
+        # Pad the chunk (time, space)
+        pad_width = (
+            (self.time_steps-1, 0),  # Time padding
+            (self.pad, self.pad),    # Lat padding
+            (self.pad, self.pad),    # Lon padding
+            (0, 0)                  # Variable padding
+        )
+        self.current_chunk_data = np.pad(chunk_data, pad_width, mode='wrap')
+        self.current_chunk_idx = chunk_idx
+        self.current_chunk_start = start
+        return True
 
     def __len__(self):
-        """Returns the total number of samples in the dataset"""
         return len(self.indices)
 
     def __getitem__(self, idx):
-        """Returns a single sample from the dataset"""
-        if idx >= len(self):
-            raise IndexError(f"Index {idx} out of range for dataset with length {len(self)}")
-            
         t, lat, lon = self.indices[idx]
-        # This creates the t-4, t-3, t-2, t-1, t pattern when time_steps=5
-        patch = self.data[
-            t - self.time_steps + 1 : t + 1,  # Time dimension
-            lat : lat + self.patch_size,      # Latitude dimension
-            lon : lon + self.patch_size,      # Longitude dimension
-            :                                 # Variable dimension
+        
+        # Check if we need to load a new chunk
+        chunk_idx = t // self.chunk_size
+        if chunk_idx != self.current_chunk_idx:
+            self.load_chunk(chunk_idx)
+            t_offset = t - self.current_chunk_start
+        else:
+            t_offset = t - (self.current_chunk_idx * self.chunk_size)
+        
+        # Extract patch from current chunk
+        patch = self.current_chunk_data[
+            t_offset - self.time_steps + 1 : t_offset + 1,
+            lat : lat + self.patch_size,
+            lon : lon + self.patch_size,
+            :
         ]
         return torch.tensor(patch, dtype=torch.float32).flatten()
 
 class FullXarrayWeatherDataset(Dataset):
-    def __init__(self, data, patch_size=PATCH_SIZE, time_steps=TIME_STEPS):
+    def __init__(self, dask_data, patch_size=PATCH_SIZE, time_steps=TIME_STEPS, chunk_size=CHUNK_SIZE):
         self.logger = logging.getLogger(__name__)
         self.logger.info("Initializing full dataset with patch_size=%d, time_steps=%d", patch_size, time_steps)
         
+        self.dask_data = dask_data
         self.patch_size = patch_size
         self.time_steps = time_steps
         self.pad = patch_size // 2
+        self.chunk_size = chunk_size
 
-        self.data = np.pad(
-            data,
-            ((time_steps - 1, 0), (self.pad, self.pad), (self.pad, self.pad), (0, 0)),
-            mode='wrap'
-        )
-        self.logger.info("Padded data shape: %s", self.data.shape)
-
-        self.valid_time = data.shape[0]
-        self.H, self.W = data.shape[1], data.shape[2]
+        # Get dimensions
+        self.valid_time = self.dask_data.shape[0]
+        self.H, self.W = self.dask_data.shape[1], self.dask_data.shape[2]
 
         self.indices = [
             (t, i, j)
@@ -118,19 +139,52 @@ class FullXarrayWeatherDataset(Dataset):
             for j in range(self.W)
         ]
         self.logger.info("Total samples in full dataset: %d", len(self.indices))
+        
+        # Chunk loading setup
+        self.current_chunk_idx = -1
+        self.current_chunk_data = None
+        self.load_chunk(0)
+
+    def load_chunk(self, chunk_idx):
+        """Load a chunk of time steps into memory"""
+        start = chunk_idx * self.chunk_size
+        end = min((chunk_idx + 1) * self.chunk_size, self.valid_time)
+        
+        if start >= self.valid_time:
+            return False
+            
+        self.logger.info(f"Loading time steps {start} to {end-1}")
+        chunk_data = self.dask_data[start:end].compute()
+        
+        # Pad the chunk (time, space)
+        pad_width = (
+            (self.time_steps-1, 0),  # Time padding
+            (self.pad, self.pad),    # Lat padding
+            (self.pad, self.pad),    # Lon padding
+            (0, 0)                   # Variable padding
+        )
+        self.current_chunk_data = np.pad(chunk_data, pad_width, mode='wrap')
+        self.current_chunk_idx = chunk_idx
+        self.current_chunk_start = start
+        return True
 
     def __len__(self):
-        """Returns the total number of samples in the dataset"""
         return len(self.indices)
 
     def __getitem__(self, idx):
-        """Returns a single sample from the dataset"""
-        if idx >= len(self):
-            raise IndexError(f"Index {idx} out of range for dataset with length {len(self)}")
-            
         t, lat, lon = self.indices[idx]
-        patch = self.data[
-            t - self.time_steps + 1 : t + 1,
+        
+        # Check if we need to load a new chunk
+        chunk_idx = t // self.chunk_size
+        if chunk_idx != self.current_chunk_idx:
+            self.load_chunk(chunk_idx)
+            t_offset = t - self.current_chunk_start
+        else:
+            t_offset = t - (self.current_chunk_idx * self.chunk_size)
+        
+        # Extract patch from current chunk
+        patch = self.current_chunk_data[
+            t_offset - self.time_steps + 1 : t_offset + 1,
             lat : lat + self.patch_size,
             lon : lon + self.patch_size,
             :
@@ -170,7 +224,7 @@ class WeatherAutoencoder(nn.Module):
         return recon, latent
 
 
-def train(rank, world_size, data):
+def train(rank, world_size, dask_data):
     logger = setup_logging(rank)
     logger.info("Initializing training process on rank %d", rank)
     
@@ -180,15 +234,14 @@ def train(rank, world_size, data):
     dist.init_process_group("nccl", rank=rank, world_size=world_size)
     
     # Create model
-    input_dim = PATCH_SIZE * PATCH_SIZE * TIME_STEPS * data.shape[-1]
+    input_dim = PATCH_SIZE * PATCH_SIZE * TIME_STEPS * dask_data.shape[-1]
     model = WeatherAutoencoder(input_dim).to(rank)
     model = DDP(model, device_ids=[rank])
     
     logger.info("Model created on device %d", rank)
-    logger.info("Number of parameters: %d", sum(p.numel() for p in model.parameters()))
     
     # Create datasets and dataloaders
-    train_dataset = XarrayWeatherDataset(data)
+    train_dataset = ChunkedXarrayWeatherDataset(dask_data)
     train_sampler = torch.utils.data.distributed.DistributedSampler(
         train_dataset, num_replicas=world_size, rank=rank, shuffle=True)
     
@@ -199,7 +252,7 @@ def train(rank, world_size, data):
         num_workers=NUM_WORKERS,
         pin_memory=True
     )
-    
+
     logger.info("DataLoader initialized with batch_size=%d, num_workers=%d", BATCH_SIZE, NUM_WORKERS)
     
     # Optimizer and loss
@@ -264,11 +317,11 @@ def train(rank, world_size, data):
     logger.info("Training completed at %s", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     dist.destroy_process_group()
 
-def run_inference(data, model_path="best_model.pth"):
+def run_inference(dask_data, model_path="best_model.pth"):
     logger = setup_logging(0)
     logger.info("Starting inference process")
     
-    full_dataset = FullXarrayWeatherDataset(data)
+    full_dataset = FullXarrayWeatherDataset(dask_data)
     full_loader = DataLoader(
         full_dataset,
         batch_size=BATCH_SIZE * 2,
@@ -279,7 +332,7 @@ def run_inference(data, model_path="best_model.pth"):
     
     logger.info("Inference dataset loaded with %d samples", len(full_dataset))
     
-    input_dim = PATCH_SIZE * PATCH_SIZE * TIME_STEPS * data.shape[-1]
+    input_dim = PATCH_SIZE * PATCH_SIZE * TIME_STEPS * dask_data.shape[-1]
     model = WeatherAutoencoder(input_dim)
     
     logger.info("Loading model from %s", model_path)
@@ -307,8 +360,8 @@ def run_inference(data, model_path="best_model.pth"):
     all_latents = torch.cat(all_latents, dim=0)
     
     # Reshape and pad
-    valid_time = data.shape[0] - TIME_STEPS + 1
-    H, W = data.shape[1], data.shape[2]
+    valid_time = dask_data.shape[0] - TIME_STEPS + 1
+    H, W = dask_data.shape[1], dask_data.shape[2]
     
     all_latents_np = all_latents.numpy().reshape(valid_time, H, W, LATENT_DIM)
     pad_front = np.repeat(all_latents_np[[0]], TIME_STEPS - 1, axis=0)
@@ -327,20 +380,18 @@ def main():
         # 1. Open Zarr dataset with Dask chunks
         ds = xr.open_zarr(
             "/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr",
-            chunks={}  # Let Dask determine optimal chunking
+            chunks={}
         )
-        logger.info("Initial dataset loaded. Shape: %s, Variables: %s", 
-                   dict(ds.dims), list(ds.data_vars.keys()))
+        logger.info("Initial dataset loaded. Shape: %s", dict(ds.sizes))
         
         # 2. Preprocess data (still lazy)
         ds = ds.drop_vars(['ssrd', 'tp']).fillna(0)
         variables = list(ds.data_vars.keys())
         logger.info("Using variables: %s", variables)
         
-        # 3. Compute normalization parameters (memory efficient)
+        # 3. Compute normalization parameters
         logger.info("Computing normalization parameters...")
         with ProgressBar():
-            # Stack variables along new dimension and compute stats
             means = ds[variables].to_array().mean(dim=['time', 'lat', 'lon']).compute()
             stds = ds[variables].to_array().std(dim=['time', 'lat', 'lon']).compute()
         
@@ -350,40 +401,25 @@ def main():
         # 4. Apply normalization (still lazy)
         normalized = (ds - means) / (stds + 1e-8)
         
-        # 5. Load all data into memory at once
-        logger.info("Loading all data into memory...")
-        load_start = time.time()  # Changed variable name
-        
-        # Stack variables along last dimension and compute
-        data = np.stack([normalized[var].compute() for var in variables], axis=-1)
-        
-        logger.info("Data loaded in %.2f seconds", time.time() - load_start)
-        logger.info("Final data shape: %s", data.shape)
-        logger.info("Memory usage: %.2f GB", data.nbytes / 1e9)
-        
-        # Verify no NaN values
-        assert not np.isnan(data).any(), "Data contains NaN values after normalization"
-        logger.info("Data validation passed - no NaN values detected")
-        
-        # Optional: Clear intermediate variables to free memory
-        del ds, normalized
-        gc.collect()
-        logger.info("Intermediate variables cleared")
+        # 5. Create dask array stack without loading into memory
+        logger.info("Creating dask array stack...")
+        dask_data = da.stack([normalized[var].data for var in variables], axis=-1)
+        logger.info("Dask array shape: %s", dask_data.shape)
         
         # Multi-GPU training
         world_size = torch.cuda.device_count()
         if world_size > 1:
             logger.info("Starting multi-GPU training with %d GPUs", world_size)
-            mp.spawn(train, args=(world_size, data), nprocs=world_size, join=True)
+            mp.spawn(train, args=(world_size, dask_data), nprocs=world_size, join=True)
         else:
             logger.info("Starting single-GPU training")
-            train(0, 1, data)
+            train(0, 1, dask_data)
         
         logger.info("Training completed, starting inference")
-        full_latents = run_inference(data)
+        full_latents = run_inference(dask_data)  # Changed to use dask_data
         
         # Create xarray dataset
-        time_coords = ds.coords["time"].values  # Changed variable name
+        time_coords = ds.coords["time"].values
         lat = ds.coords["lat"].values
         lon = ds.coords["lon"].values
         
@@ -393,23 +429,18 @@ def main():
             variables[var_name] = xr.DataArray(
                 full_latents[..., i],
                 dims=["time", "lat", "lon"],
-                coords={"time": time_coords, "lat": lat, "lon": lon}  # Updated variable name
+                coords={"time": time_coords, "lat": lat, "lon": lon}
             )
         
         latent_ds = xr.Dataset(variables)
         logger.info("Final dataset created")
         
         return latent_ds
-    
-    except Exception as e:
-        logger.error("Error in main execution: %s", str(e), exc_info=True)
-        raise
 
 if __name__ == "__main__":
-    logger = setup_logging(0)  # Make sure logger is defined
+    logger = setup_logging(0)
     try:
         latent_ds = main()
         logger.info("✅ Successfully completed execution")
-        logger.info("Final latent array shape: %s", latent_ds)
     except Exception as e:
         logger.error("❌ Execution failed: %s", str(e), exc_info=True)
