@@ -199,6 +199,7 @@ def main():
     
     ds = xr.open_zarr("/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr")
     ds = ds.drop_vars(['ssrd', 'tp'])
+    ds = ds.isel(lat=slice(0, 10), lon=slice(0, 10))
     variables = list(ds.data_vars.keys())
     
     # Memory-efficient data loading
