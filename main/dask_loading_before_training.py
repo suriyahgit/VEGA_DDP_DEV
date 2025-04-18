@@ -404,12 +404,15 @@ def main():
         # 5. Create Dask array stack without loading into memory
         logger.info("Creating dask array stack...")
         
-        
         # Transpose to match model expected layout: (time, lat, lon, variable)
-        # IMPORTANT: .data gives the raw dask.array.Array
-        dask_array = normalized.transpose('time', 'lat', 'lon', 'variable').data
+        # Access each variable within the normalized dataset
+        dask_arrays = [normalized[var].transpose('time', 'lat', 'lon').data for var in normalized.data_vars]
         
-        logger.info("Dask array shape: %s", dask_array.shape)
+        # Combine all dask arrays into a single stack, assuming you want them as a single array
+        dask_stack = da.stack(dask_arrays, axis=-1)  # Dask stack across the last axis (for variables)
+        
+        logger.info("Dask array stack shape: %s", dask_stack.shape)
+
         
         # Multi-GPU training
         world_size = torch.cuda.device_count()
