@@ -403,8 +403,9 @@ def main():
         
         # 5. Create dask array stack without loading into memory
         logger.info("Creating dask array stack...")
-        dask_data = da.stack([normalized[var].data for var in variables], axis=-1).squeeze()
-
+        # Method 1: Using xarray's native stacking (recommended)
+        var_array = normalized.to_array(dim='variable')  # Shape: (variable, time, lat, lon)
+        dask_data = var_array.transpose('time', 'lat', 'lon', 'variable').data
         logger.info("Dask array shape: %s", dask_data.shape)
         
         # Multi-GPU training
