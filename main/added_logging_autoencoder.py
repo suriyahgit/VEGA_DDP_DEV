@@ -160,6 +160,11 @@ class WeatherAutoencoder(nn.Module):
         
         self.logger.info("Model architecture:\n%s", self)
 
+    def forward(self, x):
+        latent = self.encoder(x)
+        recon = self.decoder(latent)
+        return recon, latent
+
 
 def train(rank, world_size, data):
     logger = setup_logging(rank)
