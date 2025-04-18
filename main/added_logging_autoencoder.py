@@ -34,7 +34,7 @@ TIME_STEPS = 5  # Creates t-4, t-3, t-2, t-1, t patterns
 LATENT_DIM = 9
 NUM_TILES_PER_TIME = 50000
 BATCH_SIZE = 8048
-NUM_WORKERS = 16
+NUM_WORKERS = 8
 EARLY_STOPPING_PATIENCE = 25
 MIN_LR = 1e-6
 
@@ -197,7 +197,8 @@ def train(rank, world_size, data):
         batch_size=BATCH_SIZE,
         sampler=train_sampler,
         num_workers=NUM_WORKERS,
-        pin_memory=True
+        pin_memory=True,
+        prefetch_factor=4,
     )
     
     logger.info("DataLoader initialized with batch_size=%d, num_workers=%d", BATCH_SIZE, NUM_WORKERS)
@@ -274,7 +275,8 @@ def run_inference(data, model_path="best_model.pth"):
         batch_size=BATCH_SIZE * 2,
         shuffle=False,
         num_workers=NUM_WORKERS,
-        pin_memory=True
+        pin_memory=True,
+        prefetch_factor=4
     )
     
     logger.info("Inference dataset loaded with %d samples", len(full_dataset))
