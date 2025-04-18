@@ -404,12 +404,10 @@ def main():
         # 5. Create Dask array stack without loading into memory
         logger.info("Creating dask array stack...")
         
-        # Convert to a stacked DataArray (assign a new name for the dimension)
-        var_array = normalized.to_dataarray(dim='feature')  # shape: (feature, time, lat, lon)
         
         # Transpose to match model expected layout: (time, lat, lon, feature)
         # IMPORTANT: .data gives the raw dask.array.Array
-        dask_array = var_array.transpose('time', 'lat', 'lon', 'feature').data
+        dask_array = normalized.transpose('time', 'lat', 'lon', 'feature').data
         
         logger.info("Dask array shape: %s", dask_array.shape)
         
