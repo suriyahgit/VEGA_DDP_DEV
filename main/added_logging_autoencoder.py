@@ -11,6 +11,8 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 import torch.distributed as dist
 import torch.multiprocessing as mp
 import os
+from dask.diagnostics import ProgressBar
+import gc
 
 # --- Configure logging ---
 def setup_logging(rank):
@@ -30,7 +32,7 @@ TIME_STEPS = 5  # Creates t-4, t-3, t-2, t-1, t patterns
 LATENT_DIM = 9
 NUM_TILES_PER_TIME = 500
 BATCH_SIZE = 8192
-NUM_WORKERS = 8
+NUM_WORKERS = 24
 EARLY_STOPPING_PATIENCE = 25
 MIN_LR = 1e-6
 
@@ -319,22 +321,52 @@ def main():
     
     try:
         logger.info("Loading and preprocessing data...")
-        ds = xr.open_zarr("/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr")
-        ds = ds.drop_vars(['ssrd', 'tp'])
-        #ds = ds.isel(lat=slice(0, 30), lon=slice(0, 41))
-        ds = ds.fillna(0)
+
+        # 1. Open Zarr dataset with Dask chunks
+        ds = xr.open_zarr(
+            "/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr",
+            chunks={}  # Let Dask determine optimal chunking
+        )
+        logger.info("Initial dataset loaded. Shape: %s, Variables: %s", 
+                   dict(ds.dims), list(ds.data_vars.keys()))
         
+        # 2. Preprocess data (still lazy)
+        ds = ds.drop_vars(['ssrd', 'tp']).fillna(0)
         variables = list(ds.data_vars.keys())
-        logger.info("Variables used: %s", variables)
+        logger.info("Using variables: %s", variables)
         
-        data = np.stack([ds[var].values for var in variables], axis=-1)
-        logger.info("Initial data shape: %s", data.shape)
+        # 3. Compute normalization parameters (memory efficient)
+        logger.info("Computing normalization parameters...")
+        with ProgressBar():
+            # Stack variables along new dimension and compute stats
+            means = ds[variables].to_array().mean(dim=['time', 'lat', 'lon']).compute()
+            stds = ds[variables].to_array().std(dim=['time', 'lat', 'lon']).compute()
         
-        # Normalize
-        means = data.mean(axis=(0,1,2), keepdims=True)
-        stds = data.std(axis=(0,1,2), keepdims=True)
-        data = (data - means) / (stds + 1e-8)
-        logger.info("Data normalized")
+        logger.info("Computed means: %s", means.values)
+        logger.info("Computed stds: %s", stds.values)
+        
+        # 4. Apply normalization (still lazy)
+        normalized = (ds - means) / (stds + 1e-8)
+        
+        # 5. Load all data into memory at once
+        logger.info("Loading all data into memory...")
+        start_time = time.time()
+        
+        # Stack variables along last dimension and compute
+        data = np.stack([normalized[var].compute() for var in variables], axis=-1)
+        
+        logger.info("Data loaded in %.2f seconds", time.time() - start_time)
+        logger.info("Final data shape: %s", data.shape)
+        logger.info("Memory usage: %.2f GB", data.nbytes / 1e9)
+        
+        # Verify no NaN values
+        assert not np.isnan(data).any(), "Data contains NaN values after normalization"
+        logger.info("Data validation passed - no NaN values detected")
+        
+        # Optional: Clear intermediate variables to free memory
+        del ds, normalized
+        gc.collect()
+        logger.info("Intermediate variables cleared")
         
         # Multi-GPU training
         world_size = torch.cuda.device_count()
