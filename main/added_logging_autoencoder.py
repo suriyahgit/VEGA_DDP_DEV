@@ -420,7 +420,7 @@ if __name__ == "__main__":
     logger = setup_logging(0)  # Make sure logger is defined
     try:
         latent_ds = main()
-        latent_ds.to_zarr(f"latent_ds_t2m_{LATENT_DIM}.zarr")
+        latent_ds.to_zarr(f"ERA5_dem_by_3_latent_ds_t2m_{LATENT_DIM}.zarr", mode="w")
         logger.info("✅ Successfully completed execution")
         logger.info("Final latent array shape: %s", latent_ds)
     except Exception as e:
