@@ -404,14 +404,14 @@ def main():
         # 5. Create Dask array stack without loading into memory
         logger.info("Creating dask array stack...")
         
-        # Transpose to match model expected layout: (time, lat, lon, variable)
-        # Access each variable within the normalized dataset
-        dask_arrays = [normalized[var].transpose('time', 'lat', 'lon', 'variable').data for var in normalized.data_vars]
+        # Ensure the data is transposed to the expected order (time, lat, lon, variable)
+        dask_arrays = [normalized[var].transpose('time', 'lat', 'lon').data for var in normalized.data_vars]
         
-        # Combine all dask arrays into a single stack, assuming you want them as a single array
-        dask_stack = da.stack(dask_arrays, axis=-1)  # Dask stack across the last axis (for variables)
+        # Stack along the last dimension to create a 4D array
+        dask_data = da.concatenate(dask_arrays, axis=-1)
         
-        logger.info("Dask array stack shape: %s", dask_stack.shape)
+        logger.info("Dask array stack shape: %s", dask_data.shape)
+
 
         
         # Multi-GPU training
