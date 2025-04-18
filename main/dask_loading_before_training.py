@@ -401,12 +401,17 @@ def main():
         # 4. Apply normalization (still lazy)
         normalized = (ds - means) / (stds + 1e-8)
         
-        # 5. Create dask array stack without loading into memory
+        # 5. Create Dask array stack without loading into memory
         logger.info("Creating dask array stack...")
-        # Method 1: Using xarray's native stacking (recommended)
-        var_array = normalized.to_array(dim='variable')  # Shape: (variable, time, lat, lon)
-        dask_data = var_array.transpose('time', 'lat', 'lon', 'variable').data
-        logger.info("Dask array shape: %s", dask_data.shape)
+        
+        # Convert to a stacked DataArray (assign a new name for the dimension)
+        var_array = normalized.to_dataarray(dim='feature')  # shape: (feature, time, lat, lon)
+        
+        # Transpose to match model expected layout: (time, lat, lon, feature)
+        # IMPORTANT: .data gives the raw dask.array.Array
+        dask_array = var_array.transpose('time', 'lat', 'lon', 'feature').data
+        
+        logger.info("Dask array shape: %s", dask_array.shape)
         
         # Multi-GPU training
         world_size = torch.cuda.device_count()
