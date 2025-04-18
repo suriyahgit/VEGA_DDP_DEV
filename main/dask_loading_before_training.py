@@ -405,9 +405,9 @@ def main():
         logger.info("Creating dask array stack...")
         
         
-        # Transpose to match model expected layout: (time, lat, lon, feature)
+        # Transpose to match model expected layout: (time, lat, lon, variable)
         # IMPORTANT: .data gives the raw dask.array.Array
-        dask_array = normalized.transpose('time', 'lat', 'lon', 'feature').data
+        dask_array = normalized.transpose('time', 'lat', 'lon', 'variable').data
         
         logger.info("Dask array shape: %s", dask_array.shape)
         
