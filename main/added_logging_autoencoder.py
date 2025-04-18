@@ -352,12 +352,12 @@ def main():
         
         # 5. Load all data into memory at once
         logger.info("Loading all data into memory...")
-        start_time = time.time()
+        load_start = time.time()  # Changed variable name
         
         # Stack variables along last dimension and compute
         data = np.stack([normalized[var].compute() for var in variables], axis=-1)
         
-        logger.info("Data loaded in %.2f seconds", time.time() - start_time)
+        logger.info("Data loaded in %.2f seconds", time.time() - load_start)
         logger.info("Final data shape: %s", data.shape)
         logger.info("Memory usage: %.2f GB", data.nbytes / 1e9)
         
@@ -383,7 +383,7 @@ def main():
         full_latents = run_inference(data)
         
         # Create xarray dataset
-        time = ds.coords["time"].values
+        time_coords = ds.coords["time"].values  # Changed variable name
         lat = ds.coords["lat"].values
         lon = ds.coords["lon"].values
         
@@ -393,7 +393,7 @@ def main():
             variables[var_name] = xr.DataArray(
                 full_latents[..., i],
                 dims=["time", "lat", "lon"],
-                coords={"time": time, "lat": lat, "lon": lon}
+                coords={"time": time_coords, "lat": lat, "lon": lon}  # Updated variable name
             )
         
         latent_ds = xr.Dataset(variables)
@@ -406,6 +406,7 @@ def main():
         raise
 
 if __name__ == "__main__":
+    logger = setup_logging(0)  # Make sure logger is defined
     try:
         latent_ds = main()
         logger.info("✅ Successfully completed execution")
