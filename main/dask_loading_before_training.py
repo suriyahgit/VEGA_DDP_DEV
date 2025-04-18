@@ -406,7 +406,7 @@ def main():
         
         # Transpose to match model expected layout: (time, lat, lon, variable)
         # Access each variable within the normalized dataset
-        dask_arrays = [normalized[var].transpose('time', 'lat', 'lon').data for var in normalized.data_vars]
+        dask_arrays = [normalized[var].transpose('time', 'lat', 'lon', 'variable').data for var in normalized.data_vars]
         
         # Combine all dask arrays into a single stack, assuming you want them as a single array
         dask_stack = da.stack(dask_arrays, axis=-1)  # Dask stack across the last axis (for variables)
