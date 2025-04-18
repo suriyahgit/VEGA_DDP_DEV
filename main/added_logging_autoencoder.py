@@ -69,7 +69,69 @@ class XarrayWeatherDataset(Dataset):
 
         self.logger.info("Total samples generated: %d", len(self.indices))
 
-    # ... (keep rest of dataset methods unchanged)
+    def __len__(self):
+        """Returns the total number of samples in the dataset"""
+        return len(self.indices)
+
+    def __getitem__(self, idx):
+        """Returns a single sample from the dataset"""
+        if idx >= len(self):
+            raise IndexError(f"Index {idx} out of range for dataset with length {len(self)}")
+            
+        t, lat, lon = self.indices[idx]
+        # This creates the t-4, t-3, t-2, t-1, t pattern when time_steps=5
+        patch = self.data[
+            t - self.time_steps + 1 : t + 1,  # Time dimension
+            lat : lat + self.patch_size,      # Latitude dimension
+            lon : lon + self.patch_size,      # Longitude dimension
+            :                                 # Variable dimension
+        ]
+        return torch.tensor(patch, dtype=torch.float32).flatten()
+
+class FullXarrayWeatherDataset(Dataset):
+    def __init__(self, data, patch_size=PATCH_SIZE, time_steps=TIME_STEPS):
+        self.logger = logging.getLogger(__name__)
+        self.logger.info("Initializing full dataset with patch_size=%d, time_steps=%d", patch_size, time_steps)
+        
+        self.patch_size = patch_size
+        self.time_steps = time_steps
+        self.pad = patch_size // 2
+
+        self.data = np.pad(
+            data,
+            ((time_steps - 1, 0), (self.pad, self.pad), (self.pad, self.pad), (0, 0)),
+            mode='wrap'
+        )
+        self.logger.info("Padded data shape: %s", self.data.shape)
+
+        self.valid_time = data.shape[0]
+        self.H, self.W = data.shape[1], data.shape[2]
+
+        self.indices = [
+            (t, i, j)
+            for t in range(time_steps - 1, self.valid_time)
+            for i in range(self.H)
+            for j in range(self.W)
+        ]
+        self.logger.info("Total samples in full dataset: %d", len(self.indices))
+
+    def __len__(self):
+        """Returns the total number of samples in the dataset"""
+        return len(self.indices)
+
+    def __getitem__(self, idx):
+        """Returns a single sample from the dataset"""
+        if idx >= len(self):
+            raise IndexError(f"Index {idx} out of range for dataset with length {len(self)}")
+            
+        t, lat, lon = self.indices[idx]
+        patch = self.data[
+            t - self.time_steps + 1 : t + 1,
+            lat : lat + self.patch_size,
+            lon : lon + self.patch_size,
+            :
+        ]
+        return torch.tensor(patch, dtype=torch.float32).flatten()
 
 class WeatherAutoencoder(nn.Module):
     def __init__(self, input_dim, latent_dim=LATENT_DIM):
@@ -98,7 +160,6 @@ class WeatherAutoencoder(nn.Module):
         
         self.logger.info("Model architecture:\n%s", self)
 
-    # ... (keep forward method unchanged)
 
 def train(rank, world_size, data):
     logger = setup_logging(rank)
@@ -253,7 +314,7 @@ def main():
     
     try:
         logger.info("Loading and preprocessing data...")
-        ds = xr.open_zarr("/mnt/CEPH_PROJECTS/InterTwin/Climate_Downscaling/EMO1_DOWNSCALING/stage_1/ERA5_to_latent.zarr")
+        ds = xr.open_zarr("/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr")
         ds = ds.drop_vars(['ssrd', 'tp'])
         ds = ds.isel(lat=slice(0, 30), lon=slice(0, 41))
         ds = ds.fillna(0)
