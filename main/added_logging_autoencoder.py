@@ -321,7 +321,7 @@ def main():
         logger.info("Loading and preprocessing data...")
         ds = xr.open_zarr("/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr")
         ds = ds.drop_vars(['ssrd', 'tp'])
-        ds = ds.isel(lat=slice(0, 30), lon=slice(0, 41))
+        #ds = ds.isel(lat=slice(0, 30), lon=slice(0, 41))
         ds = ds.fillna(0)
         
         variables = list(ds.data_vars.keys())
