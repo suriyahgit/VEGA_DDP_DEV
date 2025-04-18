@@ -379,11 +379,7 @@ def main():
         # Verify no NaN values
         assert not np.isnan(data).any(), "Data contains NaN values after normalization"
         logger.info("Data validation passed - no NaN values detected")
-        
-        # Optional: Clear intermediate variables to free memory
-        del ds, normalized
-        gc.collect()
-        logger.info("Intermediate variables cleared")
+    
         
         # Multi-GPU training
         world_size = torch.cuda.device_count()
