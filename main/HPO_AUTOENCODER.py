@@ -36,11 +36,11 @@ PATCH_SIZE = 3
 TIME_STEPS = 5  # Creates t-4, t-3, t-2, t-1, t patterns
 LATENT_DIM = 9
 NUM_TILES_PER_TIME = 5000
-BATCH_SIZE = 16096
+BATCH_SIZE = 64384
 NUM_WORKERS = 8
 EARLY_STOPPING_PATIENCE = 10
 MIN_LR = 1e-6
-PREFETCH_FACTOR = 100
+PREFETCH_FACTOR = 25
 
 class XarrayWeatherDataset(Dataset):
     def __init__(self, data, patch_size=PATCH_SIZE, time_steps=TIME_STEPS, num_tiles_per_time=NUM_TILES_PER_TIME):
