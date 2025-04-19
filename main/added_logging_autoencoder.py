@@ -32,7 +32,7 @@ def setup_logging(rank):
 PATCH_SIZE = 3
 TIME_STEPS = 5  # Creates t-4, t-3, t-2, t-1, t patterns
 LATENT_DIM = 9
-NUM_TILES_PER_TIME = 10000
+NUM_TILES_PER_TIME = 1000
 BATCH_SIZE = 8048
 NUM_WORKERS = 8
 EARLY_STOPPING_PATIENCE = 25
@@ -331,6 +331,9 @@ def main():
             "/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr",
             chunks={}  # Let Dask determine optimal chunking
         )
+        ds = ds.sel(lat=slice(42, 51), lon=slice(4, 16))
+
+        
         logger.info("Initial dataset loaded. Shape: %s, Variables: %s", 
                    dict(ds.dims), list(ds.data_vars.keys()))
         
