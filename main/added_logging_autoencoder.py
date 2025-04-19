@@ -32,7 +32,7 @@ def setup_logging(rank):
 PATCH_SIZE = 3
 TIME_STEPS = 5  # Creates t-4, t-3, t-2, t-1, t patterns
 LATENT_DIM = 9
-NUM_TILES_PER_TIME = 50000
+NUM_TILES_PER_TIME = 10000
 BATCH_SIZE = 8048
 NUM_WORKERS = 8
 EARLY_STOPPING_PATIENCE = 25
@@ -336,7 +336,7 @@ def main():
         
         # 2. Preprocess data (still lazy)
         ds = ds.drop_vars(['ssrd', 'tp']).fillna(0)
-        variables = list(ds.data_vars.keys())
+        variables = sorted(ds.data_vars.keys())
         logger.info("Using variables: %s", variables)
 
         load_start = time.time()  # Changed variable name
