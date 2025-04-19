@@ -40,7 +40,7 @@ BATCH_SIZE = 16096
 NUM_WORKERS = 8
 EARLY_STOPPING_PATIENCE = 10
 MIN_LR = 1e-6
-PREFETCH_FACTOR = 25
+PREFETCH_FACTOR = 100
 
 class XarrayWeatherDataset(Dataset):
     def __init__(self, data, patch_size=PATCH_SIZE, time_steps=TIME_STEPS, num_tiles_per_time=NUM_TILES_PER_TIME):
