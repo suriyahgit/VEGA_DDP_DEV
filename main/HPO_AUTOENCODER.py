@@ -15,6 +15,9 @@ from dask.diagnostics import ProgressBar
 import gc
 import time
 
+gc.collect()
+
+
 
 # --- Configure logging ---
 def setup_logging(rank):
