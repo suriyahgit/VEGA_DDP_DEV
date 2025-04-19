@@ -199,7 +199,7 @@ def train(rank, world_size, data):
         sampler=train_sampler,
         num_workers=NUM_WORKERS,
         pin_memory=True,
-        prefetch_factor=4,
+        prefetch_factor=PREFETCH_FACTOR,
     )
     
     logger.info("DataLoader initialized with batch_size=%d, num_workers=%d", BATCH_SIZE, NUM_WORKERS)
@@ -277,7 +277,7 @@ def run_inference(data, model_path="best_model.pth"):
         shuffle=False,
         num_workers=NUM_WORKERS,
         pin_memory=True,
-        prefetch_factor=4
+        prefetch_factor=PREFETCH_FACTOR
     )
     
     logger.info("Inference dataset loaded with %d samples", len(full_dataset))
