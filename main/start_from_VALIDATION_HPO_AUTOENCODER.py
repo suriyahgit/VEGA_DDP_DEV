@@ -188,8 +188,25 @@ def train(rank, world_size, data):
         logger.info("Found existing model at %s, loading weights", model_path)
         # Map model to be loaded to specified device (cpu for now, will move to GPU later)
         state_dict = torch.load(model_path, map_location='cpu')
-        model.load_state_dict(state_dict)
-        logger.info("Model weights loaded successfully")
+        
+        # Handle the case where the model was saved with DDP wrapper (module. prefix)
+        from collections import OrderedDict
+        new_state_dict = OrderedDict()
+        for k, v in state_dict.items():
+            if k.startswith('module.'):
+                # Remove 'module.' prefix
+                name = k[7:]
+            else:
+                name = k
+            new_state_dict[name] = v
+        
+        try:
+            model.load_state_dict(new_state_dict)
+            logger.info("Model weights loaded successfully")
+        except Exception as e:
+            logger.error("Failed to load model weights: %s", str(e))
+            # Continue with fresh model if loading fails
+            model = WeatherAutoencoder(input_dim).to(rank)
     
     # Ensure all processes wait until model is loaded (if it was loaded)
     dist.barrier()
@@ -299,7 +316,7 @@ def train(rank, world_size, data):
             best_val_loss = avg_val_loss
             patience_counter = 0
             if rank == 0:
-                torch.save(model.state_dict(), model_path)
+                torch.save(model.module.state_dict(), "best_model.pth")  # Note the .module
                 logger.info("New best model saved with val loss %.4f", best_val_loss)
         else:
             patience_counter += 1
