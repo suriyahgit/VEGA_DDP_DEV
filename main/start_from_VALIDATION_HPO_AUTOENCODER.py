@@ -91,6 +91,25 @@ class XarrayWeatherDataset(Dataset):
 
         self.logger.info("Total samples generated: %d", len(self.indices))
 
+    def __len__(self):
+        """Returns the total number of samples in the dataset"""
+        return len(self.indices)
+
+    def __getitem__(self, idx):
+        """Returns a single sample from the dataset"""
+        if idx >= len(self):
+            raise IndexError(f"Index {idx} out of range for dataset with length {len(self)}")
+            
+        t, lat, lon = self.indices[idx]
+        # This creates the t-4, t-3, t-2, t-1, t pattern when time_steps=5
+        patch = self.data[
+            t - self.time_steps + 1 : t + 1,  # Time dimension
+            lat : lat + self.patch_size,      # Latitude dimension
+            lon : lon + self.patch_size,      # Longitude dimension
+            :                                 # Variable dimension
+        ]
+        return torch.tensor(patch, dtype=torch.float32).flatten()
+
 class FullXarrayWeatherDataset(Dataset):
     def __init__(self, data, patch_size=PATCH_SIZE, time_steps=TIME_STEPS):
         self.logger = logging.getLogger(__name__)
