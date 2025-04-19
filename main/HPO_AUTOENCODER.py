@@ -36,11 +36,11 @@ PATCH_SIZE = 3
 TIME_STEPS = 5  # Creates t-4, t-3, t-2, t-1, t patterns
 LATENT_DIM = 9
 NUM_TILES_PER_TIME = 5000
-BATCH_SIZE = 8048
-NUM_WORKERS = 48
-EARLY_STOPPING_PATIENCE = 25
+BATCH_SIZE = 16096
+NUM_WORKERS = 8
+EARLY_STOPPING_PATIENCE = 10
 MIN_LR = 1e-6
-PREFETCH_FACTOR = 200
+PREFETCH_FACTOR = 25
 
 class XarrayWeatherDataset(Dataset):
     def __init__(self, data, patch_size=PATCH_SIZE, time_steps=TIME_STEPS, num_tiles_per_time=NUM_TILES_PER_TIME):
@@ -203,6 +203,8 @@ def train(rank, world_size, data):
         num_workers=NUM_WORKERS,
         pin_memory=True,
         prefetch_factor=PREFETCH_FACTOR,
+        persistent_workers=True,
+        drop_last=True
     )
     
     logger.info("DataLoader initialized with batch_size=%d, num_workers=%d", BATCH_SIZE, NUM_WORKERS)
@@ -280,7 +282,9 @@ def run_inference(data, model_path="best_model.pth"):
         shuffle=False,
         num_workers=NUM_WORKERS,
         pin_memory=True,
-        prefetch_factor=PREFETCH_FACTOR
+        prefetch_factor=PREFETCH_FACTOR,
+        persistent_workers=True,
+        drop_last=True
     )
     
     logger.info("Inference dataset loaded with %d samples", len(full_dataset))
