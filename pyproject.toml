@@ -1,0 +1,22 @@
+[project]
+name = "era5-autoencoder"
+version = "0.1.0"
+description = "Essentially a process, later to be converted to openEO UDF, for now this works for a single GPU although it is built to adapt for multiple GPU instance - will be an essential part in the downScaleML package"
+authors = [
+    {name = "Suriyah Dhinakaran"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = "3.11.11"
+dependencies = [
+    "numpy (==1.26.4)",
+    "torch (==2.6.0)",
+    "xarray (==2024.3.0)",
+    "zarr (==2.18.3)",
+    "dask (==2025.1.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

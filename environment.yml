@@ -1,0 +1,14 @@
+name: weather-autoencoder-Suriyah
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11.11
+  - numpy=1.26.4
+  - pytorch=2.6.0
+  - xarray=2024.3.0
+  - zarr=2.18.3
+  - dask=2025.1.0
+  - pip
+  - pip:
+      - torch.distributed
