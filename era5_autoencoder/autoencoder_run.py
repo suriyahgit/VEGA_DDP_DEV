@@ -433,7 +433,8 @@ def preprocess_data(input_zarr_path, variable_type):
         logger.info("Using only tp variable with log1p transformation")
         ds = ds.drop_vars(['t2m', 'ssrd'])
         # Apply log1p transformation to tp
-        ds['tp'] = np.log1p(ds['tp'])
+        ds['tp'] = ds['tp'] * 1000
+        ds['tp'] = np.cbrt(ds["tp"])
     else:
         raise ValueError(f"Invalid variable_type: {variable_type}. Must be one of 't2m', 'ssrd', or 'tp'")
     
