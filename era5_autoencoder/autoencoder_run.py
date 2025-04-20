@@ -431,7 +431,7 @@ def preprocess_data(input_zarr_path, variable_type):
         ds = ds.drop_vars(['t2m', 'tp'])
     elif variable_type == 'tp':
         logger.info("Using only tp variable with log1p transformation")
-        ds = ds.drop_vars(['u_850', 'v_850', "z_850", "sin_coy", "cos_coy", "q_850"])
+        ds = ds.drop_vars(['u_850', 'v_850', "z_850", "sin_doy", "cos_doy", "q_850"])
         # Apply log1p transformation to tp
         ds['tp'] = ds['tp'] * 1000
         # Create binary precipitation variable (0 for <0.01mm, 1 for ≥0.01mm)
