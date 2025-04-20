@@ -425,13 +425,13 @@ def preprocess_data(input_zarr_path, variable_type):
     # 2. Select variables based on variable_type
     if variable_type == 't2m':
         logger.info("Using only t2m variable")
-        ds = ds[['t2m']]
+        ds = ds.drop_vars(['ssrd', 'tp'])
     elif variable_type == 'ssrd':
         logger.info("Using only ssrd variable")
-        ds = ds[['ssrd']]
+        ds = ds.drop_vars(['t2m', 'tp'])
     elif variable_type == 'tp':
         logger.info("Using only tp variable with log1p transformation")
-        ds = ds[['tp']]
+        ds = ds.drop_vars(['t2m', 'ssrd'])
         # Apply log1p transformation to tp
         ds['tp'] = np.log1p(ds['tp'])
     else:
