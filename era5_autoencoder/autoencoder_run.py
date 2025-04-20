@@ -431,10 +431,13 @@ def preprocess_data(input_zarr_path, variable_type):
         ds = ds.drop_vars(['t2m', 'tp'])
     elif variable_type == 'tp':
         logger.info("Using only tp variable with log1p transformation")
-        ds = ds.drop_vars(['t2m', 'ssrd'])
+        ds = ds.drop_vars(['u_850', 'v_850', "z_850", "sin_coy", "cos_coy", "q_850"])
         # Apply log1p transformation to tp
         ds['tp'] = ds['tp'] * 1000
+        # Create binary precipitation variable (0 for <0.01mm, 1 for ≥0.01mm)
+        ds['precip_binary'] = xr.where(ds['tp'] >= 0.01, 1, 0)
         ds['tp'] = np.cbrt(ds["tp"])
+        
     else:
         raise ValueError(f"Invalid variable_type: {variable_type}. Must be one of 't2m', 'ssrd', or 'tp'")
     
@@ -448,30 +451,42 @@ def preprocess_data(input_zarr_path, variable_type):
     # Initialize empty list to store normalized chunks
     normalized_chunks = []
     
+    # [Previous code remains the same until the normalization part]
+
     # 4. Process each variable separately to minimize memory usage
     for var in variables:
         logger.info(f"Processing variable: {var}")
         
-        # Compute normalization parameters for this variable only
-        with ProgressBar():
-            var_mean = ds[var].mean(dim=['time', 'lat', 'lon']).compute()
-            var_std = ds[var].std(dim=['time', 'lat', 'lon']).compute()
-        
-        logger.info(f"Computed mean for {var}: {var_mean.values}")
-        logger.info(f"Computed std for {var}: {var_std.values}")
-        
-        # Normalize this variable (still lazy)
-        normalized_var = (ds[var] - var_mean) / (var_std + 1e-8)
-        
-        # Compute this variable and add new dimension for stacking
-        with ProgressBar():
-            normalized_array = normalized_var.compute().expand_dims('variable')
+        # Skip normalization for precip_binary when variable_type is 'tp'
+        if variable_type == 'tp' and var == 'precip_binary':
+            logger.info("Skipping normalization for precip_binary")
+            # Just compute and expand dims without normalization
+            with ProgressBar():
+                normalized_array = ds[var].compute().expand_dims('variable')
+        else:
+            # Normalize all other variables
+            with ProgressBar():
+                var_mean = ds[var].mean(dim=['time', 'lat', 'lon']).compute()
+                var_std = ds[var].std(dim=['time', 'lat', 'lon']).compute()
+            
+            logger.info(f"Computed mean for {var}: {var_mean.values}")
+            logger.info(f"Computed std for {var}: {var_std.values}")
+            
+            # Normalize this variable (still lazy)
+            normalized_var = (ds[var] - var_mean) / (var_std + 1e-8)
+            
+            # Compute this variable
+            with ProgressBar():
+                normalized_array = normalized_var.compute().expand_dims('variable')
+            
+            # Clean up
+            del normalized_var
         
         # Append to our list (now in memory)
         normalized_chunks.append(normalized_array)
-        
-        # Clean up to free memory
-        del normalized_var, normalized_array
+        del normalized_array
+
+    # [Rest of your code continues...]
     
     # 5. Combine all normalized variables along the new dimension
     logger.info("Combining all normalized variables...")
