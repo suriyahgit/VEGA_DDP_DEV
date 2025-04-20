@@ -75,18 +75,23 @@ python autoencoder_run.py --infer tp_model.pth \
 
 ## ARGUMENTS NATURE
 
-REQUIRED
-Argument | Description
---input_zarr | Path to input Zarr dataset
---variable_type | Variable to process (t2m, ssrd, tp)
+### REQUIRED
 
-OPTIONAL
-Argument | Description | Default
---model_output | Path to save trained model | best_model.pth
---output_zarr | Path to save output Zarr | None
---batch_size | Training/inference batch size | 64384
---num_workers | Number of DataLoader workers | 8
---prefetch_factor | Dataloader prefetch factor | 25
+| Argument        | Description                           |
+|----------------|---------------------------------------|
+| `--input_zarr`   | Path to input Zarr dataset             |
+| `--variable_type`| Variable to process (`t2m`, `ssrd`, `tp`) |
+
+### OPTIONAL
+
+| Argument          | Description                       | Default         |
+|------------------|-----------------------------------|-----------------|
+| `--model_output`   | Path to save trained model          | `best_model.pth` |
+| `--output_zarr`    | Path to save output Zarr            | `None`           |
+| `--batch_size`     | Training/inference batch size       | `64384`          |
+| `--num_workers`    | Number of DataLoader workers        | `8`              |
+| `--prefetch_factor`| DataLoader prefetch factor          | `25`             |
+
 
 ### Future Additions 
 
