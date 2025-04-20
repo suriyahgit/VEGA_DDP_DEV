@@ -1,5 +1,7 @@
 # ERA5 Autoencoder
 
+Developer: Suriyah Dhinakaran
+
 ## Overview
 
 This project implements a **distributed autoencoder** designed to process weather data using **PyTorch's DistributedDataParallel (DDP)**. It supports the following modes:
