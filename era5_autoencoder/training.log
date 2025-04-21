@@ -1,0 +1,789 @@
+2025-04-20 16:11:25,428 [RANK 0] Starting main execution with arguments: Namespace(train=True, start_from_model=None, infer=None, input_zarr='/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr', variable_type='tp', model_output='best_model_tp.pth', output_zarr='tp_latents.zarr', batch_size=64384, num_workers=8, prefetch_factor=25)
+2025-04-20 16:11:25,428 [RANK 0] Loading and preprocessing data...
+2025-04-20 16:11:31,594 [RANK 0] Initial dataset loaded. Shape: {'time': 7670, 'lat': 135, 'lon': 180}, Variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 'ssrd', 't2m', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 16:11:31,594 [RANK 0] Using only tp variable with log1p transformation
+2025-04-20 16:11:31,614 [RANK 0] Using variables: ['tp']
+2025-04-20 16:11:31,614 [RANK 0] Processing variable: tp
+2025-04-20 16:11:34,815 [RANK 0] Computed mean for tp: 0.002857057610526681
+2025-04-20 16:11:34,815 [RANK 0] Computed std for tp: 0.005721615627408028
+2025-04-20 16:11:36,017 [RANK 0] Combining all normalized variables...
+2025-04-20 16:11:36,366 [RANK 0] Data loaded in 4.75 seconds
+2025-04-20 16:11:36,366 [RANK 0] Final data shape: (7670, 135, 180, 1)
+2025-04-20 16:11:36,367 [RANK 0] Memory usage: 1.49 GB
+2025-04-20 16:11:36,550 [RANK 0] Data validation passed - no NaN values detected
+2025-04-20 16:11:36,554 [RANK 0] Starting training from scratch
+2025-04-20 16:11:36,675 [RANK 0] Starting single-GPU/CPU training
+2025-04-20 16:11:36,675 [RANK 0] Initializing training process on rank 0
+2025-04-20 16:11:36,678 [RANK 0] Initializing autoencoder with input_dim=45, latent_dim=9
+2025-04-20 16:11:36,734 [RANK 0] Model architecture:
+WeatherAutoencoder(
+  (encoder): Sequential(
+    (0): Linear(in_features=45, out_features=256, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=256, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=64, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=64, out_features=9, bias=True)
+  )
+  (decoder): Sequential(
+    (0): Linear(in_features=9, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=256, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=256, out_features=45, bias=True)
+  )
+)
+2025-04-20 16:11:36,930 [RANK 0] Model created on device cuda:0
+2025-04-20 16:11:36,931 [RANK 0] Number of parameters: 107062
+2025-04-20 16:11:36,931 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 16:11:36,931 [RANK 0] Original data shape: (7670, 135, 180, 1)
+2025-04-20 16:11:37,415 [RANK 0] Padded data shape: (7674, 137, 182, 1)
+2025-04-20 16:11:37,415 [RANK 0] Generating 5000 random training tiles per time step
+2025-04-20 16:11:48,518 [RANK 0] Total samples generated: 38350000
+2025-04-20 16:11:48,519 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 16:11:48,519 [RANK 0] Original data shape: (7670, 135, 180, 1)
+2025-04-20 16:11:48,995 [RANK 0] Padded data shape: (7674, 137, 182, 1)
+2025-04-20 16:11:48,996 [RANK 0] Generating 500 fixed validation tiles
+2025-04-20 16:11:50,186 [RANK 0] Total samples generated: 3835000
+2025-04-20 16:11:50,186 [RANK 0] DataLoaders initialized with batch_size=64384, num_workers=8
+2025-04-20 16:15:28,126 [RANK 0] Starting main execution with arguments: Namespace(train=True, start_from_model=None, infer=None, input_zarr='/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr', variable_type='tp', model_output='best_model_tp.pth', output_zarr='tp_latents.zarr', batch_size=64384, num_workers=8, prefetch_factor=25)
+2025-04-20 16:15:28,126 [RANK 0] Loading and preprocessing data...
+2025-04-20 16:15:28,471 [RANK 0] Initial dataset loaded. Shape: {'time': 7670, 'lat': 135, 'lon': 180}, Variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 'ssrd', 't2m', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 16:15:28,472 [RANK 0] Using only tp variable with log1p transformation
+2025-04-20 16:15:28,492 [RANK 0] Using variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 16:15:28,492 [RANK 0] Processing variable: cos_doy
+2025-04-20 16:15:30,161 [RANK 0] Computed mean for cos_doy: 0.0006517938977895169
+2025-04-20 16:15:30,161 [RANK 0] Computed std for cos_doy: 0.7073367848846865
+2025-04-20 16:15:31,101 [RANK 0] Processing variable: dem
+2025-04-20 16:15:32,289 [RANK 0] Computed mean for dem: 503.53936767578125
+2025-04-20 16:15:32,289 [RANK 0] Computed std for dem: 560.3971557617188
+2025-04-20 16:15:33,115 [RANK 0] Processing variable: q_850
+2025-04-20 16:15:34,192 [RANK 0] Computed mean for q_850: 0.004727561492472887
+2025-04-20 16:15:34,192 [RANK 0] Computed std for q_850: 0.00219158548861742
+2025-04-20 16:15:35,214 [RANK 0] Processing variable: sin_doy
+2025-04-20 16:15:36,472 [RANK 0] Computed mean for sin_doy: 1.1221223048125202e-05
+2025-04-20 16:15:36,473 [RANK 0] Computed std for sin_doy: 0.706876402058941
+2025-04-20 16:15:38,732 [RANK 0] Processing variable: t_850
+2025-04-20 16:15:40,185 [RANK 0] Computed mean for t_850: 279.1830749511719
+2025-04-20 16:15:40,185 [RANK 0] Computed std for t_850: 6.824256420135498
+2025-04-20 16:15:41,211 [RANK 0] Processing variable: tp
+2025-04-20 16:15:42,930 [RANK 0] Computed mean for tp: 0.002857057610526681
+2025-04-20 16:15:42,930 [RANK 0] Computed std for tp: 0.005721615627408028
+2025-04-20 16:15:45,519 [RANK 0] Processing variable: u_850
+2025-04-20 16:15:46,994 [RANK 0] Computed mean for u_850: 2.136380672454834
+2025-04-20 16:15:46,994 [RANK 0] Computed std for u_850: 5.79701566696167
+2025-04-20 16:15:47,922 [RANK 0] Processing variable: v_850
+2025-04-20 16:15:50,733 [RANK 0] Computed mean for v_850: -0.03182092308998108
+2025-04-20 16:15:50,733 [RANK 0] Computed std for v_850: 4.692667484283447
+2025-04-20 16:15:52,588 [RANK 0] Processing variable: z_850
+2025-04-20 16:15:55,317 [RANK 0] Computed mean for z_850: 14575.0322265625
+2025-04-20 16:15:55,317 [RANK 0] Computed std for z_850: 676.2464599609375
+2025-04-20 16:15:57,309 [RANK 0] Combining all normalized variables...
+2025-04-20 16:16:05,546 [RANK 0] Data loaded in 37.05 seconds
+2025-04-20 16:16:05,546 [RANK 0] Final data shape: (7670, 135, 180, 9)
+2025-04-20 16:16:05,547 [RANK 0] Memory usage: 13.42 GB
+2025-04-20 16:16:07,292 [RANK 0] Data validation passed - no NaN values detected
+2025-04-20 16:16:07,324 [RANK 0] Starting training from scratch
+2025-04-20 16:16:07,448 [RANK 0] Starting single-GPU/CPU training
+2025-04-20 16:16:07,448 [RANK 0] Initializing training process on rank 0
+2025-04-20 16:16:07,757 [RANK 0] Initializing autoencoder with input_dim=405, latent_dim=9
+2025-04-20 16:16:08,014 [RANK 0] Model architecture:
+WeatherAutoencoder(
+  (encoder): Sequential(
+    (0): Linear(in_features=405, out_features=256, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=256, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=64, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=64, out_features=9, bias=True)
+  )
+  (decoder): Sequential(
+    (0): Linear(in_features=9, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=256, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=256, out_features=405, bias=True)
+  )
+)
+2025-04-20 16:16:08,236 [RANK 0] Model created on device cuda:0
+2025-04-20 16:16:08,237 [RANK 0] Number of parameters: 291742
+2025-04-20 16:16:08,237 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 16:16:08,237 [RANK 0] Original data shape: (7670, 135, 180, 9)
+2025-04-20 16:16:10,952 [RANK 0] Padded data shape: (7674, 137, 182, 9)
+2025-04-20 16:16:10,952 [RANK 0] Generating 5000 random training tiles per time step
+2025-04-20 16:16:21,102 [RANK 0] Total samples generated: 38350000
+2025-04-20 16:16:21,103 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 16:16:21,103 [RANK 0] Original data shape: (7670, 135, 180, 9)
+2025-04-20 16:16:31,311 [RANK 0] Padded data shape: (7674, 137, 182, 9)
+2025-04-20 16:16:31,311 [RANK 0] Generating 500 fixed validation tiles
+2025-04-20 16:16:32,490 [RANK 0] Total samples generated: 3835000
+2025-04-20 16:16:32,491 [RANK 0] DataLoaders initialized with batch_size=64384, num_workers=8
+2025-04-20 16:16:43,055 [RANK 0] Starting training loop at 2025-04-20 16:16:43
+2025-04-20 16:17:01,044 [RANK 0] Epoch 1, Batch 0, Current Loss: 0.9742
+2025-04-20 16:20:32,303 [RANK 0] Starting main execution with arguments: Namespace(train=True, start_from_model=None, infer=None, input_zarr='/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr', variable_type='tp', model_output='best_model_tp.pth', output_zarr='tp_latents.zarr', batch_size=64384, num_workers=8, prefetch_factor=25)
+2025-04-20 16:20:32,306 [RANK 0] Loading and preprocessing data...
+2025-04-20 16:20:32,677 [RANK 0] Initial dataset loaded. Shape: {'time': 7670, 'lat': 135, 'lon': 180}, Variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 'ssrd', 't2m', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 16:20:32,677 [RANK 0] Using only tp variable with log1p transformation
+2025-04-20 16:20:32,696 [RANK 0] Using variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 16:20:32,697 [RANK 0] Processing variable: cos_doy
+2025-04-20 16:20:34,335 [RANK 0] Computed mean for cos_doy: 0.0006517938977895169
+2025-04-20 16:20:34,335 [RANK 0] Computed std for cos_doy: 0.7073367848846865
+2025-04-20 16:20:35,464 [RANK 0] Processing variable: dem
+2025-04-20 16:20:36,692 [RANK 0] Computed mean for dem: 503.53936767578125
+2025-04-20 16:20:36,692 [RANK 0] Computed std for dem: 560.3971557617188
+2025-04-20 16:20:39,106 [RANK 0] Processing variable: q_850
+2025-04-20 16:20:41,138 [RANK 0] Computed mean for q_850: 0.004727561492472887
+2025-04-20 16:20:41,138 [RANK 0] Computed std for q_850: 0.00219158548861742
+2025-04-20 16:20:42,584 [RANK 0] Processing variable: sin_doy
+2025-04-20 16:20:44,448 [RANK 0] Computed mean for sin_doy: 1.1221223048125202e-05
+2025-04-20 16:20:44,448 [RANK 0] Computed std for sin_doy: 0.706876402058941
+2025-04-20 16:20:46,983 [RANK 0] Processing variable: t_850
+2025-04-20 16:20:48,678 [RANK 0] Computed mean for t_850: 279.1830749511719
+2025-04-20 16:20:48,679 [RANK 0] Computed std for t_850: 6.824256420135498
+2025-04-20 16:20:49,592 [RANK 0] Processing variable: tp
+2025-04-20 16:20:51,002 [RANK 0] Computed mean for tp: 0.002857057610526681
+2025-04-20 16:20:51,003 [RANK 0] Computed std for tp: 0.005721615627408028
+2025-04-20 16:20:53,462 [RANK 0] Processing variable: u_850
+2025-04-20 16:20:54,691 [RANK 0] Computed mean for u_850: 2.136380672454834
+2025-04-20 16:20:54,692 [RANK 0] Computed std for u_850: 5.79701566696167
+2025-04-20 16:20:56,994 [RANK 0] Processing variable: v_850
+2025-04-20 16:20:58,731 [RANK 0] Computed mean for v_850: -0.03182092308998108
+2025-04-20 16:20:58,732 [RANK 0] Computed std for v_850: 4.692667484283447
+2025-04-20 16:20:59,807 [RANK 0] Processing variable: z_850
+2025-04-20 16:21:01,428 [RANK 0] Computed mean for z_850: 14575.0322265625
+2025-04-20 16:21:01,428 [RANK 0] Computed std for z_850: 676.2464599609375
+2025-04-20 16:21:02,477 [RANK 0] Combining all normalized variables...
+2025-04-20 16:21:04,267 [RANK 0] Data loaded in 31.57 seconds
+2025-04-20 16:21:04,267 [RANK 0] Final data shape: (7670, 135, 180, 9)
+2025-04-20 16:21:04,267 [RANK 0] Memory usage: 13.42 GB
+2025-04-20 16:21:05,297 [RANK 0] Data validation passed - no NaN values detected
+2025-04-20 16:21:05,321 [RANK 0] Starting training from scratch
+2025-04-20 16:21:05,435 [RANK 0] Starting single-GPU/CPU training
+2025-04-20 16:21:05,435 [RANK 0] Initializing training process on rank 0
+2025-04-20 16:21:05,437 [RANK 0] Initializing autoencoder with input_dim=405, latent_dim=9
+2025-04-20 16:21:05,453 [RANK 0] Model architecture:
+WeatherAutoencoder(
+  (encoder): Sequential(
+    (0): Linear(in_features=405, out_features=256, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=256, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=64, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=64, out_features=9, bias=True)
+  )
+  (decoder): Sequential(
+    (0): Linear(in_features=9, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=256, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=256, out_features=405, bias=True)
+  )
+)
+2025-04-20 16:21:05,634 [RANK 0] Model created on device cuda:0
+2025-04-20 16:21:05,636 [RANK 0] Number of parameters: 291742
+2025-04-20 16:21:05,636 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 16:21:05,636 [RANK 0] Original data shape: (7670, 135, 180, 9)
+2025-04-20 16:21:08,355 [RANK 0] Padded data shape: (7674, 137, 182, 9)
+2025-04-20 16:21:08,356 [RANK 0] Generating 5000 random training tiles per time step
+2025-04-20 16:21:18,631 [RANK 0] Total samples generated: 38350000
+2025-04-20 16:21:18,631 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 16:21:18,631 [RANK 0] Original data shape: (7670, 135, 180, 9)
+2025-04-20 16:21:21,348 [RANK 0] Padded data shape: (7674, 137, 182, 9)
+2025-04-20 16:21:21,348 [RANK 0] Generating 500 fixed validation tiles
+2025-04-20 16:21:22,503 [RANK 0] Total samples generated: 3835000
+2025-04-20 16:21:22,503 [RANK 0] DataLoaders initialized with batch_size=64384, num_workers=8
+2025-04-20 16:21:24,368 [RANK 0] Starting training loop at 2025-04-20 16:21:24
+2025-04-20 16:21:40,132 [RANK 0] Epoch 1, Batch 0, Current Loss: 0.9741
+2025-04-20 16:24:03,847 [RANK 0] Epoch 1, Batch 100, Current Loss: 0.8791
+2025-04-20 16:26:43,281 [RANK 0] Epoch 1, Batch 200, Current Loss: 1.6080
+2025-04-20 16:29:12,669 [RANK 0] Epoch 1, Batch 300, Current Loss: 0.5757
+2025-04-20 16:31:46,298 [RANK 0] Epoch 1, Batch 400, Current Loss: 0.7653
+2025-04-20 16:34:19,167 [RANK 0] Epoch 1, Batch 500, Current Loss: 0.3031
+2025-04-20 16:38:11,517 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.7289
+2025-04-20 16:38:11,519 [RANK 0] Epoch 1 complete - Train Loss: 0.8791, Val Loss: 0.7289, Best Val: 0.7289, LR: 1.00e-03
+2025-04-20 16:38:23,066 [RANK 0] Epoch 2, Batch 0, Current Loss: 0.6341
+2025-04-20 16:40:50,509 [RANK 0] Epoch 2, Batch 100, Current Loss: 0.6290
+2025-04-20 16:43:29,195 [RANK 0] Epoch 2, Batch 200, Current Loss: 0.9651
+2025-04-20 16:45:58,382 [RANK 0] Epoch 2, Batch 300, Current Loss: 0.4635
+2025-04-20 16:48:33,080 [RANK 0] Epoch 2, Batch 400, Current Loss: 0.6851
+2025-04-20 16:51:07,988 [RANK 0] Epoch 2, Batch 500, Current Loss: 0.4222
+2025-04-20 16:54:57,706 [RANK 0] No improvement (1/10), Current Val Loss: 0.8447, Best Val Loss: 0.7289
+2025-04-20 16:54:57,708 [RANK 0] Epoch 2 complete - Train Loss: 0.6608, Val Loss: 0.8447, Best Val: 0.7289, LR: 1.00e-03
+2025-04-20 16:55:09,109 [RANK 0] Epoch 3, Batch 0, Current Loss: 0.4766
+2025-04-20 16:57:40,187 [RANK 0] Epoch 3, Batch 100, Current Loss: 0.3148
+2025-04-20 17:00:15,374 [RANK 0] Epoch 3, Batch 200, Current Loss: 0.8847
+2025-04-20 17:02:45,639 [RANK 0] Epoch 3, Batch 300, Current Loss: 0.4807
+2025-04-20 17:05:18,869 [RANK 0] Epoch 3, Batch 400, Current Loss: 0.8001
+2025-04-20 17:07:56,668 [RANK 0] Epoch 3, Batch 500, Current Loss: 0.3988
+2025-04-20 17:11:46,506 [RANK 0] No improvement (2/10), Current Val Loss: 0.8221, Best Val Loss: 0.7289
+2025-04-20 17:11:46,508 [RANK 0] Epoch 3 complete - Train Loss: 0.6139, Val Loss: 0.8221, Best Val: 0.7289, LR: 1.00e-03
+2025-04-20 17:12:02,320 [RANK 0] Epoch 4, Batch 0, Current Loss: 0.5670
+2025-04-20 17:14:28,885 [RANK 0] Epoch 4, Batch 100, Current Loss: 0.5833
+2025-04-20 17:17:06,445 [RANK 0] Epoch 4, Batch 200, Current Loss: 0.8306
+2025-04-20 17:19:38,409 [RANK 0] Epoch 4, Batch 300, Current Loss: 0.4787
+2025-04-20 17:22:23,239 [RANK 0] Epoch 4, Batch 400, Current Loss: 0.7536
+2025-04-20 17:24:56,526 [RANK 0] Epoch 4, Batch 500, Current Loss: 0.2705
+2025-04-20 17:28:38,048 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.6595
+2025-04-20 17:28:38,049 [RANK 0] Epoch 4 complete - Train Loss: 0.6021, Val Loss: 0.6595, Best Val: 0.6595, LR: 1.00e-03
+2025-04-20 17:28:49,447 [RANK 0] Epoch 5, Batch 0, Current Loss: 0.8119
+2025-04-20 17:31:21,732 [RANK 0] Epoch 5, Batch 100, Current Loss: 0.5062
+2025-04-20 17:33:57,573 [RANK 0] Epoch 5, Batch 200, Current Loss: 0.8317
+2025-04-20 17:36:30,134 [RANK 0] Epoch 5, Batch 300, Current Loss: 0.4372
+2025-04-20 17:39:02,106 [RANK 0] Epoch 5, Batch 400, Current Loss: 0.6580
+2025-04-20 17:41:40,416 [RANK 0] Epoch 5, Batch 500, Current Loss: 0.3080
+2025-04-20 17:45:32,332 [RANK 0] No improvement (1/10), Current Val Loss: 0.6940, Best Val Loss: 0.6595
+2025-04-20 17:45:32,334 [RANK 0] Epoch 5 complete - Train Loss: 0.5303, Val Loss: 0.6940, Best Val: 0.6595, LR: 1.00e-03
+2025-04-20 17:45:43,836 [RANK 0] Epoch 6, Batch 0, Current Loss: 0.5308
+2025-04-20 17:48:15,816 [RANK 0] Epoch 6, Batch 100, Current Loss: 0.6814
+2025-04-20 17:50:49,030 [RANK 0] Epoch 6, Batch 200, Current Loss: 1.0737
+2025-04-20 17:53:25,278 [RANK 0] Epoch 6, Batch 300, Current Loss: 0.4587
+2025-04-20 17:58:13,763 [RANK 0] Starting main execution with arguments: Namespace(train=False, start_from_model='best_model_tp.pth', infer=None, input_zarr='/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr', variable_type='tp', model_output='best_model_tp.pth', output_zarr=None, batch_size=64384, num_workers=8, prefetch_factor=25)
+2025-04-20 17:58:13,765 [RANK 0] Loading and preprocessing data...
+2025-04-20 17:58:14,888 [RANK 0] Initial dataset loaded. Shape: {'time': 7670, 'lat': 135, 'lon': 180}, Variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 'ssrd', 't2m', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 17:58:14,888 [RANK 0] Using only tp variable with log1p transformation
+2025-04-20 17:58:14,907 [RANK 0] Using variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 17:58:14,907 [RANK 0] Processing variable: cos_doy
+2025-04-20 17:58:18,849 [RANK 0] Computed mean for cos_doy: 0.0006517938977895169
+2025-04-20 17:58:18,849 [RANK 0] Computed std for cos_doy: 0.7073367848846865
+2025-04-20 17:58:20,195 [RANK 0] Processing variable: dem
+2025-04-20 17:58:21,856 [RANK 0] Computed mean for dem: 503.53936767578125
+2025-04-20 17:58:21,856 [RANK 0] Computed std for dem: 560.3971557617188
+2025-04-20 17:58:22,870 [RANK 0] Processing variable: q_850
+2025-04-20 17:58:24,521 [RANK 0] Computed mean for q_850: 0.004727561492472887
+2025-04-20 17:58:24,522 [RANK 0] Computed std for q_850: 0.00219158548861742
+2025-04-20 17:58:27,056 [RANK 0] Processing variable: sin_doy
+2025-04-20 17:58:29,766 [RANK 0] Computed mean for sin_doy: 1.1221223048125202e-05
+2025-04-20 17:58:29,766 [RANK 0] Computed std for sin_doy: 0.706876402058941
+2025-04-20 17:58:30,988 [RANK 0] Processing variable: t_850
+2025-04-20 17:58:33,023 [RANK 0] Computed mean for t_850: 279.1830749511719
+2025-04-20 17:58:33,023 [RANK 0] Computed std for t_850: 6.824256420135498
+2025-04-20 17:58:35,369 [RANK 0] Processing variable: tp
+2025-04-20 17:58:37,252 [RANK 0] Computed mean for tp: 0.002857057610526681
+2025-04-20 17:58:37,253 [RANK 0] Computed std for tp: 0.005721615627408028
+2025-04-20 17:58:39,772 [RANK 0] Processing variable: u_850
+2025-04-20 17:58:41,324 [RANK 0] Computed mean for u_850: 2.136380672454834
+2025-04-20 17:58:41,324 [RANK 0] Computed std for u_850: 5.79701566696167
+2025-04-20 17:58:43,474 [RANK 0] Processing variable: v_850
+2025-04-20 17:58:45,247 [RANK 0] Computed mean for v_850: -0.03182092308998108
+2025-04-20 17:58:45,247 [RANK 0] Computed std for v_850: 4.692667484283447
+2025-04-20 17:58:47,706 [RANK 0] Processing variable: z_850
+2025-04-20 17:58:49,090 [RANK 0] Computed mean for z_850: 14575.0322265625
+2025-04-20 17:58:49,090 [RANK 0] Computed std for z_850: 676.2464599609375
+2025-04-20 17:58:51,307 [RANK 0] Combining all normalized variables...
+2025-04-20 17:59:03,184 [RANK 0] Data loaded in 48.28 seconds
+2025-04-20 17:59:03,185 [RANK 0] Final data shape: (7670, 135, 180, 9)
+2025-04-20 17:59:03,185 [RANK 0] Memory usage: 13.42 GB
+2025-04-20 17:59:05,980 [RANK 0] Data validation passed - no NaN values detected
+2025-04-20 17:59:06,016 [RANK 0] Starting training from existing model: best_model_tp.pth
+2025-04-20 17:59:06,136 [RANK 0] Starting single-GPU/CPU training
+2025-04-20 17:59:06,137 [RANK 0] Initializing training process on rank 0
+2025-04-20 17:59:06,139 [RANK 0] Initializing autoencoder with input_dim=405, latent_dim=9
+2025-04-20 17:59:06,155 [RANK 0] Model architecture:
+WeatherAutoencoder(
+  (encoder): Sequential(
+    (0): Linear(in_features=405, out_features=256, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=256, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=64, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=64, out_features=9, bias=True)
+  )
+  (decoder): Sequential(
+    (0): Linear(in_features=9, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=256, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=256, out_features=405, bias=True)
+  )
+)
+2025-04-20 17:59:06,341 [RANK 0] Model created on device cuda:0
+2025-04-20 17:59:06,342 [RANK 0] Number of parameters: 291742
+2025-04-20 17:59:06,342 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 17:59:06,343 [RANK 0] Original data shape: (7670, 135, 180, 9)
+2025-04-20 17:59:18,784 [RANK 0] Padded data shape: (7674, 137, 182, 9)
+2025-04-20 17:59:18,784 [RANK 0] Generating 5000 random training tiles per time step
+2025-04-20 17:59:29,016 [RANK 0] Total samples generated: 38350000
+2025-04-20 17:59:29,016 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 17:59:29,016 [RANK 0] Original data shape: (7670, 135, 180, 9)
+2025-04-20 18:00:43,269 [RANK 0] Padded data shape: (7674, 137, 182, 9)
+2025-04-20 18:00:43,271 [RANK 0] Generating 500 fixed validation tiles
+2025-04-20 18:00:44,450 [RANK 0] Total samples generated: 3835000
+2025-04-20 18:00:44,451 [RANK 0] DataLoaders initialized with batch_size=64384, num_workers=8
+2025-04-20 18:00:45,725 [RANK 0] Starting training loop at 2025-04-20 18:00:45
+2025-04-20 18:01:10,236 [RANK 0] Epoch 1, Batch 0, Current Loss: 0.9780
+2025-04-20 18:04:00,208 [RANK 0] Epoch 1, Batch 100, Current Loss: 0.8916
+2025-04-20 18:07:04,670 [RANK 0] Epoch 1, Batch 200, Current Loss: 1.0480
+2025-04-20 18:09:56,394 [RANK 0] Epoch 1, Batch 300, Current Loss: 0.5776
+2025-04-20 18:13:06,125 [RANK 0] Epoch 1, Batch 400, Current Loss: 0.6266
+2025-04-20 18:15:57,717 [RANK 0] Epoch 1, Batch 500, Current Loss: 0.2884
+2025-04-20 18:20:32,789 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.5655
+2025-04-20 18:20:32,790 [RANK 0] Epoch 1 complete - Train Loss: 0.7145, Val Loss: 0.5655, Best Val: 0.5655, LR: 1.00e-03
+2025-04-20 18:20:46,164 [RANK 0] Epoch 2, Batch 0, Current Loss: 0.5143
+2025-04-20 18:23:35,389 [RANK 0] Epoch 2, Batch 100, Current Loss: 0.2747
+2025-04-20 18:26:54,735 [RANK 0] Epoch 2, Batch 200, Current Loss: 0.9314
+2025-04-20 18:29:31,042 [RANK 0] Epoch 2, Batch 300, Current Loss: 0.5787
+2025-04-20 18:32:37,501 [RANK 0] Epoch 2, Batch 400, Current Loss: 0.7492
+2025-04-20 18:35:27,688 [RANK 0] Epoch 2, Batch 500, Current Loss: 0.2517
+2025-04-20 18:39:52,833 [RANK 0] No improvement (1/10), Current Val Loss: 0.5658, Best Val Loss: 0.5655
+2025-04-20 18:39:52,834 [RANK 0] Epoch 2 complete - Train Loss: 0.6140, Val Loss: 0.5658, Best Val: 0.5655, LR: 1.00e-03
+2025-04-20 18:40:12,672 [RANK 0] Epoch 3, Batch 0, Current Loss: 0.4687
+2025-04-20 18:43:03,497 [RANK 0] Epoch 3, Batch 100, Current Loss: 0.3386
+2025-04-20 18:43:59,383 [RANK 0] Starting main execution with arguments: Namespace(train=True, start_from_model=None, infer=None, input_zarr='/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr', variable_type='tp', model_output='best_model_tp.pth', output_zarr='tp_latents.zarr', batch_size=64384, num_workers=8, prefetch_factor=25)
+2025-04-20 18:43:59,384 [RANK 0] Loading and preprocessing data...
+2025-04-20 18:44:03,546 [RANK 0] Initial dataset loaded. Shape: {'time': 7670, 'lat': 135, 'lon': 180}, Variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 'ssrd', 't2m', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 18:44:03,546 [RANK 0] Using only tp variable with log1p transformation
+2025-04-20 18:44:03,575 [RANK 0] Using variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 18:44:03,575 [RANK 0] Processing variable: cos_doy
+2025-04-20 18:44:06,290 [RANK 0] Computed mean for cos_doy: 0.0006517938977895169
+2025-04-20 18:44:06,290 [RANK 0] Computed std for cos_doy: 0.7073367848846865
+2025-04-20 18:44:07,206 [RANK 0] Processing variable: dem
+2025-04-20 18:44:08,441 [RANK 0] Computed mean for dem: 503.53936767578125
+2025-04-20 18:44:08,442 [RANK 0] Computed std for dem: 560.3971557617188
+2025-04-20 18:44:09,339 [RANK 0] Processing variable: q_850
+2025-04-20 18:44:10,394 [RANK 0] Computed mean for q_850: 0.004727561492472887
+2025-04-20 18:44:10,395 [RANK 0] Computed std for q_850: 0.00219158548861742
+2025-04-20 18:44:11,407 [RANK 0] Processing variable: sin_doy
+2025-04-20 18:44:12,701 [RANK 0] Computed mean for sin_doy: 1.1221223048125202e-05
+2025-04-20 18:44:12,701 [RANK 0] Computed std for sin_doy: 0.706876402058941
+2025-04-20 18:44:13,635 [RANK 0] Processing variable: t_850
+2025-04-20 18:44:14,867 [RANK 0] Computed mean for t_850: 279.1830749511719
+2025-04-20 18:44:14,867 [RANK 0] Computed std for t_850: 6.824256420135498
+2025-04-20 18:44:15,763 [RANK 0] Processing variable: tp
+2025-04-20 18:44:17,051 [RANK 0] Computed mean for tp: 0.9054690003395081
+2025-04-20 18:44:17,051 [RANK 0] Computed std for tp: 0.8012673258781433
+2025-04-20 18:44:18,196 [RANK 0] Processing variable: u_850
+2025-04-20 18:44:19,209 [RANK 0] Computed mean for u_850: 2.136380672454834
+2025-04-20 18:44:19,209 [RANK 0] Computed std for u_850: 5.79701566696167
+2025-04-20 18:44:20,128 [RANK 0] Processing variable: v_850
+2025-04-20 18:44:21,216 [RANK 0] Computed mean for v_850: -0.03182092308998108
+2025-04-20 18:44:21,216 [RANK 0] Computed std for v_850: 4.692667484283447
+2025-04-20 18:44:22,282 [RANK 0] Processing variable: z_850
+2025-04-20 18:44:23,289 [RANK 0] Computed mean for z_850: 14575.0322265625
+2025-04-20 18:44:23,289 [RANK 0] Computed std for z_850: 676.2464599609375
+2025-04-20 18:44:24,191 [RANK 0] Combining all normalized variables...
+2025-04-20 18:44:27,332 [RANK 0] Data loaded in 23.76 seconds
+2025-04-20 18:44:27,333 [RANK 0] Final data shape: (7670, 135, 180, 9)
+2025-04-20 18:44:27,333 [RANK 0] Memory usage: 13.42 GB
+2025-04-20 18:44:29,550 [RANK 0] Data validation passed - no NaN values detected
+2025-04-20 18:44:29,577 [RANK 0] Starting training from scratch
+2025-04-20 18:44:29,712 [RANK 0] Starting single-GPU/CPU training
+2025-04-20 18:44:29,712 [RANK 0] Initializing training process on rank 0
+2025-04-20 18:44:29,714 [RANK 0] Initializing autoencoder with input_dim=405, latent_dim=9
+2025-04-20 18:44:29,733 [RANK 0] Model architecture:
+WeatherAutoencoder(
+  (encoder): Sequential(
+    (0): Linear(in_features=405, out_features=256, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=256, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=64, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=64, out_features=9, bias=True)
+  )
+  (decoder): Sequential(
+    (0): Linear(in_features=9, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=256, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=256, out_features=405, bias=True)
+  )
+)
+2025-04-20 18:44:29,914 [RANK 0] Model created on device cuda:0
+2025-04-20 18:44:29,915 [RANK 0] Number of parameters: 291742
+2025-04-20 18:44:29,915 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 18:44:29,915 [RANK 0] Original data shape: (7670, 135, 180, 9)
+2025-04-20 18:44:36,141 [RANK 0] Padded data shape: (7674, 137, 182, 9)
+2025-04-20 18:44:36,141 [RANK 0] Generating 5000 random training tiles per time step
+2025-04-20 18:44:46,314 [RANK 0] Total samples generated: 38350000
+2025-04-20 18:44:46,314 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 18:44:46,314 [RANK 0] Original data shape: (7670, 135, 180, 9)
+2025-04-20 18:44:58,500 [RANK 0] Padded data shape: (7674, 137, 182, 9)
+2025-04-20 18:44:58,500 [RANK 0] Generating 500 fixed validation tiles
+2025-04-20 18:44:59,722 [RANK 0] Total samples generated: 3835000
+2025-04-20 18:44:59,723 [RANK 0] DataLoaders initialized with batch_size=64384, num_workers=8
+2025-04-20 18:45:10,250 [RANK 0] Starting training loop at 2025-04-20 18:45:10
+2025-04-20 18:45:29,281 [RANK 0] Epoch 1, Batch 0, Current Loss: 1.0068
+2025-04-20 18:48:23,960 [RANK 0] Epoch 1, Batch 100, Current Loss: 0.8170
+2025-04-20 18:51:29,503 [RANK 0] Epoch 1, Batch 200, Current Loss: 0.9342
+2025-04-20 18:54:23,486 [RANK 0] Epoch 1, Batch 300, Current Loss: 0.3958
+2025-04-20 18:57:27,874 [RANK 0] Epoch 1, Batch 400, Current Loss: 0.6476
+2025-04-20 19:00:24,713 [RANK 0] Epoch 1, Batch 500, Current Loss: 0.2992
+2025-04-20 19:04:52,243 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.6564
+2025-04-20 19:04:52,245 [RANK 0] Epoch 1 complete - Train Loss: 0.7120, Val Loss: 0.6564, Best Val: 0.6564, LR: 1.00e-03
+2025-04-20 19:05:05,475 [RANK 0] Epoch 2, Batch 0, Current Loss: 0.6836
+2025-04-20 19:08:08,593 [RANK 0] Epoch 2, Batch 100, Current Loss: 0.4296
+2025-04-20 19:11:00,908 [RANK 0] Epoch 2, Batch 200, Current Loss: 0.8594
+2025-04-20 19:14:01,006 [RANK 0] Epoch 2, Batch 300, Current Loss: 0.3916
+2025-04-20 19:17:03,079 [RANK 0] Epoch 2, Batch 400, Current Loss: 0.6702
+2025-04-20 19:19:52,500 [RANK 0] Epoch 2, Batch 500, Current Loss: 0.3187
+2025-04-20 19:24:19,204 [RANK 0] No improvement (1/10), Current Val Loss: 0.6762, Best Val Loss: 0.6564
+2025-04-20 19:24:19,207 [RANK 0] Epoch 2 complete - Train Loss: 0.6325, Val Loss: 0.6762, Best Val: 0.6564, LR: 1.00e-03
+2025-04-20 19:24:32,523 [RANK 0] Epoch 3, Batch 0, Current Loss: 0.6527
+2025-04-20 19:27:24,067 [RANK 0] Epoch 3, Batch 100, Current Loss: 0.4663
+2025-04-20 19:30:32,752 [RANK 0] Epoch 3, Batch 200, Current Loss: 1.2387
+2025-04-20 19:33:26,337 [RANK 0] Epoch 3, Batch 300, Current Loss: 0.3353
+2025-04-20 19:55:47,276 [RANK 0] Starting main execution with arguments: Namespace(train=True, start_from_model=None, infer=None, input_zarr='/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr', variable_type='tp', model_output='best_model_tp.pth', output_zarr='tp_latents.zarr', batch_size=64384, num_workers=8, prefetch_factor=25)
+2025-04-20 19:55:47,278 [RANK 0] Loading and preprocessing data...
+2025-04-20 19:55:50,665 [RANK 0] Initial dataset loaded. Shape: {'time': 7670, 'lat': 135, 'lon': 180}, Variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 'ssrd', 't2m', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 19:55:50,665 [RANK 0] Using only tp variable with log1p transformation
+2025-04-20 19:55:50,665 [RANK 0] ❌ Execution failed: These variables cannot be found in this dataset: ['sin_coy', 'cos_coy']
+Traceback (most recent call last):
+  File "/ceph/hpc/home/dhinakarans/VEGA_DDP_DEV/era5_autoencoder/autoencoder_run.py", line 537, in main
+    data = preprocess_data(args.input_zarr, args.variable_type)
+  File "/ceph/hpc/home/dhinakarans/VEGA_DDP_DEV/era5_autoencoder/autoencoder_run.py", line 434, in preprocess_data
+    ds = ds.drop_vars(['u_850', 'v_850', "z_850", "sin_coy", "cos_coy", "q_850"])
+  File "/ceph/hpc/home/dhinakarans/.conda/envs/gan/lib/python3.10/site-packages/xarray/core/dataset.py", line 5869, in drop_vars
+    self._assert_all_in_dataset(names_set)
+  File "/ceph/hpc/home/dhinakarans/.conda/envs/gan/lib/python3.10/site-packages/xarray/core/dataset.py", line 5733, in _assert_all_in_dataset
+    raise ValueError(
+ValueError: These variables cannot be found in this dataset: ['sin_coy', 'cos_coy']
+2025-04-20 19:56:58,663 [RANK 0] Starting main execution with arguments: Namespace(train=True, start_from_model=None, infer=None, input_zarr='/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr', variable_type='tp', model_output='best_model_tp.pth', output_zarr='tp_latents.zarr', batch_size=64384, num_workers=8, prefetch_factor=25)
+2025-04-20 19:56:58,666 [RANK 0] Loading and preprocessing data...
+2025-04-20 19:56:59,006 [RANK 0] Initial dataset loaded. Shape: {'time': 7670, 'lat': 135, 'lon': 180}, Variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 'ssrd', 't2m', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 19:56:59,006 [RANK 0] Using only tp variable with log1p transformation
+2025-04-20 19:56:59,026 [RANK 0] Using variables: ['dem', 'precip_binary', 'ssrd', 't2m', 't_850', 'tp']
+2025-04-20 19:56:59,026 [RANK 0] Processing variable: dem
+2025-04-20 19:57:00,539 [RANK 0] Computed mean for dem: 503.53936767578125
+2025-04-20 19:57:00,539 [RANK 0] Computed std for dem: 560.3971557617188
+2025-04-20 19:57:01,445 [RANK 0] Processing variable: precip_binary
+2025-04-20 19:57:01,445 [RANK 0] Skipping normalization for precip_binary
+2025-04-20 19:57:02,384 [RANK 0] Processing variable: ssrd
+2025-04-20 19:57:03,580 [RANK 0] Computed mean for ssrd: 13371295.0
+2025-04-20 19:57:03,580 [RANK 0] Computed std for ssrd: 7938211.5
+2025-04-20 19:57:04,479 [RANK 0] Processing variable: t2m
+2025-04-20 19:57:05,611 [RANK 0] Computed mean for t2m: 284.1902160644531
+2025-04-20 19:57:05,611 [RANK 0] Computed std for t2m: 8.1786527633667
+2025-04-20 19:57:06,663 [RANK 0] Processing variable: t_850
+2025-04-20 19:57:07,714 [RANK 0] Computed mean for t_850: 279.1830749511719
+2025-04-20 19:57:07,714 [RANK 0] Computed std for t_850: 6.824256420135498
+2025-04-20 19:57:08,916 [RANK 0] Processing variable: tp
+2025-04-20 19:57:10,359 [RANK 0] Computed mean for tp: 0.9054690003395081
+2025-04-20 19:57:10,359 [RANK 0] Computed std for tp: 0.8012673258781433
+2025-04-20 19:57:11,633 [RANK 0] Combining all normalized variables...
+2025-04-20 19:57:14,080 [RANK 0] Data loaded in 15.05 seconds
+2025-04-20 19:57:14,081 [RANK 0] Final data shape: (7670, 135, 180, 6)
+2025-04-20 19:57:14,081 [RANK 0] Memory usage: 8.95 GB
+2025-04-20 19:57:15,168 [RANK 0] Data validation passed - no NaN values detected
+2025-04-20 19:57:15,192 [RANK 0] Starting training from scratch
+2025-04-20 19:57:15,308 [RANK 0] Starting single-GPU/CPU training
+2025-04-20 19:57:15,309 [RANK 0] Initializing training process on rank 0
+2025-04-20 19:57:15,311 [RANK 0] Initializing autoencoder with input_dim=270, latent_dim=9
+2025-04-20 19:57:15,326 [RANK 0] Model architecture:
+WeatherAutoencoder(
+  (encoder): Sequential(
+    (0): Linear(in_features=270, out_features=256, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=256, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=64, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=64, out_features=9, bias=True)
+  )
+  (decoder): Sequential(
+    (0): Linear(in_features=9, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=256, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=256, out_features=270, bias=True)
+  )
+)
+2025-04-20 19:57:15,515 [RANK 0] Model created on device cuda:0
+2025-04-20 19:57:15,516 [RANK 0] Number of parameters: 222487
+2025-04-20 19:57:15,516 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 19:57:15,516 [RANK 0] Original data shape: (7670, 135, 180, 6)
+2025-04-20 19:57:18,139 [RANK 0] Padded data shape: (7674, 137, 182, 6)
+2025-04-20 19:57:18,140 [RANK 0] Generating 5000 random training tiles per time step
+2025-04-20 19:57:28,648 [RANK 0] Total samples generated: 38350000
+2025-04-20 19:57:28,649 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 19:57:28,649 [RANK 0] Original data shape: (7670, 135, 180, 6)
+2025-04-20 19:57:31,271 [RANK 0] Padded data shape: (7674, 137, 182, 6)
+2025-04-20 19:57:31,271 [RANK 0] Generating 500 fixed validation tiles
+2025-04-20 19:57:32,452 [RANK 0] Total samples generated: 3835000
+2025-04-20 19:57:32,452 [RANK 0] DataLoaders initialized with batch_size=64384, num_workers=8
+2025-04-20 19:57:34,002 [RANK 0] Starting training loop at 2025-04-20 19:57:34
+2025-04-20 19:57:52,308 [RANK 0] Epoch 1, Batch 0, Current Loss: 1.0598
+2025-04-20 20:00:08,497 [RANK 0] Epoch 1, Batch 100, Current Loss: 0.3668
+2025-04-20 20:02:36,238 [RANK 0] Epoch 1, Batch 200, Current Loss: 0.3470
+2025-04-20 20:04:55,395 [RANK 0] Epoch 1, Batch 300, Current Loss: 0.3637
+2025-04-20 20:07:27,102 [RANK 0] Epoch 1, Batch 400, Current Loss: 0.2507
+2025-04-20 20:09:47,609 [RANK 0] Epoch 1, Batch 500, Current Loss: 0.2398
+2025-04-20 20:13:20,732 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.3002
+2025-04-20 20:13:20,733 [RANK 0] Epoch 1 complete - Train Loss: 0.4019, Val Loss: 0.3002, Best Val: 0.3002, LR: 1.00e-03
+2025-04-20 20:13:31,783 [RANK 0] Epoch 2, Batch 0, Current Loss: 0.1941
+2025-04-20 20:15:53,647 [RANK 0] Epoch 2, Batch 100, Current Loss: 0.2044
+2025-04-20 20:18:18,662 [RANK 0] Epoch 2, Batch 200, Current Loss: 0.2780
+2025-04-20 20:20:41,202 [RANK 0] Epoch 2, Batch 300, Current Loss: 0.2742
+2025-04-20 20:23:05,954 [RANK 0] Epoch 2, Batch 400, Current Loss: 0.2060
+2025-04-20 20:25:28,471 [RANK 0] Epoch 2, Batch 500, Current Loss: 0.1998
+2025-04-20 20:28:59,563 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.2559
+2025-04-20 20:28:59,564 [RANK 0] Epoch 2 complete - Train Loss: 0.2680, Val Loss: 0.2559, Best Val: 0.2559, LR: 1.00e-03
+2025-04-20 20:29:10,347 [RANK 0] Epoch 3, Batch 0, Current Loss: 0.1699
+2025-04-20 20:31:32,844 [RANK 0] Epoch 3, Batch 100, Current Loss: 0.1986
+2025-04-20 20:34:09,218 [RANK 0] Epoch 3, Batch 200, Current Loss: 0.3568
+2025-04-20 20:36:21,073 [RANK 0] Epoch 3, Batch 300, Current Loss: 0.2839
+2025-04-20 20:38:50,821 [RANK 0] Epoch 3, Batch 400, Current Loss: 0.1836
+2025-04-20 20:41:14,100 [RANK 0] Epoch 3, Batch 500, Current Loss: 0.2015
+2025-04-20 20:44:47,383 [RANK 0] No improvement (1/10), Current Val Loss: 0.2579, Best Val Loss: 0.2559
+2025-04-20 20:44:47,385 [RANK 0] Epoch 3 complete - Train Loss: 0.2587, Val Loss: 0.2579, Best Val: 0.2559, LR: 1.00e-03
+2025-04-20 20:45:02,518 [RANK 0] Epoch 4, Batch 0, Current Loss: 0.1668
+2025-04-20 20:47:21,702 [RANK 0] Epoch 4, Batch 100, Current Loss: 0.1990
+2025-04-20 20:49:59,705 [RANK 0] Epoch 4, Batch 200, Current Loss: 0.2352
+2025-04-20 20:52:19,051 [RANK 0] Epoch 4, Batch 300, Current Loss: 0.2513
+2025-04-20 20:54:41,234 [RANK 0] Epoch 4, Batch 400, Current Loss: 0.1843
+2025-04-20 20:57:08,612 [RANK 0] Epoch 4, Batch 500, Current Loss: 0.1964
+2025-04-20 21:00:36,919 [RANK 0] No improvement (2/10), Current Val Loss: 0.3452, Best Val Loss: 0.2559
+2025-04-20 21:00:36,921 [RANK 0] Epoch 4 complete - Train Loss: 0.2472, Val Loss: 0.3452, Best Val: 0.2559, LR: 1.00e-03
+2025-04-20 21:00:52,003 [RANK 0] Epoch 5, Batch 0, Current Loss: 0.1720
+2025-04-20 21:03:18,695 [RANK 0] Epoch 5, Batch 100, Current Loss: 0.1737
+2025-04-20 21:05:41,175 [RANK 0] Epoch 5, Batch 200, Current Loss: 0.2515
+2025-04-20 21:08:01,170 [RANK 0] Epoch 5, Batch 300, Current Loss: 0.2151
+2025-04-20 21:10:31,488 [RANK 0] Epoch 5, Batch 400, Current Loss: 0.1945
+2025-04-20 21:12:55,471 [RANK 0] Epoch 5, Batch 500, Current Loss: 0.1945
+2025-04-20 21:16:24,791 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.2118
+2025-04-20 21:16:24,793 [RANK 0] Epoch 5 complete - Train Loss: 0.2285, Val Loss: 0.2118, Best Val: 0.2118, LR: 1.00e-03
+2025-04-20 21:16:35,709 [RANK 0] Epoch 6, Batch 0, Current Loss: 0.1525
+2025-04-20 21:18:55,154 [RANK 0] Epoch 6, Batch 100, Current Loss: 0.1371
+2025-04-20 21:21:25,174 [RANK 0] Epoch 6, Batch 200, Current Loss: 0.1840
+2025-04-20 21:23:43,907 [RANK 0] Epoch 6, Batch 300, Current Loss: 0.1912
+2025-04-20 21:26:10,675 [RANK 0] Epoch 6, Batch 400, Current Loss: 0.1579
+2025-04-20 21:28:37,537 [RANK 0] Epoch 6, Batch 500, Current Loss: 0.1743
+2025-04-20 21:32:14,998 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.2106
+2025-04-20 21:32:15,000 [RANK 0] Epoch 6 complete - Train Loss: 0.1836, Val Loss: 0.2106, Best Val: 0.2106, LR: 1.00e-03
+2025-04-20 21:32:25,950 [RANK 0] Epoch 7, Batch 0, Current Loss: 0.1387
+2025-04-20 21:34:49,435 [RANK 0] Epoch 7, Batch 100, Current Loss: 0.1445
+2025-04-20 21:37:23,216 [RANK 0] Epoch 7, Batch 200, Current Loss: 0.2089
+2025-04-20 21:39:39,045 [RANK 0] Epoch 7, Batch 300, Current Loss: 0.1961
+2025-04-20 21:42:09,483 [RANK 0] Epoch 7, Batch 400, Current Loss: 0.1629
+2025-04-20 21:44:30,339 [RANK 0] Epoch 7, Batch 500, Current Loss: 0.1589
+2025-04-20 21:48:04,885 [RANK 0] No improvement (1/10), Current Val Loss: 0.2229, Best Val Loss: 0.2106
+2025-04-20 21:48:04,887 [RANK 0] Epoch 7 complete - Train Loss: 0.1889, Val Loss: 0.2229, Best Val: 0.2106, LR: 1.00e-03
+2025-04-20 21:48:15,811 [RANK 0] Epoch 8, Batch 0, Current Loss: 0.2140
+2025-04-20 21:50:35,019 [RANK 0] Epoch 8, Batch 100, Current Loss: 0.1311
+2025-04-20 21:53:04,181 [RANK 0] Epoch 8, Batch 200, Current Loss: 0.1817
+2025-04-20 21:55:28,312 [RANK 0] Epoch 8, Batch 300, Current Loss: 0.1849
+2025-04-20 21:57:57,485 [RANK 0] Epoch 8, Batch 400, Current Loss: 0.1500
+2025-04-20 22:00:25,647 [RANK 0] Epoch 8, Batch 500, Current Loss: 0.1502
+2025-04-20 22:03:51,738 [RANK 0] No improvement (2/10), Current Val Loss: 0.3227, Best Val Loss: 0.2106
+2025-04-20 22:03:51,740 [RANK 0] Epoch 8 complete - Train Loss: 0.1705, Val Loss: 0.3227, Best Val: 0.2106, LR: 1.00e-03
+2025-04-20 22:04:10,670 [RANK 0] Epoch 9, Batch 0, Current Loss: 0.1323
+2025-04-20 22:06:26,519 [RANK 0] Epoch 9, Batch 100, Current Loss: 0.1416
+2025-04-20 22:08:56,541 [RANK 0] Epoch 9, Batch 200, Current Loss: 0.2479
+2025-04-20 22:11:16,204 [RANK 0] Epoch 9, Batch 300, Current Loss: 0.1829
+2025-04-20 22:13:45,914 [RANK 0] Epoch 9, Batch 400, Current Loss: 0.1522
+2025-04-20 22:16:13,068 [RANK 0] Epoch 9, Batch 500, Current Loss: 0.1572
+2025-04-20 22:19:42,565 [RANK 0] No improvement (3/10), Current Val Loss: 0.2385, Best Val Loss: 0.2106
+2025-04-20 22:19:42,567 [RANK 0] Epoch 9 complete - Train Loss: 0.1832, Val Loss: 0.2385, Best Val: 0.2106, LR: 1.00e-03
+2025-04-20 22:19:53,476 [RANK 0] Epoch 10, Batch 0, Current Loss: 0.1145
+2025-04-20 22:22:17,120 [RANK 0] Epoch 10, Batch 100, Current Loss: 0.1338
+2025-04-20 22:24:47,686 [RANK 0] Epoch 10, Batch 200, Current Loss: 0.1781
+2025-04-20 22:27:07,119 [RANK 0] Epoch 10, Batch 300, Current Loss: 0.1766
+2025-04-20 22:29:44,281 [RANK 0] Epoch 10, Batch 400, Current Loss: 0.1493
+2025-04-20 22:31:56,814 [RANK 0] Epoch 10, Batch 500, Current Loss: 0.1702
+2025-04-20 22:35:31,933 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.1900
+2025-04-20 22:35:31,935 [RANK 0] Epoch 10 complete - Train Loss: 0.1815, Val Loss: 0.1900, Best Val: 0.1900, LR: 1.00e-03
+2025-04-20 22:35:47,006 [RANK 0] Epoch 11, Batch 0, Current Loss: 0.1213
+2025-04-20 22:38:06,211 [RANK 0] Epoch 11, Batch 100, Current Loss: 0.1213
+2025-04-20 22:40:32,294 [RANK 0] Epoch 11, Batch 200, Current Loss: 0.2091
+2025-04-20 22:42:51,944 [RANK 0] Epoch 11, Batch 300, Current Loss: 0.1564
+2025-04-20 22:45:26,161 [RANK 0] Epoch 11, Batch 400, Current Loss: 0.1424
+2025-04-20 22:47:46,124 [RANK 0] Epoch 11, Batch 500, Current Loss: 0.1667
+2025-04-20 22:51:20,929 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.1876
+2025-04-20 22:51:20,930 [RANK 0] Epoch 11 complete - Train Loss: 0.1632, Val Loss: 0.1876, Best Val: 0.1876, LR: 1.00e-03
+2025-04-20 22:51:32,085 [RANK 0] Epoch 12, Batch 0, Current Loss: 0.1116
+2025-04-20 22:53:51,812 [RANK 0] Epoch 12, Batch 100, Current Loss: 0.2212
+2025-04-20 22:56:24,934 [RANK 0] Epoch 12, Batch 200, Current Loss: 0.2240
+2025-04-20 22:58:44,476 [RANK 0] Epoch 12, Batch 300, Current Loss: 0.1714
+2025-04-20 23:01:21,648 [RANK 0] Epoch 12, Batch 400, Current Loss: 0.1514
+2025-04-20 23:03:34,124 [RANK 0] Epoch 12, Batch 500, Current Loss: 0.1355
+2025-04-20 23:07:12,944 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.1670
+2025-04-20 23:07:12,946 [RANK 0] Epoch 12 complete - Train Loss: 0.1732, Val Loss: 0.1670, Best Val: 0.1670, LR: 1.00e-03
+2025-04-20 23:07:23,787 [RANK 0] Epoch 13, Batch 0, Current Loss: 0.1790
+2025-04-20 23:09:47,295 [RANK 0] Epoch 13, Batch 100, Current Loss: 0.1105
+2025-04-20 23:12:17,675 [RANK 0] Epoch 13, Batch 200, Current Loss: 0.1771
+2025-04-20 23:14:37,359 [RANK 0] Epoch 13, Batch 300, Current Loss: 0.1388
+2025-04-20 23:17:11,989 [RANK 0] Epoch 13, Batch 400, Current Loss: 0.1345
+2025-04-20 23:19:31,661 [RANK 0] Epoch 13, Batch 500, Current Loss: 0.1720
+2025-04-20 23:23:04,011 [RANK 0] No improvement (1/10), Current Val Loss: 0.1928, Best Val Loss: 0.1670
+2025-04-20 23:23:04,015 [RANK 0] Epoch 13 complete - Train Loss: 0.1583, Val Loss: 0.1928, Best Val: 0.1670, LR: 1.00e-03
+2025-04-20 23:23:19,126 [RANK 0] Epoch 14, Batch 0, Current Loss: 0.1090
+2025-04-20 23:25:39,127 [RANK 0] Epoch 14, Batch 100, Current Loss: 0.1024
+2025-04-20 23:28:09,894 [RANK 0] Epoch 14, Batch 200, Current Loss: 0.1371
+2025-04-20 23:30:34,231 [RANK 0] Epoch 14, Batch 300, Current Loss: 0.1319
+2025-04-20 23:33:00,298 [RANK 0] Epoch 14, Batch 400, Current Loss: 0.1307
+2025-04-20 23:35:20,381 [RANK 0] Epoch 14, Batch 500, Current Loss: 0.1390
+2025-04-20 23:38:55,096 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.1587
+2025-04-20 23:38:55,098 [RANK 0] Epoch 14 complete - Train Loss: 0.1478, Val Loss: 0.1587, Best Val: 0.1587, LR: 1.00e-03
+2025-04-20 23:39:06,538 [RANK 0] Epoch 15, Batch 0, Current Loss: 0.0985
+2025-04-20 23:41:25,418 [RANK 0] Epoch 15, Batch 100, Current Loss: 0.1178
+2025-04-20 23:43:55,638 [RANK 0] Epoch 15, Batch 200, Current Loss: 0.2573
+2025-04-20 23:46:18,290 [RANK 0] Epoch 15, Batch 300, Current Loss: 0.1258
+2025-04-20 23:48:50,080 [RANK 0] Epoch 15, Batch 400, Current Loss: 0.1239
+2025-04-20 23:51:10,197 [RANK 0] Epoch 15, Batch 500, Current Loss: 0.1349
+2025-04-20 23:54:45,909 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.1547
+2025-04-20 23:54:45,911 [RANK 0] Epoch 15 complete - Train Loss: 0.1612, Val Loss: 0.1547, Best Val: 0.1547, LR: 1.00e-03
+2025-04-20 23:54:56,999 [RANK 0] Epoch 16, Batch 0, Current Loss: 0.1003
+2025-04-20 23:57:20,653 [RANK 0] Epoch 16, Batch 100, Current Loss: 0.0959
+2025-04-20 23:59:55,508 [RANK 0] Epoch 16, Batch 200, Current Loss: 0.1643
+2025-04-21 00:02:10,868 [RANK 0] Epoch 16, Batch 300, Current Loss: 0.1257
+2025-04-21 00:04:41,977 [RANK 0] Epoch 16, Batch 400, Current Loss: 0.1283
+2025-04-21 00:07:02,159 [RANK 0] Epoch 16, Batch 500, Current Loss: 0.1212
+2025-04-21 00:10:36,117 [RANK 0] No improvement (1/10), Current Val Loss: 0.1886, Best Val Loss: 0.1547
+2025-04-21 00:10:36,119 [RANK 0] Epoch 16 complete - Train Loss: 0.1399, Val Loss: 0.1886, Best Val: 0.1547, LR: 1.00e-03
+2025-04-21 00:10:51,221 [RANK 0] Epoch 17, Batch 0, Current Loss: 0.0957
+2025-04-21 00:13:18,411 [RANK 0] Epoch 17, Batch 100, Current Loss: 0.0925
+2025-04-21 00:15:41,587 [RANK 0] Epoch 17, Batch 200, Current Loss: 0.1400
+2025-04-21 00:18:01,391 [RANK 0] Epoch 17, Batch 300, Current Loss: 0.1254
+2025-04-21 00:20:31,863 [RANK 0] Epoch 17, Batch 400, Current Loss: 0.1182
+2025-04-21 00:22:55,939 [RANK 0] Epoch 17, Batch 500, Current Loss: 0.1137
+2025-04-21 00:26:27,541 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.1182
+2025-04-21 00:26:27,545 [RANK 0] Epoch 17 complete - Train Loss: 0.1278, Val Loss: 0.1182, Best Val: 0.1182, LR: 1.00e-03
+2025-04-21 00:26:38,637 [RANK 0] Epoch 18, Batch 0, Current Loss: 0.0910
+2025-04-21 00:29:02,838 [RANK 0] Epoch 18, Batch 100, Current Loss: 0.0874
+2025-04-21 00:31:28,885 [RANK 0] Epoch 18, Batch 200, Current Loss: 0.1540
+2025-04-21 00:33:58,785 [RANK 0] Epoch 18, Batch 300, Current Loss: 0.1290
+2025-04-21 00:36:23,214 [RANK 0] Epoch 18, Batch 400, Current Loss: 0.1230
+2025-04-21 00:38:46,462 [RANK 0] Epoch 18, Batch 500, Current Loss: 0.1238
+2025-04-21 00:42:21,747 [RANK 0] No improvement (1/10), Current Val Loss: 0.1474, Best Val Loss: 0.1182
+2025-04-21 00:42:21,749 [RANK 0] Epoch 18 complete - Train Loss: 0.1376, Val Loss: 0.1474, Best Val: 0.1182, LR: 1.00e-03
+2025-04-21 00:42:32,754 [RANK 0] Epoch 19, Batch 0, Current Loss: 0.1016
+2025-04-21 00:44:56,597 [RANK 0] Epoch 19, Batch 100, Current Loss: 0.0986
+2025-04-21 00:47:27,935 [RANK 0] Epoch 19, Batch 200, Current Loss: 0.1851
+2025-04-21 00:49:48,234 [RANK 0] Epoch 19, Batch 300, Current Loss: 0.1260
+2025-04-21 00:52:19,237 [RANK 0] Epoch 19, Batch 400, Current Loss: 0.1371
+2025-04-21 00:54:42,896 [RANK 0] Epoch 19, Batch 500, Current Loss: 0.1211
+2025-04-21 00:58:14,242 [RANK 0] No improvement (2/10), Current Val Loss: 0.1672, Best Val Loss: 0.1182
+2025-04-21 00:58:14,244 [RANK 0] Epoch 19 complete - Train Loss: 0.1476, Val Loss: 0.1672, Best Val: 0.1182, LR: 1.00e-03
+2025-04-21 00:58:29,483 [RANK 0] Epoch 20, Batch 0, Current Loss: 0.0991
+2025-04-21 01:00:49,101 [RANK 0] Epoch 20, Batch 100, Current Loss: 0.1133
+2025-04-21 01:03:27,267 [RANK 0] Epoch 20, Batch 200, Current Loss: 0.1636
+2025-04-21 01:05:39,395 [RANK 0] Epoch 20, Batch 300, Current Loss: 0.1240
+2025-04-21 01:08:17,416 [RANK 0] Epoch 20, Batch 400, Current Loss: 0.1329
+2025-04-21 01:10:34,307 [RANK 0] Epoch 20, Batch 500, Current Loss: 0.1114
+2025-04-21 01:14:05,238 [RANK 0] No improvement (3/10), Current Val Loss: 0.1586, Best Val Loss: 0.1182
+2025-04-21 01:14:05,240 [RANK 0] Epoch 20 complete - Train Loss: 0.1375, Val Loss: 0.1586, Best Val: 0.1182, LR: 1.00e-03
+2025-04-21 01:14:16,423 [RANK 0] Epoch 21, Batch 0, Current Loss: 0.1082
+2025-04-21 01:16:35,675 [RANK 0] Epoch 21, Batch 100, Current Loss: 0.1049
+2025-04-21 01:19:09,696 [RANK 0] Epoch 21, Batch 200, Current Loss: 0.1494
+2025-04-21 01:21:29,473 [RANK 0] Epoch 21, Batch 300, Current Loss: 0.1236
+2025-04-21 01:23:58,560 [RANK 0] Epoch 21, Batch 400, Current Loss: 0.1499
+2025-04-21 01:26:27,465 [RANK 0] Epoch 21, Batch 500, Current Loss: 0.1367
+2025-04-21 01:29:55,567 [RANK 0] No improvement (4/10), Current Val Loss: 0.1442, Best Val Loss: 0.1182
+2025-04-21 01:29:55,569 [RANK 0] Epoch 21 complete - Train Loss: 0.1363, Val Loss: 0.1442, Best Val: 0.1182, LR: 1.00e-03
+2025-04-21 01:30:06,490 [RANK 0] Epoch 22, Batch 0, Current Loss: 0.0840
+2025-04-21 01:32:30,118 [RANK 0] Epoch 22, Batch 100, Current Loss: 0.0916
+2025-04-21 01:34:59,481 [RANK 0] Epoch 22, Batch 200, Current Loss: 0.1576
+2025-04-21 01:37:20,277 [RANK 0] Epoch 22, Batch 300, Current Loss: 0.1244
+2025-04-21 01:39:48,967 [RANK 0] Epoch 22, Batch 400, Current Loss: 0.1457
+2025-04-21 01:42:14,018 [RANK 0] Epoch 22, Batch 500, Current Loss: 0.1390
+2025-04-21 01:45:47,130 [RANK 0] No improvement (5/10), Current Val Loss: 0.1232, Best Val Loss: 0.1182
+2025-04-21 01:45:47,132 [RANK 0] Epoch 22 complete - Train Loss: 0.1323, Val Loss: 0.1232, Best Val: 0.1182, LR: 1.00e-03
+2025-04-21 01:46:02,232 [RANK 0] Epoch 23, Batch 0, Current Loss: 0.0854
+2025-04-21 01:48:22,007 [RANK 0] Epoch 23, Batch 100, Current Loss: 0.1090
+2025-04-21 01:50:51,320 [RANK 0] Epoch 23, Batch 200, Current Loss: 0.1444
+2025-04-21 01:53:12,112 [RANK 0] Epoch 23, Batch 300, Current Loss: 0.1176
+2025-04-21 01:55:46,567 [RANK 0] Epoch 23, Batch 400, Current Loss: 0.1206
+2025-04-21 01:58:02,696 [RANK 0] Epoch 23, Batch 500, Current Loss: 0.1582
+2025-04-21 02:01:41,288 [RANK 0] No improvement (6/10), Current Val Loss: 0.1466, Best Val Loss: 0.1182
+2025-04-21 02:01:41,289 [RANK 0] Epoch 23 complete - Train Loss: 0.1367, Val Loss: 0.1466, Best Val: 0.1182, LR: 1.00e-03
+2025-04-21 02:02:05,101 [RANK 0] Epoch 24, Batch 0, Current Loss: 0.0938
+2025-04-21 02:04:23,039 [RANK 0] Epoch 24, Batch 100, Current Loss: 0.0909
+2025-04-21 02:06:41,739 [RANK 0] Epoch 24, Batch 200, Current Loss: 0.1329
+2025-04-21 02:09:07,023 [RANK 0] Epoch 24, Batch 300, Current Loss: 0.1141
+2025-04-21 02:11:42,928 [RANK 0] Epoch 24, Batch 400, Current Loss: 0.1133
+2025-04-21 02:14:05,006 [RANK 0] Epoch 24, Batch 500, Current Loss: 0.1304
+2025-04-21 02:17:33,484 [RANK 0] No improvement (7/10), Current Val Loss: 0.1623, Best Val Loss: 0.1182
+2025-04-21 02:17:33,488 [RANK 0] Epoch 24 complete - Train Loss: 0.1303, Val Loss: 0.1623, Best Val: 0.1182, LR: 1.00e-03
+2025-04-21 02:17:44,399 [RANK 0] Epoch 25, Batch 0, Current Loss: 0.1045
+2025-04-21 02:20:15,875 [RANK 0] Epoch 25, Batch 100, Current Loss: 0.1083
+2025-04-21 02:22:33,705 [RANK 0] Epoch 25, Batch 200, Current Loss: 0.1675
+2025-04-21 02:25:03,273 [RANK 0] Epoch 25, Batch 300, Current Loss: 0.1142
+2025-04-21 02:27:23,306 [RANK 0] Epoch 25, Batch 400, Current Loss: 0.1140
+2025-04-21 02:29:52,332 [RANK 0] Epoch 25, Batch 500, Current Loss: 0.1253
+2025-04-21 02:33:24,577 [RANK 0] No improvement (8/10), Current Val Loss: 0.1313, Best Val Loss: 0.1182
+2025-04-21 02:33:24,579 [RANK 0] Epoch 25 complete - Train Loss: 0.1229, Val Loss: 0.1313, Best Val: 0.1182, LR: 1.00e-03
+2025-04-21 02:33:35,577 [RANK 0] Epoch 26, Batch 0, Current Loss: 0.0875
+2025-04-21 02:35:55,163 [RANK 0] Epoch 26, Batch 100, Current Loss: 0.0870
+2025-04-21 02:38:24,668 [RANK 0] Epoch 26, Batch 200, Current Loss: 0.1845
+2025-04-21 02:40:48,417 [RANK 0] Epoch 26, Batch 300, Current Loss: 0.1263
+2025-04-21 02:43:20,105 [RANK 0] Epoch 26, Batch 400, Current Loss: 0.1184
+2025-04-21 02:45:40,355 [RANK 0] Epoch 26, Batch 500, Current Loss: 0.1223
+2025-04-21 02:49:13,804 [RANK 0] No improvement (9/10), Current Val Loss: 0.1489, Best Val Loss: 0.1182
+2025-04-21 02:49:13,806 [RANK 0] Epoch 26 complete - Train Loss: 0.1375, Val Loss: 0.1489, Best Val: 0.1182, LR: 1.00e-03
+2025-04-21 02:49:24,740 [RANK 0] Epoch 27, Batch 0, Current Loss: 0.0944
+2025-04-21 02:51:48,899 [RANK 0] Epoch 27, Batch 100, Current Loss: 0.0880
+2025-04-21 02:54:14,073 [RANK 0] Epoch 27, Batch 200, Current Loss: 0.1974
+2025-04-21 02:56:39,341 [RANK 0] Epoch 27, Batch 300, Current Loss: 0.1159
+2025-04-21 02:59:08,112 [RANK 0] Epoch 27, Batch 400, Current Loss: 0.1173
+2025-04-21 03:01:30,189 [RANK 0] Epoch 27, Batch 500, Current Loss: 0.1052
+2025-04-21 03:05:08,092 [RANK 0] No improvement (10/10), Current Val Loss: 0.1251, Best Val Loss: 0.1182
+2025-04-21 03:05:08,094 [RANK 0] Early stopping triggered at epoch 27
+2025-04-21 03:05:08,094 [RANK 0] Training completed at 2025-04-21 03:05:08
+2025-04-21 03:05:11,992 [RANK 0] Running inference with the trained model
+2025-04-21 03:05:11,993 [RANK 0] Starting inference process
+2025-04-21 03:05:11,993 [RANK 0] Initializing full dataset with patch_size=3, time_steps=5
+2025-04-21 03:05:14,075 [RANK 0] Padded data shape: (7674, 137, 182, 6)
+2025-04-21 03:05:26,366 [RANK 0] Total samples in full dataset: 186283800
+2025-04-21 03:05:26,366 [RANK 0] Inference dataset loaded with 186283800 samples
+2025-04-21 03:05:26,367 [RANK 0] Initializing autoencoder with input_dim=270, latent_dim=9
+2025-04-21 03:05:26,368 [RANK 0] Model architecture:
+WeatherAutoencoder(
+  (encoder): Sequential(
+    (0): Linear(in_features=270, out_features=256, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=256, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=64, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=64, out_features=9, bias=True)
+  )
+  (decoder): Sequential(
+    (0): Linear(in_features=9, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=256, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=256, out_features=270, bias=True)
+  )
+)
+2025-04-21 03:05:26,369 [RANK 0] Loading model from best_model_tp.pth
+2025-04-21 03:05:26,405 [RANK 0] Running inference...
+2025-04-21 03:06:15,490 [RANK 0] Processed 0/1446 batches
+2025-04-21 03:14:34,201 [RANK 0] Processed 100/1446 batches
+2025-04-21 03:23:33,194 [RANK 0] Processed 200/1446 batches
+2025-04-21 03:31:44,231 [RANK 0] Processed 300/1446 batches
+2025-04-21 03:40:13,780 [RANK 0] Processed 400/1446 batches
+2025-04-21 03:48:28,367 [RANK 0] Processed 500/1446 batches
+2025-04-21 03:57:22,700 [RANK 0] Processed 600/1446 batches
+2025-04-21 04:05:40,711 [RANK 0] Processed 700/1446 batches
+2025-04-21 04:14:04,175 [RANK 0] Processed 800/1446 batches
+2025-04-21 04:22:41,160 [RANK 0] Processed 900/1446 batches
+2025-04-21 04:31:13,526 [RANK 0] Processed 1000/1446 batches
+2025-04-21 04:39:38,331 [RANK 0] Processed 1100/1446 batches
+2025-04-21 04:48:08,879 [RANK 0] Processed 1200/1446 batches
+2025-04-21 04:56:36,418 [RANK 0] Processed 1300/1446 batches
+2025-04-21 05:04:50,792 [RANK 0] Processed 1400/1446 batches
+2025-04-21 05:08:27,422 [RANK 0] Inference completed, processing results...
+2025-04-21 05:08:29,099 [RANK 0] ❌ Execution failed: cannot reshape array of size 1675786752 into shape (7666,135,180,9)
+Traceback (most recent call last):
+  File "/ceph/hpc/home/dhinakarans/VEGA_DDP_DEV/era5_autoencoder/autoencoder_run.py", line 555, in main
+    run_inference(data, args.model_output if args.model_output else "best_model.pth",
+  File "/ceph/hpc/home/dhinakarans/VEGA_DDP_DEV/era5_autoencoder/autoencoder_run.py", line 386, in run_inference
+    all_latents_np = all_latents.numpy().reshape(valid_time, H, W, LATENT_DIM)
+ValueError: cannot reshape array of size 1675786752 into shape (7666,135,180,9)
