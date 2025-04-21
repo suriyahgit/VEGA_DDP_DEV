@@ -347,7 +347,7 @@ def run_inference(data, model_path="best_model.pth", output_zarr_path=None, batc
         pin_memory=True,
         prefetch_factor=prefetch_factor,
         persistent_workers=True,
-        drop_last=True
+        drop_last=False  # Changed from True to False to process all samples
     )
     
     logger.info("Inference dataset loaded with %d samples", len(full_dataset))
@@ -379,10 +379,18 @@ def run_inference(data, model_path="best_model.pth", output_zarr_path=None, batc
     logger.info("Inference completed, processing results...")
     all_latents = torch.cat(all_latents, dim=0)
     
-    # Reshape and pad
+    # Calculate expected shape
     valid_time = data.shape[0] - TIME_STEPS + 1
     H, W = data.shape[1], data.shape[2]
+    expected_elements = valid_time * H * W * LATENT_DIM
     
+    # Verify shape before reshaping
+    if all_latents.numel() != expected_elements:
+        logger.error("Shape mismatch! Got %d elements but expected %d", 
+                   all_latents.numel(), expected_elements)
+        raise ValueError(f"Shape mismatch: Got {all_latents.numel()} elements but expected {expected_elements}")
+    
+    # Reshape and pad
     all_latents_np = all_latents.numpy().reshape(valid_time, H, W, LATENT_DIM)
     pad_front = np.repeat(all_latents_np[[0]], TIME_STEPS - 1, axis=0)
     full_latents = np.concatenate([pad_front, all_latents_np], axis=0)
