@@ -1,0 +1,1596 @@
+2025-04-20 16:11:25,428 [RANK 0] Starting main execution with arguments: Namespace(train=True, start_from_model=None, infer=None, input_zarr='/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr', variable_type='tp', model_output='best_model_tp.pth', output_zarr='tp_latents.zarr', batch_size=64384, num_workers=8, prefetch_factor=25)
+2025-04-20 16:11:25,428 [RANK 0] Loading and preprocessing data...
+2025-04-20 16:11:31,594 [RANK 0] Initial dataset loaded. Shape: {'time': 7670, 'lat': 135, 'lon': 180}, Variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 'ssrd', 't2m', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 16:11:31,594 [RANK 0] Using only tp variable with log1p transformation
+2025-04-20 16:11:31,614 [RANK 0] Using variables: ['tp']
+2025-04-20 16:11:31,614 [RANK 0] Processing variable: tp
+2025-04-20 16:11:34,815 [RANK 0] Computed mean for tp: 0.002857057610526681
+2025-04-20 16:11:34,815 [RANK 0] Computed std for tp: 0.005721615627408028
+2025-04-20 16:11:36,017 [RANK 0] Combining all normalized variables...
+2025-04-20 16:11:36,366 [RANK 0] Data loaded in 4.75 seconds
+2025-04-20 16:11:36,366 [RANK 0] Final data shape: (7670, 135, 180, 1)
+2025-04-20 16:11:36,367 [RANK 0] Memory usage: 1.49 GB
+2025-04-20 16:11:36,550 [RANK 0] Data validation passed - no NaN values detected
+2025-04-20 16:11:36,554 [RANK 0] Starting training from scratch
+2025-04-20 16:11:36,675 [RANK 0] Starting single-GPU/CPU training
+2025-04-20 16:11:36,675 [RANK 0] Initializing training process on rank 0
+2025-04-20 16:11:36,678 [RANK 0] Initializing autoencoder with input_dim=45, latent_dim=9
+2025-04-20 16:11:36,734 [RANK 0] Model architecture:
+WeatherAutoencoder(
+  (encoder): Sequential(
+    (0): Linear(in_features=45, out_features=256, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=256, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=64, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=64, out_features=9, bias=True)
+  )
+  (decoder): Sequential(
+    (0): Linear(in_features=9, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=256, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=256, out_features=45, bias=True)
+  )
+)
+2025-04-20 16:11:36,930 [RANK 0] Model created on device cuda:0
+2025-04-20 16:11:36,931 [RANK 0] Number of parameters: 107062
+2025-04-20 16:11:36,931 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 16:11:36,931 [RANK 0] Original data shape: (7670, 135, 180, 1)
+2025-04-20 16:11:37,415 [RANK 0] Padded data shape: (7674, 137, 182, 1)
+2025-04-20 16:11:37,415 [RANK 0] Generating 5000 random training tiles per time step
+2025-04-20 16:11:48,518 [RANK 0] Total samples generated: 38350000
+2025-04-20 16:11:48,519 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 16:11:48,519 [RANK 0] Original data shape: (7670, 135, 180, 1)
+2025-04-20 16:11:48,995 [RANK 0] Padded data shape: (7674, 137, 182, 1)
+2025-04-20 16:11:48,996 [RANK 0] Generating 500 fixed validation tiles
+2025-04-20 16:11:50,186 [RANK 0] Total samples generated: 3835000
+2025-04-20 16:11:50,186 [RANK 0] DataLoaders initialized with batch_size=64384, num_workers=8
+2025-04-20 16:15:28,126 [RANK 0] Starting main execution with arguments: Namespace(train=True, start_from_model=None, infer=None, input_zarr='/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr', variable_type='tp', model_output='best_model_tp.pth', output_zarr='tp_latents.zarr', batch_size=64384, num_workers=8, prefetch_factor=25)
+2025-04-20 16:15:28,126 [RANK 0] Loading and preprocessing data...
+2025-04-20 16:15:28,471 [RANK 0] Initial dataset loaded. Shape: {'time': 7670, 'lat': 135, 'lon': 180}, Variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 'ssrd', 't2m', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 16:15:28,472 [RANK 0] Using only tp variable with log1p transformation
+2025-04-20 16:15:28,492 [RANK 0] Using variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 16:15:28,492 [RANK 0] Processing variable: cos_doy
+2025-04-20 16:15:30,161 [RANK 0] Computed mean for cos_doy: 0.0006517938977895169
+2025-04-20 16:15:30,161 [RANK 0] Computed std for cos_doy: 0.7073367848846865
+2025-04-20 16:15:31,101 [RANK 0] Processing variable: dem
+2025-04-20 16:15:32,289 [RANK 0] Computed mean for dem: 503.53936767578125
+2025-04-20 16:15:32,289 [RANK 0] Computed std for dem: 560.3971557617188
+2025-04-20 16:15:33,115 [RANK 0] Processing variable: q_850
+2025-04-20 16:15:34,192 [RANK 0] Computed mean for q_850: 0.004727561492472887
+2025-04-20 16:15:34,192 [RANK 0] Computed std for q_850: 0.00219158548861742
+2025-04-20 16:15:35,214 [RANK 0] Processing variable: sin_doy
+2025-04-20 16:15:36,472 [RANK 0] Computed mean for sin_doy: 1.1221223048125202e-05
+2025-04-20 16:15:36,473 [RANK 0] Computed std for sin_doy: 0.706876402058941
+2025-04-20 16:15:38,732 [RANK 0] Processing variable: t_850
+2025-04-20 16:15:40,185 [RANK 0] Computed mean for t_850: 279.1830749511719
+2025-04-20 16:15:40,185 [RANK 0] Computed std for t_850: 6.824256420135498
+2025-04-20 16:15:41,211 [RANK 0] Processing variable: tp
+2025-04-20 16:15:42,930 [RANK 0] Computed mean for tp: 0.002857057610526681
+2025-04-20 16:15:42,930 [RANK 0] Computed std for tp: 0.005721615627408028
+2025-04-20 16:15:45,519 [RANK 0] Processing variable: u_850
+2025-04-20 16:15:46,994 [RANK 0] Computed mean for u_850: 2.136380672454834
+2025-04-20 16:15:46,994 [RANK 0] Computed std for u_850: 5.79701566696167
+2025-04-20 16:15:47,922 [RANK 0] Processing variable: v_850
+2025-04-20 16:15:50,733 [RANK 0] Computed mean for v_850: -0.03182092308998108
+2025-04-20 16:15:50,733 [RANK 0] Computed std for v_850: 4.692667484283447
+2025-04-20 16:15:52,588 [RANK 0] Processing variable: z_850
+2025-04-20 16:15:55,317 [RANK 0] Computed mean for z_850: 14575.0322265625
+2025-04-20 16:15:55,317 [RANK 0] Computed std for z_850: 676.2464599609375
+2025-04-20 16:15:57,309 [RANK 0] Combining all normalized variables...
+2025-04-20 16:16:05,546 [RANK 0] Data loaded in 37.05 seconds
+2025-04-20 16:16:05,546 [RANK 0] Final data shape: (7670, 135, 180, 9)
+2025-04-20 16:16:05,547 [RANK 0] Memory usage: 13.42 GB
+2025-04-20 16:16:07,292 [RANK 0] Data validation passed - no NaN values detected
+2025-04-20 16:16:07,324 [RANK 0] Starting training from scratch
+2025-04-20 16:16:07,448 [RANK 0] Starting single-GPU/CPU training
+2025-04-20 16:16:07,448 [RANK 0] Initializing training process on rank 0
+2025-04-20 16:16:07,757 [RANK 0] Initializing autoencoder with input_dim=405, latent_dim=9
+2025-04-20 16:16:08,014 [RANK 0] Model architecture:
+WeatherAutoencoder(
+  (encoder): Sequential(
+    (0): Linear(in_features=405, out_features=256, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=256, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=64, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=64, out_features=9, bias=True)
+  )
+  (decoder): Sequential(
+    (0): Linear(in_features=9, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=256, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=256, out_features=405, bias=True)
+  )
+)
+2025-04-20 16:16:08,236 [RANK 0] Model created on device cuda:0
+2025-04-20 16:16:08,237 [RANK 0] Number of parameters: 291742
+2025-04-20 16:16:08,237 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 16:16:08,237 [RANK 0] Original data shape: (7670, 135, 180, 9)
+2025-04-20 16:16:10,952 [RANK 0] Padded data shape: (7674, 137, 182, 9)
+2025-04-20 16:16:10,952 [RANK 0] Generating 5000 random training tiles per time step
+2025-04-20 16:16:21,102 [RANK 0] Total samples generated: 38350000
+2025-04-20 16:16:21,103 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 16:16:21,103 [RANK 0] Original data shape: (7670, 135, 180, 9)
+2025-04-20 16:16:31,311 [RANK 0] Padded data shape: (7674, 137, 182, 9)
+2025-04-20 16:16:31,311 [RANK 0] Generating 500 fixed validation tiles
+2025-04-20 16:16:32,490 [RANK 0] Total samples generated: 3835000
+2025-04-20 16:16:32,491 [RANK 0] DataLoaders initialized with batch_size=64384, num_workers=8
+2025-04-20 16:16:43,055 [RANK 0] Starting training loop at 2025-04-20 16:16:43
+2025-04-20 16:17:01,044 [RANK 0] Epoch 1, Batch 0, Current Loss: 0.9742
+2025-04-20 16:20:32,303 [RANK 0] Starting main execution with arguments: Namespace(train=True, start_from_model=None, infer=None, input_zarr='/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr', variable_type='tp', model_output='best_model_tp.pth', output_zarr='tp_latents.zarr', batch_size=64384, num_workers=8, prefetch_factor=25)
+2025-04-20 16:20:32,306 [RANK 0] Loading and preprocessing data...
+2025-04-20 16:20:32,677 [RANK 0] Initial dataset loaded. Shape: {'time': 7670, 'lat': 135, 'lon': 180}, Variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 'ssrd', 't2m', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 16:20:32,677 [RANK 0] Using only tp variable with log1p transformation
+2025-04-20 16:20:32,696 [RANK 0] Using variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 16:20:32,697 [RANK 0] Processing variable: cos_doy
+2025-04-20 16:20:34,335 [RANK 0] Computed mean for cos_doy: 0.0006517938977895169
+2025-04-20 16:20:34,335 [RANK 0] Computed std for cos_doy: 0.7073367848846865
+2025-04-20 16:20:35,464 [RANK 0] Processing variable: dem
+2025-04-20 16:20:36,692 [RANK 0] Computed mean for dem: 503.53936767578125
+2025-04-20 16:20:36,692 [RANK 0] Computed std for dem: 560.3971557617188
+2025-04-20 16:20:39,106 [RANK 0] Processing variable: q_850
+2025-04-20 16:20:41,138 [RANK 0] Computed mean for q_850: 0.004727561492472887
+2025-04-20 16:20:41,138 [RANK 0] Computed std for q_850: 0.00219158548861742
+2025-04-20 16:20:42,584 [RANK 0] Processing variable: sin_doy
+2025-04-20 16:20:44,448 [RANK 0] Computed mean for sin_doy: 1.1221223048125202e-05
+2025-04-20 16:20:44,448 [RANK 0] Computed std for sin_doy: 0.706876402058941
+2025-04-20 16:20:46,983 [RANK 0] Processing variable: t_850
+2025-04-20 16:20:48,678 [RANK 0] Computed mean for t_850: 279.1830749511719
+2025-04-20 16:20:48,679 [RANK 0] Computed std for t_850: 6.824256420135498
+2025-04-20 16:20:49,592 [RANK 0] Processing variable: tp
+2025-04-20 16:20:51,002 [RANK 0] Computed mean for tp: 0.002857057610526681
+2025-04-20 16:20:51,003 [RANK 0] Computed std for tp: 0.005721615627408028
+2025-04-20 16:20:53,462 [RANK 0] Processing variable: u_850
+2025-04-20 16:20:54,691 [RANK 0] Computed mean for u_850: 2.136380672454834
+2025-04-20 16:20:54,692 [RANK 0] Computed std for u_850: 5.79701566696167
+2025-04-20 16:20:56,994 [RANK 0] Processing variable: v_850
+2025-04-20 16:20:58,731 [RANK 0] Computed mean for v_850: -0.03182092308998108
+2025-04-20 16:20:58,732 [RANK 0] Computed std for v_850: 4.692667484283447
+2025-04-20 16:20:59,807 [RANK 0] Processing variable: z_850
+2025-04-20 16:21:01,428 [RANK 0] Computed mean for z_850: 14575.0322265625
+2025-04-20 16:21:01,428 [RANK 0] Computed std for z_850: 676.2464599609375
+2025-04-20 16:21:02,477 [RANK 0] Combining all normalized variables...
+2025-04-20 16:21:04,267 [RANK 0] Data loaded in 31.57 seconds
+2025-04-20 16:21:04,267 [RANK 0] Final data shape: (7670, 135, 180, 9)
+2025-04-20 16:21:04,267 [RANK 0] Memory usage: 13.42 GB
+2025-04-20 16:21:05,297 [RANK 0] Data validation passed - no NaN values detected
+2025-04-20 16:21:05,321 [RANK 0] Starting training from scratch
+2025-04-20 16:21:05,435 [RANK 0] Starting single-GPU/CPU training
+2025-04-20 16:21:05,435 [RANK 0] Initializing training process on rank 0
+2025-04-20 16:21:05,437 [RANK 0] Initializing autoencoder with input_dim=405, latent_dim=9
+2025-04-20 16:21:05,453 [RANK 0] Model architecture:
+WeatherAutoencoder(
+  (encoder): Sequential(
+    (0): Linear(in_features=405, out_features=256, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=256, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=64, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=64, out_features=9, bias=True)
+  )
+  (decoder): Sequential(
+    (0): Linear(in_features=9, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=256, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=256, out_features=405, bias=True)
+  )
+)
+2025-04-20 16:21:05,634 [RANK 0] Model created on device cuda:0
+2025-04-20 16:21:05,636 [RANK 0] Number of parameters: 291742
+2025-04-20 16:21:05,636 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 16:21:05,636 [RANK 0] Original data shape: (7670, 135, 180, 9)
+2025-04-20 16:21:08,355 [RANK 0] Padded data shape: (7674, 137, 182, 9)
+2025-04-20 16:21:08,356 [RANK 0] Generating 5000 random training tiles per time step
+2025-04-20 16:21:18,631 [RANK 0] Total samples generated: 38350000
+2025-04-20 16:21:18,631 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 16:21:18,631 [RANK 0] Original data shape: (7670, 135, 180, 9)
+2025-04-20 16:21:21,348 [RANK 0] Padded data shape: (7674, 137, 182, 9)
+2025-04-20 16:21:21,348 [RANK 0] Generating 500 fixed validation tiles
+2025-04-20 16:21:22,503 [RANK 0] Total samples generated: 3835000
+2025-04-20 16:21:22,503 [RANK 0] DataLoaders initialized with batch_size=64384, num_workers=8
+2025-04-20 16:21:24,368 [RANK 0] Starting training loop at 2025-04-20 16:21:24
+2025-04-20 16:21:40,132 [RANK 0] Epoch 1, Batch 0, Current Loss: 0.9741
+2025-04-20 16:24:03,847 [RANK 0] Epoch 1, Batch 100, Current Loss: 0.8791
+2025-04-20 16:26:43,281 [RANK 0] Epoch 1, Batch 200, Current Loss: 1.6080
+2025-04-20 16:29:12,669 [RANK 0] Epoch 1, Batch 300, Current Loss: 0.5757
+2025-04-20 16:31:46,298 [RANK 0] Epoch 1, Batch 400, Current Loss: 0.7653
+2025-04-20 16:34:19,167 [RANK 0] Epoch 1, Batch 500, Current Loss: 0.3031
+2025-04-20 16:38:11,517 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.7289
+2025-04-20 16:38:11,519 [RANK 0] Epoch 1 complete - Train Loss: 0.8791, Val Loss: 0.7289, Best Val: 0.7289, LR: 1.00e-03
+2025-04-20 16:38:23,066 [RANK 0] Epoch 2, Batch 0, Current Loss: 0.6341
+2025-04-20 16:40:50,509 [RANK 0] Epoch 2, Batch 100, Current Loss: 0.6290
+2025-04-20 16:43:29,195 [RANK 0] Epoch 2, Batch 200, Current Loss: 0.9651
+2025-04-20 16:45:58,382 [RANK 0] Epoch 2, Batch 300, Current Loss: 0.4635
+2025-04-20 16:48:33,080 [RANK 0] Epoch 2, Batch 400, Current Loss: 0.6851
+2025-04-20 16:51:07,988 [RANK 0] Epoch 2, Batch 500, Current Loss: 0.4222
+2025-04-20 16:54:57,706 [RANK 0] No improvement (1/10), Current Val Loss: 0.8447, Best Val Loss: 0.7289
+2025-04-20 16:54:57,708 [RANK 0] Epoch 2 complete - Train Loss: 0.6608, Val Loss: 0.8447, Best Val: 0.7289, LR: 1.00e-03
+2025-04-20 16:55:09,109 [RANK 0] Epoch 3, Batch 0, Current Loss: 0.4766
+2025-04-20 16:57:40,187 [RANK 0] Epoch 3, Batch 100, Current Loss: 0.3148
+2025-04-20 17:00:15,374 [RANK 0] Epoch 3, Batch 200, Current Loss: 0.8847
+2025-04-20 17:02:45,639 [RANK 0] Epoch 3, Batch 300, Current Loss: 0.4807
+2025-04-20 17:05:18,869 [RANK 0] Epoch 3, Batch 400, Current Loss: 0.8001
+2025-04-20 17:07:56,668 [RANK 0] Epoch 3, Batch 500, Current Loss: 0.3988
+2025-04-20 17:11:46,506 [RANK 0] No improvement (2/10), Current Val Loss: 0.8221, Best Val Loss: 0.7289
+2025-04-20 17:11:46,508 [RANK 0] Epoch 3 complete - Train Loss: 0.6139, Val Loss: 0.8221, Best Val: 0.7289, LR: 1.00e-03
+2025-04-20 17:12:02,320 [RANK 0] Epoch 4, Batch 0, Current Loss: 0.5670
+2025-04-20 17:14:28,885 [RANK 0] Epoch 4, Batch 100, Current Loss: 0.5833
+2025-04-20 17:17:06,445 [RANK 0] Epoch 4, Batch 200, Current Loss: 0.8306
+2025-04-20 17:19:38,409 [RANK 0] Epoch 4, Batch 300, Current Loss: 0.4787
+2025-04-20 17:22:23,239 [RANK 0] Epoch 4, Batch 400, Current Loss: 0.7536
+2025-04-20 17:24:56,526 [RANK 0] Epoch 4, Batch 500, Current Loss: 0.2705
+2025-04-20 17:28:38,048 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.6595
+2025-04-20 17:28:38,049 [RANK 0] Epoch 4 complete - Train Loss: 0.6021, Val Loss: 0.6595, Best Val: 0.6595, LR: 1.00e-03
+2025-04-20 17:28:49,447 [RANK 0] Epoch 5, Batch 0, Current Loss: 0.8119
+2025-04-20 17:31:21,732 [RANK 0] Epoch 5, Batch 100, Current Loss: 0.5062
+2025-04-20 17:33:57,573 [RANK 0] Epoch 5, Batch 200, Current Loss: 0.8317
+2025-04-20 17:36:30,134 [RANK 0] Epoch 5, Batch 300, Current Loss: 0.4372
+2025-04-20 17:39:02,106 [RANK 0] Epoch 5, Batch 400, Current Loss: 0.6580
+2025-04-20 17:41:40,416 [RANK 0] Epoch 5, Batch 500, Current Loss: 0.3080
+2025-04-20 17:45:32,332 [RANK 0] No improvement (1/10), Current Val Loss: 0.6940, Best Val Loss: 0.6595
+2025-04-20 17:45:32,334 [RANK 0] Epoch 5 complete - Train Loss: 0.5303, Val Loss: 0.6940, Best Val: 0.6595, LR: 1.00e-03
+2025-04-20 17:45:43,836 [RANK 0] Epoch 6, Batch 0, Current Loss: 0.5308
+2025-04-20 17:48:15,816 [RANK 0] Epoch 6, Batch 100, Current Loss: 0.6814
+2025-04-20 17:50:49,030 [RANK 0] Epoch 6, Batch 200, Current Loss: 1.0737
+2025-04-20 17:53:25,278 [RANK 0] Epoch 6, Batch 300, Current Loss: 0.4587
+2025-04-20 17:58:13,763 [RANK 0] Starting main execution with arguments: Namespace(train=False, start_from_model='best_model_tp.pth', infer=None, input_zarr='/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr', variable_type='tp', model_output='best_model_tp.pth', output_zarr=None, batch_size=64384, num_workers=8, prefetch_factor=25)
+2025-04-20 17:58:13,765 [RANK 0] Loading and preprocessing data...
+2025-04-20 17:58:14,888 [RANK 0] Initial dataset loaded. Shape: {'time': 7670, 'lat': 135, 'lon': 180}, Variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 'ssrd', 't2m', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 17:58:14,888 [RANK 0] Using only tp variable with log1p transformation
+2025-04-20 17:58:14,907 [RANK 0] Using variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 17:58:14,907 [RANK 0] Processing variable: cos_doy
+2025-04-20 17:58:18,849 [RANK 0] Computed mean for cos_doy: 0.0006517938977895169
+2025-04-20 17:58:18,849 [RANK 0] Computed std for cos_doy: 0.7073367848846865
+2025-04-20 17:58:20,195 [RANK 0] Processing variable: dem
+2025-04-20 17:58:21,856 [RANK 0] Computed mean for dem: 503.53936767578125
+2025-04-20 17:58:21,856 [RANK 0] Computed std for dem: 560.3971557617188
+2025-04-20 17:58:22,870 [RANK 0] Processing variable: q_850
+2025-04-20 17:58:24,521 [RANK 0] Computed mean for q_850: 0.004727561492472887
+2025-04-20 17:58:24,522 [RANK 0] Computed std for q_850: 0.00219158548861742
+2025-04-20 17:58:27,056 [RANK 0] Processing variable: sin_doy
+2025-04-20 17:58:29,766 [RANK 0] Computed mean for sin_doy: 1.1221223048125202e-05
+2025-04-20 17:58:29,766 [RANK 0] Computed std for sin_doy: 0.706876402058941
+2025-04-20 17:58:30,988 [RANK 0] Processing variable: t_850
+2025-04-20 17:58:33,023 [RANK 0] Computed mean for t_850: 279.1830749511719
+2025-04-20 17:58:33,023 [RANK 0] Computed std for t_850: 6.824256420135498
+2025-04-20 17:58:35,369 [RANK 0] Processing variable: tp
+2025-04-20 17:58:37,252 [RANK 0] Computed mean for tp: 0.002857057610526681
+2025-04-20 17:58:37,253 [RANK 0] Computed std for tp: 0.005721615627408028
+2025-04-20 17:58:39,772 [RANK 0] Processing variable: u_850
+2025-04-20 17:58:41,324 [RANK 0] Computed mean for u_850: 2.136380672454834
+2025-04-20 17:58:41,324 [RANK 0] Computed std for u_850: 5.79701566696167
+2025-04-20 17:58:43,474 [RANK 0] Processing variable: v_850
+2025-04-20 17:58:45,247 [RANK 0] Computed mean for v_850: -0.03182092308998108
+2025-04-20 17:58:45,247 [RANK 0] Computed std for v_850: 4.692667484283447
+2025-04-20 17:58:47,706 [RANK 0] Processing variable: z_850
+2025-04-20 17:58:49,090 [RANK 0] Computed mean for z_850: 14575.0322265625
+2025-04-20 17:58:49,090 [RANK 0] Computed std for z_850: 676.2464599609375
+2025-04-20 17:58:51,307 [RANK 0] Combining all normalized variables...
+2025-04-20 17:59:03,184 [RANK 0] Data loaded in 48.28 seconds
+2025-04-20 17:59:03,185 [RANK 0] Final data shape: (7670, 135, 180, 9)
+2025-04-20 17:59:03,185 [RANK 0] Memory usage: 13.42 GB
+2025-04-20 17:59:05,980 [RANK 0] Data validation passed - no NaN values detected
+2025-04-20 17:59:06,016 [RANK 0] Starting training from existing model: best_model_tp.pth
+2025-04-20 17:59:06,136 [RANK 0] Starting single-GPU/CPU training
+2025-04-20 17:59:06,137 [RANK 0] Initializing training process on rank 0
+2025-04-20 17:59:06,139 [RANK 0] Initializing autoencoder with input_dim=405, latent_dim=9
+2025-04-20 17:59:06,155 [RANK 0] Model architecture:
+WeatherAutoencoder(
+  (encoder): Sequential(
+    (0): Linear(in_features=405, out_features=256, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=256, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=64, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=64, out_features=9, bias=True)
+  )
+  (decoder): Sequential(
+    (0): Linear(in_features=9, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=256, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=256, out_features=405, bias=True)
+  )
+)
+2025-04-20 17:59:06,341 [RANK 0] Model created on device cuda:0
+2025-04-20 17:59:06,342 [RANK 0] Number of parameters: 291742
+2025-04-20 17:59:06,342 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 17:59:06,343 [RANK 0] Original data shape: (7670, 135, 180, 9)
+2025-04-20 17:59:18,784 [RANK 0] Padded data shape: (7674, 137, 182, 9)
+2025-04-20 17:59:18,784 [RANK 0] Generating 5000 random training tiles per time step
+2025-04-20 17:59:29,016 [RANK 0] Total samples generated: 38350000
+2025-04-20 17:59:29,016 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 17:59:29,016 [RANK 0] Original data shape: (7670, 135, 180, 9)
+2025-04-20 18:00:43,269 [RANK 0] Padded data shape: (7674, 137, 182, 9)
+2025-04-20 18:00:43,271 [RANK 0] Generating 500 fixed validation tiles
+2025-04-20 18:00:44,450 [RANK 0] Total samples generated: 3835000
+2025-04-20 18:00:44,451 [RANK 0] DataLoaders initialized with batch_size=64384, num_workers=8
+2025-04-20 18:00:45,725 [RANK 0] Starting training loop at 2025-04-20 18:00:45
+2025-04-20 18:01:10,236 [RANK 0] Epoch 1, Batch 0, Current Loss: 0.9780
+2025-04-20 18:04:00,208 [RANK 0] Epoch 1, Batch 100, Current Loss: 0.8916
+2025-04-20 18:07:04,670 [RANK 0] Epoch 1, Batch 200, Current Loss: 1.0480
+2025-04-20 18:09:56,394 [RANK 0] Epoch 1, Batch 300, Current Loss: 0.5776
+2025-04-20 18:13:06,125 [RANK 0] Epoch 1, Batch 400, Current Loss: 0.6266
+2025-04-20 18:15:57,717 [RANK 0] Epoch 1, Batch 500, Current Loss: 0.2884
+2025-04-20 18:20:32,789 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.5655
+2025-04-20 18:20:32,790 [RANK 0] Epoch 1 complete - Train Loss: 0.7145, Val Loss: 0.5655, Best Val: 0.5655, LR: 1.00e-03
+2025-04-20 18:20:46,164 [RANK 0] Epoch 2, Batch 0, Current Loss: 0.5143
+2025-04-20 18:23:35,389 [RANK 0] Epoch 2, Batch 100, Current Loss: 0.2747
+2025-04-20 18:26:54,735 [RANK 0] Epoch 2, Batch 200, Current Loss: 0.9314
+2025-04-20 18:29:31,042 [RANK 0] Epoch 2, Batch 300, Current Loss: 0.5787
+2025-04-20 18:32:37,501 [RANK 0] Epoch 2, Batch 400, Current Loss: 0.7492
+2025-04-20 18:35:27,688 [RANK 0] Epoch 2, Batch 500, Current Loss: 0.2517
+2025-04-20 18:39:52,833 [RANK 0] No improvement (1/10), Current Val Loss: 0.5658, Best Val Loss: 0.5655
+2025-04-20 18:39:52,834 [RANK 0] Epoch 2 complete - Train Loss: 0.6140, Val Loss: 0.5658, Best Val: 0.5655, LR: 1.00e-03
+2025-04-20 18:40:12,672 [RANK 0] Epoch 3, Batch 0, Current Loss: 0.4687
+2025-04-20 18:43:03,497 [RANK 0] Epoch 3, Batch 100, Current Loss: 0.3386
+2025-04-20 18:43:59,383 [RANK 0] Starting main execution with arguments: Namespace(train=True, start_from_model=None, infer=None, input_zarr='/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr', variable_type='tp', model_output='best_model_tp.pth', output_zarr='tp_latents.zarr', batch_size=64384, num_workers=8, prefetch_factor=25)
+2025-04-20 18:43:59,384 [RANK 0] Loading and preprocessing data...
+2025-04-20 18:44:03,546 [RANK 0] Initial dataset loaded. Shape: {'time': 7670, 'lat': 135, 'lon': 180}, Variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 'ssrd', 't2m', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 18:44:03,546 [RANK 0] Using only tp variable with log1p transformation
+2025-04-20 18:44:03,575 [RANK 0] Using variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 18:44:03,575 [RANK 0] Processing variable: cos_doy
+2025-04-20 18:44:06,290 [RANK 0] Computed mean for cos_doy: 0.0006517938977895169
+2025-04-20 18:44:06,290 [RANK 0] Computed std for cos_doy: 0.7073367848846865
+2025-04-20 18:44:07,206 [RANK 0] Processing variable: dem
+2025-04-20 18:44:08,441 [RANK 0] Computed mean for dem: 503.53936767578125
+2025-04-20 18:44:08,442 [RANK 0] Computed std for dem: 560.3971557617188
+2025-04-20 18:44:09,339 [RANK 0] Processing variable: q_850
+2025-04-20 18:44:10,394 [RANK 0] Computed mean for q_850: 0.004727561492472887
+2025-04-20 18:44:10,395 [RANK 0] Computed std for q_850: 0.00219158548861742
+2025-04-20 18:44:11,407 [RANK 0] Processing variable: sin_doy
+2025-04-20 18:44:12,701 [RANK 0] Computed mean for sin_doy: 1.1221223048125202e-05
+2025-04-20 18:44:12,701 [RANK 0] Computed std for sin_doy: 0.706876402058941
+2025-04-20 18:44:13,635 [RANK 0] Processing variable: t_850
+2025-04-20 18:44:14,867 [RANK 0] Computed mean for t_850: 279.1830749511719
+2025-04-20 18:44:14,867 [RANK 0] Computed std for t_850: 6.824256420135498
+2025-04-20 18:44:15,763 [RANK 0] Processing variable: tp
+2025-04-20 18:44:17,051 [RANK 0] Computed mean for tp: 0.9054690003395081
+2025-04-20 18:44:17,051 [RANK 0] Computed std for tp: 0.8012673258781433
+2025-04-20 18:44:18,196 [RANK 0] Processing variable: u_850
+2025-04-20 18:44:19,209 [RANK 0] Computed mean for u_850: 2.136380672454834
+2025-04-20 18:44:19,209 [RANK 0] Computed std for u_850: 5.79701566696167
+2025-04-20 18:44:20,128 [RANK 0] Processing variable: v_850
+2025-04-20 18:44:21,216 [RANK 0] Computed mean for v_850: -0.03182092308998108
+2025-04-20 18:44:21,216 [RANK 0] Computed std for v_850: 4.692667484283447
+2025-04-20 18:44:22,282 [RANK 0] Processing variable: z_850
+2025-04-20 18:44:23,289 [RANK 0] Computed mean for z_850: 14575.0322265625
+2025-04-20 18:44:23,289 [RANK 0] Computed std for z_850: 676.2464599609375
+2025-04-20 18:44:24,191 [RANK 0] Combining all normalized variables...
+2025-04-20 18:44:27,332 [RANK 0] Data loaded in 23.76 seconds
+2025-04-20 18:44:27,333 [RANK 0] Final data shape: (7670, 135, 180, 9)
+2025-04-20 18:44:27,333 [RANK 0] Memory usage: 13.42 GB
+2025-04-20 18:44:29,550 [RANK 0] Data validation passed - no NaN values detected
+2025-04-20 18:44:29,577 [RANK 0] Starting training from scratch
+2025-04-20 18:44:29,712 [RANK 0] Starting single-GPU/CPU training
+2025-04-20 18:44:29,712 [RANK 0] Initializing training process on rank 0
+2025-04-20 18:44:29,714 [RANK 0] Initializing autoencoder with input_dim=405, latent_dim=9
+2025-04-20 18:44:29,733 [RANK 0] Model architecture:
+WeatherAutoencoder(
+  (encoder): Sequential(
+    (0): Linear(in_features=405, out_features=256, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=256, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=64, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=64, out_features=9, bias=True)
+  )
+  (decoder): Sequential(
+    (0): Linear(in_features=9, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=256, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=256, out_features=405, bias=True)
+  )
+)
+2025-04-20 18:44:29,914 [RANK 0] Model created on device cuda:0
+2025-04-20 18:44:29,915 [RANK 0] Number of parameters: 291742
+2025-04-20 18:44:29,915 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 18:44:29,915 [RANK 0] Original data shape: (7670, 135, 180, 9)
+2025-04-20 18:44:36,141 [RANK 0] Padded data shape: (7674, 137, 182, 9)
+2025-04-20 18:44:36,141 [RANK 0] Generating 5000 random training tiles per time step
+2025-04-20 18:44:46,314 [RANK 0] Total samples generated: 38350000
+2025-04-20 18:44:46,314 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 18:44:46,314 [RANK 0] Original data shape: (7670, 135, 180, 9)
+2025-04-20 18:44:58,500 [RANK 0] Padded data shape: (7674, 137, 182, 9)
+2025-04-20 18:44:58,500 [RANK 0] Generating 500 fixed validation tiles
+2025-04-20 18:44:59,722 [RANK 0] Total samples generated: 3835000
+2025-04-20 18:44:59,723 [RANK 0] DataLoaders initialized with batch_size=64384, num_workers=8
+2025-04-20 18:45:10,250 [RANK 0] Starting training loop at 2025-04-20 18:45:10
+2025-04-20 18:45:29,281 [RANK 0] Epoch 1, Batch 0, Current Loss: 1.0068
+2025-04-20 18:48:23,960 [RANK 0] Epoch 1, Batch 100, Current Loss: 0.8170
+2025-04-20 18:51:29,503 [RANK 0] Epoch 1, Batch 200, Current Loss: 0.9342
+2025-04-20 18:54:23,486 [RANK 0] Epoch 1, Batch 300, Current Loss: 0.3958
+2025-04-20 18:57:27,874 [RANK 0] Epoch 1, Batch 400, Current Loss: 0.6476
+2025-04-20 19:00:24,713 [RANK 0] Epoch 1, Batch 500, Current Loss: 0.2992
+2025-04-20 19:04:52,243 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.6564
+2025-04-20 19:04:52,245 [RANK 0] Epoch 1 complete - Train Loss: 0.7120, Val Loss: 0.6564, Best Val: 0.6564, LR: 1.00e-03
+2025-04-20 19:05:05,475 [RANK 0] Epoch 2, Batch 0, Current Loss: 0.6836
+2025-04-20 19:08:08,593 [RANK 0] Epoch 2, Batch 100, Current Loss: 0.4296
+2025-04-20 19:11:00,908 [RANK 0] Epoch 2, Batch 200, Current Loss: 0.8594
+2025-04-20 19:14:01,006 [RANK 0] Epoch 2, Batch 300, Current Loss: 0.3916
+2025-04-20 19:17:03,079 [RANK 0] Epoch 2, Batch 400, Current Loss: 0.6702
+2025-04-20 19:19:52,500 [RANK 0] Epoch 2, Batch 500, Current Loss: 0.3187
+2025-04-20 19:24:19,204 [RANK 0] No improvement (1/10), Current Val Loss: 0.6762, Best Val Loss: 0.6564
+2025-04-20 19:24:19,207 [RANK 0] Epoch 2 complete - Train Loss: 0.6325, Val Loss: 0.6762, Best Val: 0.6564, LR: 1.00e-03
+2025-04-20 19:24:32,523 [RANK 0] Epoch 3, Batch 0, Current Loss: 0.6527
+2025-04-20 19:27:24,067 [RANK 0] Epoch 3, Batch 100, Current Loss: 0.4663
+2025-04-20 19:30:32,752 [RANK 0] Epoch 3, Batch 200, Current Loss: 1.2387
+2025-04-20 19:33:26,337 [RANK 0] Epoch 3, Batch 300, Current Loss: 0.3353
+2025-04-20 19:55:47,276 [RANK 0] Starting main execution with arguments: Namespace(train=True, start_from_model=None, infer=None, input_zarr='/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr', variable_type='tp', model_output='best_model_tp.pth', output_zarr='tp_latents.zarr', batch_size=64384, num_workers=8, prefetch_factor=25)
+2025-04-20 19:55:47,278 [RANK 0] Loading and preprocessing data...
+2025-04-20 19:55:50,665 [RANK 0] Initial dataset loaded. Shape: {'time': 7670, 'lat': 135, 'lon': 180}, Variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 'ssrd', 't2m', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 19:55:50,665 [RANK 0] Using only tp variable with log1p transformation
+2025-04-20 19:55:50,665 [RANK 0] ❌ Execution failed: These variables cannot be found in this dataset: ['sin_coy', 'cos_coy']
+Traceback (most recent call last):
+  File "/ceph/hpc/home/dhinakarans/VEGA_DDP_DEV/era5_autoencoder/autoencoder_run.py", line 537, in main
+    data = preprocess_data(args.input_zarr, args.variable_type)
+  File "/ceph/hpc/home/dhinakarans/VEGA_DDP_DEV/era5_autoencoder/autoencoder_run.py", line 434, in preprocess_data
+    ds = ds.drop_vars(['u_850', 'v_850', "z_850", "sin_coy", "cos_coy", "q_850"])
+  File "/ceph/hpc/home/dhinakarans/.conda/envs/gan/lib/python3.10/site-packages/xarray/core/dataset.py", line 5869, in drop_vars
+    self._assert_all_in_dataset(names_set)
+  File "/ceph/hpc/home/dhinakarans/.conda/envs/gan/lib/python3.10/site-packages/xarray/core/dataset.py", line 5733, in _assert_all_in_dataset
+    raise ValueError(
+ValueError: These variables cannot be found in this dataset: ['sin_coy', 'cos_coy']
+2025-04-20 19:56:58,663 [RANK 0] Starting main execution with arguments: Namespace(train=True, start_from_model=None, infer=None, input_zarr='/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr', variable_type='tp', model_output='best_model_tp.pth', output_zarr='tp_latents.zarr', batch_size=64384, num_workers=8, prefetch_factor=25)
+2025-04-20 19:56:58,666 [RANK 0] Loading and preprocessing data...
+2025-04-20 19:56:59,006 [RANK 0] Initial dataset loaded. Shape: {'time': 7670, 'lat': 135, 'lon': 180}, Variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 'ssrd', 't2m', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-20 19:56:59,006 [RANK 0] Using only tp variable with log1p transformation
+2025-04-20 19:56:59,026 [RANK 0] Using variables: ['dem', 'precip_binary', 'ssrd', 't2m', 't_850', 'tp']
+2025-04-20 19:56:59,026 [RANK 0] Processing variable: dem
+2025-04-20 19:57:00,539 [RANK 0] Computed mean for dem: 503.53936767578125
+2025-04-20 19:57:00,539 [RANK 0] Computed std for dem: 560.3971557617188
+2025-04-20 19:57:01,445 [RANK 0] Processing variable: precip_binary
+2025-04-20 19:57:01,445 [RANK 0] Skipping normalization for precip_binary
+2025-04-20 19:57:02,384 [RANK 0] Processing variable: ssrd
+2025-04-20 19:57:03,580 [RANK 0] Computed mean for ssrd: 13371295.0
+2025-04-20 19:57:03,580 [RANK 0] Computed std for ssrd: 7938211.5
+2025-04-20 19:57:04,479 [RANK 0] Processing variable: t2m
+2025-04-20 19:57:05,611 [RANK 0] Computed mean for t2m: 284.1902160644531
+2025-04-20 19:57:05,611 [RANK 0] Computed std for t2m: 8.1786527633667
+2025-04-20 19:57:06,663 [RANK 0] Processing variable: t_850
+2025-04-20 19:57:07,714 [RANK 0] Computed mean for t_850: 279.1830749511719
+2025-04-20 19:57:07,714 [RANK 0] Computed std for t_850: 6.824256420135498
+2025-04-20 19:57:08,916 [RANK 0] Processing variable: tp
+2025-04-20 19:57:10,359 [RANK 0] Computed mean for tp: 0.9054690003395081
+2025-04-20 19:57:10,359 [RANK 0] Computed std for tp: 0.8012673258781433
+2025-04-20 19:57:11,633 [RANK 0] Combining all normalized variables...
+2025-04-20 19:57:14,080 [RANK 0] Data loaded in 15.05 seconds
+2025-04-20 19:57:14,081 [RANK 0] Final data shape: (7670, 135, 180, 6)
+2025-04-20 19:57:14,081 [RANK 0] Memory usage: 8.95 GB
+2025-04-20 19:57:15,168 [RANK 0] Data validation passed - no NaN values detected
+2025-04-20 19:57:15,192 [RANK 0] Starting training from scratch
+2025-04-20 19:57:15,308 [RANK 0] Starting single-GPU/CPU training
+2025-04-20 19:57:15,309 [RANK 0] Initializing training process on rank 0
+2025-04-20 19:57:15,311 [RANK 0] Initializing autoencoder with input_dim=270, latent_dim=9
+2025-04-20 19:57:15,326 [RANK 0] Model architecture:
+WeatherAutoencoder(
+  (encoder): Sequential(
+    (0): Linear(in_features=270, out_features=256, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=256, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=64, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=64, out_features=9, bias=True)
+  )
+  (decoder): Sequential(
+    (0): Linear(in_features=9, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=256, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=256, out_features=270, bias=True)
+  )
+)
+2025-04-20 19:57:15,515 [RANK 0] Model created on device cuda:0
+2025-04-20 19:57:15,516 [RANK 0] Number of parameters: 222487
+2025-04-20 19:57:15,516 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 19:57:15,516 [RANK 0] Original data shape: (7670, 135, 180, 6)
+2025-04-20 19:57:18,139 [RANK 0] Padded data shape: (7674, 137, 182, 6)
+2025-04-20 19:57:18,140 [RANK 0] Generating 5000 random training tiles per time step
+2025-04-20 19:57:28,648 [RANK 0] Total samples generated: 38350000
+2025-04-20 19:57:28,649 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-20 19:57:28,649 [RANK 0] Original data shape: (7670, 135, 180, 6)
+2025-04-20 19:57:31,271 [RANK 0] Padded data shape: (7674, 137, 182, 6)
+2025-04-20 19:57:31,271 [RANK 0] Generating 500 fixed validation tiles
+2025-04-20 19:57:32,452 [RANK 0] Total samples generated: 3835000
+2025-04-20 19:57:32,452 [RANK 0] DataLoaders initialized with batch_size=64384, num_workers=8
+2025-04-20 19:57:34,002 [RANK 0] Starting training loop at 2025-04-20 19:57:34
+2025-04-20 19:57:52,308 [RANK 0] Epoch 1, Batch 0, Current Loss: 1.0598
+2025-04-20 20:00:08,497 [RANK 0] Epoch 1, Batch 100, Current Loss: 0.3668
+2025-04-20 20:02:36,238 [RANK 0] Epoch 1, Batch 200, Current Loss: 0.3470
+2025-04-20 20:04:55,395 [RANK 0] Epoch 1, Batch 300, Current Loss: 0.3637
+2025-04-20 20:07:27,102 [RANK 0] Epoch 1, Batch 400, Current Loss: 0.2507
+2025-04-20 20:09:47,609 [RANK 0] Epoch 1, Batch 500, Current Loss: 0.2398
+2025-04-20 20:13:20,732 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.3002
+2025-04-20 20:13:20,733 [RANK 0] Epoch 1 complete - Train Loss: 0.4019, Val Loss: 0.3002, Best Val: 0.3002, LR: 1.00e-03
+2025-04-20 20:13:31,783 [RANK 0] Epoch 2, Batch 0, Current Loss: 0.1941
+2025-04-20 20:15:53,647 [RANK 0] Epoch 2, Batch 100, Current Loss: 0.2044
+2025-04-20 20:18:18,662 [RANK 0] Epoch 2, Batch 200, Current Loss: 0.2780
+2025-04-20 20:20:41,202 [RANK 0] Epoch 2, Batch 300, Current Loss: 0.2742
+2025-04-20 20:23:05,954 [RANK 0] Epoch 2, Batch 400, Current Loss: 0.2060
+2025-04-20 20:25:28,471 [RANK 0] Epoch 2, Batch 500, Current Loss: 0.1998
+2025-04-20 20:28:59,563 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.2559
+2025-04-20 20:28:59,564 [RANK 0] Epoch 2 complete - Train Loss: 0.2680, Val Loss: 0.2559, Best Val: 0.2559, LR: 1.00e-03
+2025-04-20 20:29:10,347 [RANK 0] Epoch 3, Batch 0, Current Loss: 0.1699
+2025-04-20 20:31:32,844 [RANK 0] Epoch 3, Batch 100, Current Loss: 0.1986
+2025-04-20 20:34:09,218 [RANK 0] Epoch 3, Batch 200, Current Loss: 0.3568
+2025-04-20 20:36:21,073 [RANK 0] Epoch 3, Batch 300, Current Loss: 0.2839
+2025-04-20 20:38:50,821 [RANK 0] Epoch 3, Batch 400, Current Loss: 0.1836
+2025-04-20 20:41:14,100 [RANK 0] Epoch 3, Batch 500, Current Loss: 0.2015
+2025-04-20 20:44:47,383 [RANK 0] No improvement (1/10), Current Val Loss: 0.2579, Best Val Loss: 0.2559
+2025-04-20 20:44:47,385 [RANK 0] Epoch 3 complete - Train Loss: 0.2587, Val Loss: 0.2579, Best Val: 0.2559, LR: 1.00e-03
+2025-04-20 20:45:02,518 [RANK 0] Epoch 4, Batch 0, Current Loss: 0.1668
+2025-04-20 20:47:21,702 [RANK 0] Epoch 4, Batch 100, Current Loss: 0.1990
+2025-04-20 20:49:59,705 [RANK 0] Epoch 4, Batch 200, Current Loss: 0.2352
+2025-04-20 20:52:19,051 [RANK 0] Epoch 4, Batch 300, Current Loss: 0.2513
+2025-04-20 20:54:41,234 [RANK 0] Epoch 4, Batch 400, Current Loss: 0.1843
+2025-04-20 20:57:08,612 [RANK 0] Epoch 4, Batch 500, Current Loss: 0.1964
+2025-04-20 21:00:36,919 [RANK 0] No improvement (2/10), Current Val Loss: 0.3452, Best Val Loss: 0.2559
+2025-04-20 21:00:36,921 [RANK 0] Epoch 4 complete - Train Loss: 0.2472, Val Loss: 0.3452, Best Val: 0.2559, LR: 1.00e-03
+2025-04-20 21:00:52,003 [RANK 0] Epoch 5, Batch 0, Current Loss: 0.1720
+2025-04-20 21:03:18,695 [RANK 0] Epoch 5, Batch 100, Current Loss: 0.1737
+2025-04-20 21:05:41,175 [RANK 0] Epoch 5, Batch 200, Current Loss: 0.2515
+2025-04-20 21:08:01,170 [RANK 0] Epoch 5, Batch 300, Current Loss: 0.2151
+2025-04-20 21:10:31,488 [RANK 0] Epoch 5, Batch 400, Current Loss: 0.1945
+2025-04-20 21:12:55,471 [RANK 0] Epoch 5, Batch 500, Current Loss: 0.1945
+2025-04-20 21:16:24,791 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.2118
+2025-04-20 21:16:24,793 [RANK 0] Epoch 5 complete - Train Loss: 0.2285, Val Loss: 0.2118, Best Val: 0.2118, LR: 1.00e-03
+2025-04-20 21:16:35,709 [RANK 0] Epoch 6, Batch 0, Current Loss: 0.1525
+2025-04-20 21:18:55,154 [RANK 0] Epoch 6, Batch 100, Current Loss: 0.1371
+2025-04-20 21:21:25,174 [RANK 0] Epoch 6, Batch 200, Current Loss: 0.1840
+2025-04-20 21:23:43,907 [RANK 0] Epoch 6, Batch 300, Current Loss: 0.1912
+2025-04-20 21:26:10,675 [RANK 0] Epoch 6, Batch 400, Current Loss: 0.1579
+2025-04-20 21:28:37,537 [RANK 0] Epoch 6, Batch 500, Current Loss: 0.1743
+2025-04-20 21:32:14,998 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.2106
+2025-04-20 21:32:15,000 [RANK 0] Epoch 6 complete - Train Loss: 0.1836, Val Loss: 0.2106, Best Val: 0.2106, LR: 1.00e-03
+2025-04-20 21:32:25,950 [RANK 0] Epoch 7, Batch 0, Current Loss: 0.1387
+2025-04-20 21:34:49,435 [RANK 0] Epoch 7, Batch 100, Current Loss: 0.1445
+2025-04-20 21:37:23,216 [RANK 0] Epoch 7, Batch 200, Current Loss: 0.2089
+2025-04-20 21:39:39,045 [RANK 0] Epoch 7, Batch 300, Current Loss: 0.1961
+2025-04-20 21:42:09,483 [RANK 0] Epoch 7, Batch 400, Current Loss: 0.1629
+2025-04-20 21:44:30,339 [RANK 0] Epoch 7, Batch 500, Current Loss: 0.1589
+2025-04-20 21:48:04,885 [RANK 0] No improvement (1/10), Current Val Loss: 0.2229, Best Val Loss: 0.2106
+2025-04-20 21:48:04,887 [RANK 0] Epoch 7 complete - Train Loss: 0.1889, Val Loss: 0.2229, Best Val: 0.2106, LR: 1.00e-03
+2025-04-20 21:48:15,811 [RANK 0] Epoch 8, Batch 0, Current Loss: 0.2140
+2025-04-20 21:50:35,019 [RANK 0] Epoch 8, Batch 100, Current Loss: 0.1311
+2025-04-20 21:53:04,181 [RANK 0] Epoch 8, Batch 200, Current Loss: 0.1817
+2025-04-20 21:55:28,312 [RANK 0] Epoch 8, Batch 300, Current Loss: 0.1849
+2025-04-20 21:57:57,485 [RANK 0] Epoch 8, Batch 400, Current Loss: 0.1500
+2025-04-20 22:00:25,647 [RANK 0] Epoch 8, Batch 500, Current Loss: 0.1502
+2025-04-20 22:03:51,738 [RANK 0] No improvement (2/10), Current Val Loss: 0.3227, Best Val Loss: 0.2106
+2025-04-20 22:03:51,740 [RANK 0] Epoch 8 complete - Train Loss: 0.1705, Val Loss: 0.3227, Best Val: 0.2106, LR: 1.00e-03
+2025-04-20 22:04:10,670 [RANK 0] Epoch 9, Batch 0, Current Loss: 0.1323
+2025-04-20 22:06:26,519 [RANK 0] Epoch 9, Batch 100, Current Loss: 0.1416
+2025-04-20 22:08:56,541 [RANK 0] Epoch 9, Batch 200, Current Loss: 0.2479
+2025-04-20 22:11:16,204 [RANK 0] Epoch 9, Batch 300, Current Loss: 0.1829
+2025-04-20 22:13:45,914 [RANK 0] Epoch 9, Batch 400, Current Loss: 0.1522
+2025-04-20 22:16:13,068 [RANK 0] Epoch 9, Batch 500, Current Loss: 0.1572
+2025-04-20 22:19:42,565 [RANK 0] No improvement (3/10), Current Val Loss: 0.2385, Best Val Loss: 0.2106
+2025-04-20 22:19:42,567 [RANK 0] Epoch 9 complete - Train Loss: 0.1832, Val Loss: 0.2385, Best Val: 0.2106, LR: 1.00e-03
+2025-04-20 22:19:53,476 [RANK 0] Epoch 10, Batch 0, Current Loss: 0.1145
+2025-04-20 22:22:17,120 [RANK 0] Epoch 10, Batch 100, Current Loss: 0.1338
+2025-04-20 22:24:47,686 [RANK 0] Epoch 10, Batch 200, Current Loss: 0.1781
+2025-04-20 22:27:07,119 [RANK 0] Epoch 10, Batch 300, Current Loss: 0.1766
+2025-04-20 22:29:44,281 [RANK 0] Epoch 10, Batch 400, Current Loss: 0.1493
+2025-04-20 22:31:56,814 [RANK 0] Epoch 10, Batch 500, Current Loss: 0.1702
+2025-04-20 22:35:31,933 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.1900
+2025-04-20 22:35:31,935 [RANK 0] Epoch 10 complete - Train Loss: 0.1815, Val Loss: 0.1900, Best Val: 0.1900, LR: 1.00e-03
+2025-04-20 22:35:47,006 [RANK 0] Epoch 11, Batch 0, Current Loss: 0.1213
+2025-04-20 22:38:06,211 [RANK 0] Epoch 11, Batch 100, Current Loss: 0.1213
+2025-04-20 22:40:32,294 [RANK 0] Epoch 11, Batch 200, Current Loss: 0.2091
+2025-04-20 22:42:51,944 [RANK 0] Epoch 11, Batch 300, Current Loss: 0.1564
+2025-04-20 22:45:26,161 [RANK 0] Epoch 11, Batch 400, Current Loss: 0.1424
+2025-04-20 22:47:46,124 [RANK 0] Epoch 11, Batch 500, Current Loss: 0.1667
+2025-04-20 22:51:20,929 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.1876
+2025-04-20 22:51:20,930 [RANK 0] Epoch 11 complete - Train Loss: 0.1632, Val Loss: 0.1876, Best Val: 0.1876, LR: 1.00e-03
+2025-04-20 22:51:32,085 [RANK 0] Epoch 12, Batch 0, Current Loss: 0.1116
+2025-04-20 22:53:51,812 [RANK 0] Epoch 12, Batch 100, Current Loss: 0.2212
+2025-04-20 22:56:24,934 [RANK 0] Epoch 12, Batch 200, Current Loss: 0.2240
+2025-04-20 22:58:44,476 [RANK 0] Epoch 12, Batch 300, Current Loss: 0.1714
+2025-04-20 23:01:21,648 [RANK 0] Epoch 12, Batch 400, Current Loss: 0.1514
+2025-04-20 23:03:34,124 [RANK 0] Epoch 12, Batch 500, Current Loss: 0.1355
+2025-04-20 23:07:12,944 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.1670
+2025-04-20 23:07:12,946 [RANK 0] Epoch 12 complete - Train Loss: 0.1732, Val Loss: 0.1670, Best Val: 0.1670, LR: 1.00e-03
+2025-04-20 23:07:23,787 [RANK 0] Epoch 13, Batch 0, Current Loss: 0.1790
+2025-04-20 23:09:47,295 [RANK 0] Epoch 13, Batch 100, Current Loss: 0.1105
+2025-04-20 23:12:17,675 [RANK 0] Epoch 13, Batch 200, Current Loss: 0.1771
+2025-04-20 23:14:37,359 [RANK 0] Epoch 13, Batch 300, Current Loss: 0.1388
+2025-04-20 23:17:11,989 [RANK 0] Epoch 13, Batch 400, Current Loss: 0.1345
+2025-04-20 23:19:31,661 [RANK 0] Epoch 13, Batch 500, Current Loss: 0.1720
+2025-04-20 23:23:04,011 [RANK 0] No improvement (1/10), Current Val Loss: 0.1928, Best Val Loss: 0.1670
+2025-04-20 23:23:04,015 [RANK 0] Epoch 13 complete - Train Loss: 0.1583, Val Loss: 0.1928, Best Val: 0.1670, LR: 1.00e-03
+2025-04-20 23:23:19,126 [RANK 0] Epoch 14, Batch 0, Current Loss: 0.1090
+2025-04-20 23:25:39,127 [RANK 0] Epoch 14, Batch 100, Current Loss: 0.1024
+2025-04-20 23:28:09,894 [RANK 0] Epoch 14, Batch 200, Current Loss: 0.1371
+2025-04-20 23:30:34,231 [RANK 0] Epoch 14, Batch 300, Current Loss: 0.1319
+2025-04-20 23:33:00,298 [RANK 0] Epoch 14, Batch 400, Current Loss: 0.1307
+2025-04-20 23:35:20,381 [RANK 0] Epoch 14, Batch 500, Current Loss: 0.1390
+2025-04-20 23:38:55,096 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.1587
+2025-04-20 23:38:55,098 [RANK 0] Epoch 14 complete - Train Loss: 0.1478, Val Loss: 0.1587, Best Val: 0.1587, LR: 1.00e-03
+2025-04-20 23:39:06,538 [RANK 0] Epoch 15, Batch 0, Current Loss: 0.0985
+2025-04-20 23:41:25,418 [RANK 0] Epoch 15, Batch 100, Current Loss: 0.1178
+2025-04-20 23:43:55,638 [RANK 0] Epoch 15, Batch 200, Current Loss: 0.2573
+2025-04-20 23:46:18,290 [RANK 0] Epoch 15, Batch 300, Current Loss: 0.1258
+2025-04-20 23:48:50,080 [RANK 0] Epoch 15, Batch 400, Current Loss: 0.1239
+2025-04-20 23:51:10,197 [RANK 0] Epoch 15, Batch 500, Current Loss: 0.1349
+2025-04-20 23:54:45,909 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.1547
+2025-04-20 23:54:45,911 [RANK 0] Epoch 15 complete - Train Loss: 0.1612, Val Loss: 0.1547, Best Val: 0.1547, LR: 1.00e-03
+2025-04-20 23:54:56,999 [RANK 0] Epoch 16, Batch 0, Current Loss: 0.1003
+2025-04-20 23:57:20,653 [RANK 0] Epoch 16, Batch 100, Current Loss: 0.0959
+2025-04-20 23:59:55,508 [RANK 0] Epoch 16, Batch 200, Current Loss: 0.1643
+2025-04-21 00:02:10,868 [RANK 0] Epoch 16, Batch 300, Current Loss: 0.1257
+2025-04-21 00:04:41,977 [RANK 0] Epoch 16, Batch 400, Current Loss: 0.1283
+2025-04-21 00:07:02,159 [RANK 0] Epoch 16, Batch 500, Current Loss: 0.1212
+2025-04-21 00:10:36,117 [RANK 0] No improvement (1/10), Current Val Loss: 0.1886, Best Val Loss: 0.1547
+2025-04-21 00:10:36,119 [RANK 0] Epoch 16 complete - Train Loss: 0.1399, Val Loss: 0.1886, Best Val: 0.1547, LR: 1.00e-03
+2025-04-21 00:10:51,221 [RANK 0] Epoch 17, Batch 0, Current Loss: 0.0957
+2025-04-21 00:13:18,411 [RANK 0] Epoch 17, Batch 100, Current Loss: 0.0925
+2025-04-21 00:15:41,587 [RANK 0] Epoch 17, Batch 200, Current Loss: 0.1400
+2025-04-21 00:18:01,391 [RANK 0] Epoch 17, Batch 300, Current Loss: 0.1254
+2025-04-21 00:20:31,863 [RANK 0] Epoch 17, Batch 400, Current Loss: 0.1182
+2025-04-21 00:22:55,939 [RANK 0] Epoch 17, Batch 500, Current Loss: 0.1137
+2025-04-21 00:26:27,541 [RANK 0] New best model saved to best_model_tp.pth with val loss 0.1182
+2025-04-21 00:26:27,545 [RANK 0] Epoch 17 complete - Train Loss: 0.1278, Val Loss: 0.1182, Best Val: 0.1182, LR: 1.00e-03
+2025-04-21 00:26:38,637 [RANK 0] Epoch 18, Batch 0, Current Loss: 0.0910
+2025-04-21 00:29:02,838 [RANK 0] Epoch 18, Batch 100, Current Loss: 0.0874
+2025-04-21 00:31:28,885 [RANK 0] Epoch 18, Batch 200, Current Loss: 0.1540
+2025-04-21 00:33:58,785 [RANK 0] Epoch 18, Batch 300, Current Loss: 0.1290
+2025-04-21 00:36:23,214 [RANK 0] Epoch 18, Batch 400, Current Loss: 0.1230
+2025-04-21 00:38:46,462 [RANK 0] Epoch 18, Batch 500, Current Loss: 0.1238
+2025-04-21 00:42:21,747 [RANK 0] No improvement (1/10), Current Val Loss: 0.1474, Best Val Loss: 0.1182
+2025-04-21 00:42:21,749 [RANK 0] Epoch 18 complete - Train Loss: 0.1376, Val Loss: 0.1474, Best Val: 0.1182, LR: 1.00e-03
+2025-04-21 00:42:32,754 [RANK 0] Epoch 19, Batch 0, Current Loss: 0.1016
+2025-04-21 00:44:56,597 [RANK 0] Epoch 19, Batch 100, Current Loss: 0.0986
+2025-04-21 00:47:27,935 [RANK 0] Epoch 19, Batch 200, Current Loss: 0.1851
+2025-04-21 00:49:48,234 [RANK 0] Epoch 19, Batch 300, Current Loss: 0.1260
+2025-04-21 00:52:19,237 [RANK 0] Epoch 19, Batch 400, Current Loss: 0.1371
+2025-04-21 00:54:42,896 [RANK 0] Epoch 19, Batch 500, Current Loss: 0.1211
+2025-04-21 00:58:14,242 [RANK 0] No improvement (2/10), Current Val Loss: 0.1672, Best Val Loss: 0.1182
+2025-04-21 00:58:14,244 [RANK 0] Epoch 19 complete - Train Loss: 0.1476, Val Loss: 0.1672, Best Val: 0.1182, LR: 1.00e-03
+2025-04-21 00:58:29,483 [RANK 0] Epoch 20, Batch 0, Current Loss: 0.0991
+2025-04-21 01:00:49,101 [RANK 0] Epoch 20, Batch 100, Current Loss: 0.1133
+2025-04-21 01:03:27,267 [RANK 0] Epoch 20, Batch 200, Current Loss: 0.1636
+2025-04-21 01:05:39,395 [RANK 0] Epoch 20, Batch 300, Current Loss: 0.1240
+2025-04-21 01:08:17,416 [RANK 0] Epoch 20, Batch 400, Current Loss: 0.1329
+2025-04-21 01:10:34,307 [RANK 0] Epoch 20, Batch 500, Current Loss: 0.1114
+2025-04-21 01:14:05,238 [RANK 0] No improvement (3/10), Current Val Loss: 0.1586, Best Val Loss: 0.1182
+2025-04-21 01:14:05,240 [RANK 0] Epoch 20 complete - Train Loss: 0.1375, Val Loss: 0.1586, Best Val: 0.1182, LR: 1.00e-03
+2025-04-21 01:14:16,423 [RANK 0] Epoch 21, Batch 0, Current Loss: 0.1082
+2025-04-21 01:16:35,675 [RANK 0] Epoch 21, Batch 100, Current Loss: 0.1049
+2025-04-21 01:19:09,696 [RANK 0] Epoch 21, Batch 200, Current Loss: 0.1494
+2025-04-21 01:21:29,473 [RANK 0] Epoch 21, Batch 300, Current Loss: 0.1236
+2025-04-21 01:23:58,560 [RANK 0] Epoch 21, Batch 400, Current Loss: 0.1499
+2025-04-21 01:26:27,465 [RANK 0] Epoch 21, Batch 500, Current Loss: 0.1367
+2025-04-21 01:29:55,567 [RANK 0] No improvement (4/10), Current Val Loss: 0.1442, Best Val Loss: 0.1182
+2025-04-21 01:29:55,569 [RANK 0] Epoch 21 complete - Train Loss: 0.1363, Val Loss: 0.1442, Best Val: 0.1182, LR: 1.00e-03
+2025-04-21 01:30:06,490 [RANK 0] Epoch 22, Batch 0, Current Loss: 0.0840
+2025-04-21 01:32:30,118 [RANK 0] Epoch 22, Batch 100, Current Loss: 0.0916
+2025-04-21 01:34:59,481 [RANK 0] Epoch 22, Batch 200, Current Loss: 0.1576
+2025-04-21 01:37:20,277 [RANK 0] Epoch 22, Batch 300, Current Loss: 0.1244
+2025-04-21 01:39:48,967 [RANK 0] Epoch 22, Batch 400, Current Loss: 0.1457
+2025-04-21 01:42:14,018 [RANK 0] Epoch 22, Batch 500, Current Loss: 0.1390
+2025-04-21 01:45:47,130 [RANK 0] No improvement (5/10), Current Val Loss: 0.1232, Best Val Loss: 0.1182
+2025-04-21 01:45:47,132 [RANK 0] Epoch 22 complete - Train Loss: 0.1323, Val Loss: 0.1232, Best Val: 0.1182, LR: 1.00e-03
+2025-04-21 01:46:02,232 [RANK 0] Epoch 23, Batch 0, Current Loss: 0.0854
+2025-04-21 01:48:22,007 [RANK 0] Epoch 23, Batch 100, Current Loss: 0.1090
+2025-04-21 01:50:51,320 [RANK 0] Epoch 23, Batch 200, Current Loss: 0.1444
+2025-04-21 01:53:12,112 [RANK 0] Epoch 23, Batch 300, Current Loss: 0.1176
+2025-04-21 01:55:46,567 [RANK 0] Epoch 23, Batch 400, Current Loss: 0.1206
+2025-04-21 01:58:02,696 [RANK 0] Epoch 23, Batch 500, Current Loss: 0.1582
+2025-04-21 02:01:41,288 [RANK 0] No improvement (6/10), Current Val Loss: 0.1466, Best Val Loss: 0.1182
+2025-04-21 02:01:41,289 [RANK 0] Epoch 23 complete - Train Loss: 0.1367, Val Loss: 0.1466, Best Val: 0.1182, LR: 1.00e-03
+2025-04-21 02:02:05,101 [RANK 0] Epoch 24, Batch 0, Current Loss: 0.0938
+2025-04-21 02:04:23,039 [RANK 0] Epoch 24, Batch 100, Current Loss: 0.0909
+2025-04-21 02:06:41,739 [RANK 0] Epoch 24, Batch 200, Current Loss: 0.1329
+2025-04-21 02:09:07,023 [RANK 0] Epoch 24, Batch 300, Current Loss: 0.1141
+2025-04-21 02:11:42,928 [RANK 0] Epoch 24, Batch 400, Current Loss: 0.1133
+2025-04-21 02:14:05,006 [RANK 0] Epoch 24, Batch 500, Current Loss: 0.1304
+2025-04-21 02:17:33,484 [RANK 0] No improvement (7/10), Current Val Loss: 0.1623, Best Val Loss: 0.1182
+2025-04-21 02:17:33,488 [RANK 0] Epoch 24 complete - Train Loss: 0.1303, Val Loss: 0.1623, Best Val: 0.1182, LR: 1.00e-03
+2025-04-21 02:17:44,399 [RANK 0] Epoch 25, Batch 0, Current Loss: 0.1045
+2025-04-21 02:20:15,875 [RANK 0] Epoch 25, Batch 100, Current Loss: 0.1083
+2025-04-21 02:22:33,705 [RANK 0] Epoch 25, Batch 200, Current Loss: 0.1675
+2025-04-21 02:25:03,273 [RANK 0] Epoch 25, Batch 300, Current Loss: 0.1142
+2025-04-21 02:27:23,306 [RANK 0] Epoch 25, Batch 400, Current Loss: 0.1140
+2025-04-21 02:29:52,332 [RANK 0] Epoch 25, Batch 500, Current Loss: 0.1253
+2025-04-21 02:33:24,577 [RANK 0] No improvement (8/10), Current Val Loss: 0.1313, Best Val Loss: 0.1182
+2025-04-21 02:33:24,579 [RANK 0] Epoch 25 complete - Train Loss: 0.1229, Val Loss: 0.1313, Best Val: 0.1182, LR: 1.00e-03
+2025-04-21 02:33:35,577 [RANK 0] Epoch 26, Batch 0, Current Loss: 0.0875
+2025-04-21 02:35:55,163 [RANK 0] Epoch 26, Batch 100, Current Loss: 0.0870
+2025-04-21 02:38:24,668 [RANK 0] Epoch 26, Batch 200, Current Loss: 0.1845
+2025-04-21 02:40:48,417 [RANK 0] Epoch 26, Batch 300, Current Loss: 0.1263
+2025-04-21 02:43:20,105 [RANK 0] Epoch 26, Batch 400, Current Loss: 0.1184
+2025-04-21 02:45:40,355 [RANK 0] Epoch 26, Batch 500, Current Loss: 0.1223
+2025-04-21 02:49:13,804 [RANK 0] No improvement (9/10), Current Val Loss: 0.1489, Best Val Loss: 0.1182
+2025-04-21 02:49:13,806 [RANK 0] Epoch 26 complete - Train Loss: 0.1375, Val Loss: 0.1489, Best Val: 0.1182, LR: 1.00e-03
+2025-04-21 02:49:24,740 [RANK 0] Epoch 27, Batch 0, Current Loss: 0.0944
+2025-04-21 02:51:48,899 [RANK 0] Epoch 27, Batch 100, Current Loss: 0.0880
+2025-04-21 02:54:14,073 [RANK 0] Epoch 27, Batch 200, Current Loss: 0.1974
+2025-04-21 02:56:39,341 [RANK 0] Epoch 27, Batch 300, Current Loss: 0.1159
+2025-04-21 02:59:08,112 [RANK 0] Epoch 27, Batch 400, Current Loss: 0.1173
+2025-04-21 03:01:30,189 [RANK 0] Epoch 27, Batch 500, Current Loss: 0.1052
+2025-04-21 03:05:08,092 [RANK 0] No improvement (10/10), Current Val Loss: 0.1251, Best Val Loss: 0.1182
+2025-04-21 03:05:08,094 [RANK 0] Early stopping triggered at epoch 27
+2025-04-21 03:05:08,094 [RANK 0] Training completed at 2025-04-21 03:05:08
+2025-04-21 03:05:11,992 [RANK 0] Running inference with the trained model
+2025-04-21 03:05:11,993 [RANK 0] Starting inference process
+2025-04-21 03:05:11,993 [RANK 0] Initializing full dataset with patch_size=3, time_steps=5
+2025-04-21 03:05:14,075 [RANK 0] Padded data shape: (7674, 137, 182, 6)
+2025-04-21 03:05:26,366 [RANK 0] Total samples in full dataset: 186283800
+2025-04-21 03:05:26,366 [RANK 0] Inference dataset loaded with 186283800 samples
+2025-04-21 03:05:26,367 [RANK 0] Initializing autoencoder with input_dim=270, latent_dim=9
+2025-04-21 03:05:26,368 [RANK 0] Model architecture:
+WeatherAutoencoder(
+  (encoder): Sequential(
+    (0): Linear(in_features=270, out_features=256, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=256, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=64, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=64, out_features=9, bias=True)
+  )
+  (decoder): Sequential(
+    (0): Linear(in_features=9, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=256, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=256, out_features=270, bias=True)
+  )
+)
+2025-04-21 03:05:26,369 [RANK 0] Loading model from best_model_tp.pth
+2025-04-21 03:05:26,405 [RANK 0] Running inference...
+2025-04-21 03:06:15,490 [RANK 0] Processed 0/1446 batches
+2025-04-21 03:14:34,201 [RANK 0] Processed 100/1446 batches
+2025-04-21 03:23:33,194 [RANK 0] Processed 200/1446 batches
+2025-04-21 03:31:44,231 [RANK 0] Processed 300/1446 batches
+2025-04-21 03:40:13,780 [RANK 0] Processed 400/1446 batches
+2025-04-21 03:48:28,367 [RANK 0] Processed 500/1446 batches
+2025-04-21 03:57:22,700 [RANK 0] Processed 600/1446 batches
+2025-04-21 04:05:40,711 [RANK 0] Processed 700/1446 batches
+2025-04-21 04:14:04,175 [RANK 0] Processed 800/1446 batches
+2025-04-21 04:22:41,160 [RANK 0] Processed 900/1446 batches
+2025-04-21 04:31:13,526 [RANK 0] Processed 1000/1446 batches
+2025-04-21 04:39:38,331 [RANK 0] Processed 1100/1446 batches
+2025-04-21 04:48:08,879 [RANK 0] Processed 1200/1446 batches
+2025-04-21 04:56:36,418 [RANK 0] Processed 1300/1446 batches
+2025-04-21 05:04:50,792 [RANK 0] Processed 1400/1446 batches
+2025-04-21 05:08:27,422 [RANK 0] Inference completed, processing results...
+2025-04-21 05:08:29,099 [RANK 0] ❌ Execution failed: cannot reshape array of size 1675786752 into shape (7666,135,180,9)
+Traceback (most recent call last):
+  File "/ceph/hpc/home/dhinakarans/VEGA_DDP_DEV/era5_autoencoder/autoencoder_run.py", line 555, in main
+    run_inference(data, args.model_output if args.model_output else "best_model.pth",
+  File "/ceph/hpc/home/dhinakarans/VEGA_DDP_DEV/era5_autoencoder/autoencoder_run.py", line 386, in run_inference
+    all_latents_np = all_latents.numpy().reshape(valid_time, H, W, LATENT_DIM)
+ValueError: cannot reshape array of size 1675786752 into shape (7666,135,180,9)
+2025-04-21 08:12:10,216 [RANK 0] Starting main execution with arguments: Namespace(train=True, start_from_model=None, infer=None, input_zarr='/ceph/hpc/home/dhinakarans/data/autoencoder/ERA5_to_latent.zarr', variable_type='ssrd', model_output='best_model_ssrd.pth', output_zarr='tp_latents.zarr', batch_size=64384, num_workers=8, prefetch_factor=25)
+2025-04-21 08:12:10,219 [RANK 0] Loading and preprocessing data...
+2025-04-21 08:12:14,491 [RANK 0] Initial dataset loaded. Shape: {'time': 7670, 'lat': 135, 'lon': 180}, Variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 'ssrd', 't2m', 't_850', 'tp', 'u_850', 'v_850', 'z_850']
+2025-04-21 08:12:14,491 [RANK 0] Using only ssrd variable
+2025-04-21 08:12:14,517 [RANK 0] Using variables: ['cos_doy', 'dem', 'q_850', 'sin_doy', 'ssrd', 't_850', 'u_850', 'v_850', 'z_850']
+2025-04-21 08:12:14,517 [RANK 0] Processing variable: cos_doy
+2025-04-21 08:12:17,238 [RANK 0] Computed mean for cos_doy: 0.0006517938977895169
+2025-04-21 08:12:17,238 [RANK 0] Computed std for cos_doy: 0.7073367848846865
+2025-04-21 08:12:18,144 [RANK 0] Processing variable: dem
+2025-04-21 08:12:19,330 [RANK 0] Computed mean for dem: 503.53936767578125
+2025-04-21 08:12:19,330 [RANK 0] Computed std for dem: 560.3971557617188
+2025-04-21 08:12:20,149 [RANK 0] Processing variable: q_850
+2025-04-21 08:12:21,197 [RANK 0] Computed mean for q_850: 0.004727561492472887
+2025-04-21 08:12:21,197 [RANK 0] Computed std for q_850: 0.00219158548861742
+2025-04-21 08:12:22,245 [RANK 0] Processing variable: sin_doy
+2025-04-21 08:12:23,417 [RANK 0] Computed mean for sin_doy: 1.1221223048125202e-05
+2025-04-21 08:12:23,417 [RANK 0] Computed std for sin_doy: 0.706876402058941
+2025-04-21 08:12:24,371 [RANK 0] Processing variable: ssrd
+2025-04-21 08:12:25,556 [RANK 0] Computed mean for ssrd: 13371295.0
+2025-04-21 08:12:25,556 [RANK 0] Computed std for ssrd: 7938211.5
+2025-04-21 08:12:26,469 [RANK 0] Processing variable: t_850
+2025-04-21 08:12:27,501 [RANK 0] Computed mean for t_850: 279.1830749511719
+2025-04-21 08:12:27,501 [RANK 0] Computed std for t_850: 6.824256420135498
+2025-04-21 08:12:28,326 [RANK 0] Processing variable: u_850
+2025-04-21 08:12:29,585 [RANK 0] Computed mean for u_850: 2.136380672454834
+2025-04-21 08:12:29,585 [RANK 0] Computed std for u_850: 5.79701566696167
+2025-04-21 08:12:30,480 [RANK 0] Processing variable: v_850
+2025-04-21 08:12:31,515 [RANK 0] Computed mean for v_850: -0.03182092308998108
+2025-04-21 08:12:31,515 [RANK 0] Computed std for v_850: 4.692667484283447
+2025-04-21 08:12:32,423 [RANK 0] Processing variable: z_850
+2025-04-21 08:12:33,698 [RANK 0] Computed mean for z_850: 14575.0322265625
+2025-04-21 08:12:33,699 [RANK 0] Computed std for z_850: 676.2464599609375
+2025-04-21 08:12:34,620 [RANK 0] Combining all normalized variables...
+2025-04-21 08:12:36,524 [RANK 0] Data loaded in 22.01 seconds
+2025-04-21 08:12:36,524 [RANK 0] Final data shape: (7670, 135, 180, 9)
+2025-04-21 08:12:36,524 [RANK 0] Memory usage: 13.42 GB
+2025-04-21 08:12:37,539 [RANK 0] Data validation passed - no NaN values detected
+2025-04-21 08:12:37,568 [RANK 0] Starting training from scratch
+2025-04-21 08:12:37,680 [RANK 0] Starting single-GPU/CPU training
+2025-04-21 08:12:37,680 [RANK 0] Initializing training process on rank 0
+2025-04-21 08:12:37,682 [RANK 0] Initializing autoencoder with input_dim=405, latent_dim=9
+2025-04-21 08:12:37,697 [RANK 0] Model architecture:
+WeatherAutoencoder(
+  (encoder): Sequential(
+    (0): Linear(in_features=405, out_features=256, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=256, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=64, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=64, out_features=9, bias=True)
+  )
+  (decoder): Sequential(
+    (0): Linear(in_features=9, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=256, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=256, out_features=405, bias=True)
+  )
+)
+2025-04-21 08:12:37,876 [RANK 0] Model created on device cuda:0
+2025-04-21 08:12:37,877 [RANK 0] Number of parameters: 291742
+2025-04-21 08:12:37,877 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-21 08:12:37,877 [RANK 0] Original data shape: (7670, 135, 180, 9)
+2025-04-21 08:12:40,584 [RANK 0] Padded data shape: (7674, 137, 182, 9)
+2025-04-21 08:12:40,585 [RANK 0] Generating 5000 random training tiles per time step
+2025-04-21 08:12:50,625 [RANK 0] Total samples generated: 38350000
+2025-04-21 08:12:50,625 [RANK 0] Initializing dataset with patch_size=3, time_steps=5
+2025-04-21 08:12:50,625 [RANK 0] Original data shape: (7670, 135, 180, 9)
+2025-04-21 08:12:53,332 [RANK 0] Padded data shape: (7674, 137, 182, 9)
+2025-04-21 08:12:53,332 [RANK 0] Generating 500 fixed validation tiles
+2025-04-21 08:12:54,485 [RANK 0] Total samples generated: 3835000
+2025-04-21 08:12:54,485 [RANK 0] DataLoaders initialized with batch_size=64384, num_workers=8
+2025-04-21 08:13:02,907 [RANK 0] Starting training loop at 2025-04-21 08:13:02
+2025-04-21 08:13:22,314 [RANK 0] Epoch 1, Batch 0, Current Loss: 1.0778
+2025-04-21 08:15:41,019 [RANK 0] Epoch 1, Batch 100, Current Loss: 1.1662
+2025-04-21 08:18:12,089 [RANK 0] Epoch 1, Batch 200, Current Loss: 1.2695
+2025-04-21 08:20:32,342 [RANK 0] Epoch 1, Batch 300, Current Loss: 0.5333
+2025-04-21 08:23:07,640 [RANK 0] Epoch 1, Batch 400, Current Loss: 0.6478
+2025-04-21 08:25:27,763 [RANK 0] Epoch 1, Batch 500, Current Loss: 0.3562
+2025-04-21 08:29:10,962 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.6804
+2025-04-21 08:29:10,964 [RANK 0] Epoch 1 complete - Train Loss: 0.8138, Val Loss: 0.6804, Best Val: 0.6804, LR: 1.00e-03
+2025-04-21 08:29:22,377 [RANK 0] Epoch 2, Batch 0, Current Loss: 0.6691
+2025-04-21 08:31:41,923 [RANK 0] Epoch 2, Batch 100, Current Loss: 0.8114
+2025-04-21 08:34:16,846 [RANK 0] Epoch 2, Batch 200, Current Loss: 0.9591
+2025-04-21 08:36:32,699 [RANK 0] Epoch 2, Batch 300, Current Loss: 0.3566
+2025-04-21 08:39:08,114 [RANK 0] Epoch 2, Batch 400, Current Loss: 0.7817
+2025-04-21 08:41:28,531 [RANK 0] Epoch 2, Batch 500, Current Loss: 0.4205
+2025-04-21 08:45:05,333 [RANK 0] No improvement (1/10), Current Val Loss: 1.1091, Best Val Loss: 0.6804
+2025-04-21 08:45:05,335 [RANK 0] Epoch 2 complete - Train Loss: 0.7036, Val Loss: 1.1091, Best Val: 0.6804, LR: 1.00e-03
+2025-04-21 08:45:16,653 [RANK 0] Epoch 3, Batch 0, Current Loss: 0.7371
+2025-04-21 08:47:40,342 [RANK 0] Epoch 3, Batch 100, Current Loss: 0.3329
+2025-04-21 08:50:11,998 [RANK 0] Epoch 3, Batch 200, Current Loss: 0.8595
+2025-04-21 08:52:32,208 [RANK 0] Epoch 3, Batch 300, Current Loss: 0.8738
+2025-04-21 08:55:03,506 [RANK 0] Epoch 3, Batch 400, Current Loss: 0.6523
+2025-04-21 08:57:34,286 [RANK 0] Epoch 3, Batch 500, Current Loss: 0.3012
+2025-04-21 09:01:02,999 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.5950
+2025-04-21 09:01:03,000 [RANK 0] Epoch 3 complete - Train Loss: 0.6489, Val Loss: 0.5950, Best Val: 0.5950, LR: 1.00e-03
+2025-04-21 09:01:14,287 [RANK 0] Epoch 4, Batch 0, Current Loss: 0.4606
+2025-04-21 09:03:38,894 [RANK 0] Epoch 4, Batch 100, Current Loss: 0.3422
+2025-04-21 09:06:10,503 [RANK 0] Epoch 4, Batch 200, Current Loss: 1.0460
+2025-04-21 09:08:31,613 [RANK 0] Epoch 4, Batch 300, Current Loss: 0.3477
+2025-04-21 09:11:03,094 [RANK 0] Epoch 4, Batch 400, Current Loss: 0.6093
+2025-04-21 09:13:23,943 [RANK 0] Epoch 4, Batch 500, Current Loss: 0.2546
+2025-04-21 09:17:00,301 [RANK 0] No improvement (1/10), Current Val Loss: 0.6220, Best Val Loss: 0.5950
+2025-04-21 09:17:00,303 [RANK 0] Epoch 4 complete - Train Loss: 0.5810, Val Loss: 0.6220, Best Val: 0.5950, LR: 1.00e-03
+2025-04-21 09:17:11,255 [RANK 0] Epoch 5, Batch 0, Current Loss: 0.6223
+2025-04-21 09:19:36,107 [RANK 0] Epoch 5, Batch 100, Current Loss: 0.2338
+2025-04-21 09:22:07,652 [RANK 0] Epoch 5, Batch 200, Current Loss: 1.5045
+2025-04-21 09:24:28,934 [RANK 0] Epoch 5, Batch 300, Current Loss: 0.3753
+2025-04-21 09:27:09,000 [RANK 0] Epoch 5, Batch 400, Current Loss: 0.5980
+2025-04-21 09:29:21,717 [RANK 0] Epoch 5, Batch 500, Current Loss: 0.3732
+2025-04-21 09:33:00,735 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.4782
+2025-04-21 09:33:00,736 [RANK 0] Epoch 5 complete - Train Loss: 0.5486, Val Loss: 0.4782, Best Val: 0.4782, LR: 1.00e-03
+2025-04-21 09:33:11,728 [RANK 0] Epoch 6, Batch 0, Current Loss: 0.4614
+2025-04-21 09:35:45,062 [RANK 0] Epoch 6, Batch 100, Current Loss: 0.4267
+2025-04-21 09:38:15,486 [RANK 0] Epoch 6, Batch 200, Current Loss: 0.7132
+2025-04-21 09:40:28,400 [RANK 0] Epoch 6, Batch 300, Current Loss: 0.2750
+2025-04-21 09:43:00,120 [RANK 0] Epoch 6, Batch 400, Current Loss: 0.4868
+2025-04-21 09:45:21,421 [RANK 0] Epoch 6, Batch 500, Current Loss: 0.2660
+2025-04-21 09:49:02,486 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.4765
+2025-04-21 09:49:02,487 [RANK 0] Epoch 6 complete - Train Loss: 0.4970, Val Loss: 0.4765, Best Val: 0.4765, LR: 1.00e-03
+2025-04-21 09:49:13,955 [RANK 0] Epoch 7, Batch 0, Current Loss: 0.4410
+2025-04-21 09:51:38,855 [RANK 0] Epoch 7, Batch 100, Current Loss: 0.2886
+2025-04-21 09:54:06,341 [RANK 0] Epoch 7, Batch 200, Current Loss: 0.7771
+2025-04-21 09:56:31,798 [RANK 0] Epoch 7, Batch 300, Current Loss: 0.2746
+2025-04-21 09:59:03,427 [RANK 0] Epoch 7, Batch 400, Current Loss: 0.4069
+2025-04-21 10:01:25,917 [RANK 0] Epoch 7, Batch 500, Current Loss: 0.2234
+2025-04-21 10:05:04,652 [RANK 0] No improvement (1/10), Current Val Loss: 0.5248, Best Val Loss: 0.4765
+2025-04-21 10:05:04,654 [RANK 0] Epoch 7 complete - Train Loss: 0.5038, Val Loss: 0.5248, Best Val: 0.4765, LR: 1.00e-03
+2025-04-21 10:05:16,041 [RANK 0] Epoch 8, Batch 0, Current Loss: 0.5136
+2025-04-21 10:07:41,136 [RANK 0] Epoch 8, Batch 100, Current Loss: 0.3632
+2025-04-21 10:10:12,757 [RANK 0] Epoch 8, Batch 200, Current Loss: 0.6600
+2025-04-21 10:12:36,043 [RANK 0] Epoch 8, Batch 300, Current Loss: 0.2696
+2025-04-21 10:15:05,513 [RANK 0] Epoch 8, Batch 400, Current Loss: 0.4004
+2025-04-21 10:17:30,483 [RANK 0] Epoch 8, Batch 500, Current Loss: 0.2096
+2025-04-21 10:21:08,099 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.4623
+2025-04-21 10:21:08,102 [RANK 0] Epoch 8 complete - Train Loss: 0.4466, Val Loss: 0.4623, Best Val: 0.4623, LR: 1.00e-03
+2025-04-21 10:21:19,017 [RANK 0] Epoch 9, Batch 0, Current Loss: 0.4087
+2025-04-21 10:23:48,257 [RANK 0] Epoch 9, Batch 100, Current Loss: 0.2710
+2025-04-21 10:26:12,431 [RANK 0] Epoch 9, Batch 200, Current Loss: 0.8965
+2025-04-21 10:28:46,430 [RANK 0] Epoch 9, Batch 300, Current Loss: 0.2810
+2025-04-21 10:31:10,166 [RANK 0] Epoch 9, Batch 400, Current Loss: 0.4272
+2025-04-21 10:33:31,531 [RANK 0] Epoch 9, Batch 500, Current Loss: 0.2368
+2025-04-21 10:37:09,069 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.4603
+2025-04-21 10:37:09,070 [RANK 0] Epoch 9 complete - Train Loss: 0.4739, Val Loss: 0.4603, Best Val: 0.4603, LR: 1.00e-03
+2025-04-21 10:37:26,378 [RANK 0] Epoch 10, Batch 0, Current Loss: 0.4613
+2025-04-21 10:39:45,490 [RANK 0] Epoch 10, Batch 100, Current Loss: 0.2517
+2025-04-21 10:42:18,730 [RANK 0] Epoch 10, Batch 200, Current Loss: 0.6086
+2025-04-21 10:44:40,147 [RANK 0] Epoch 10, Batch 300, Current Loss: 0.2952
+2025-04-21 10:47:12,194 [RANK 0] Epoch 10, Batch 400, Current Loss: 0.3995
+2025-04-21 10:49:47,249 [RANK 0] Epoch 10, Batch 500, Current Loss: 0.2125
+2025-04-21 10:53:12,660 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.4367
+2025-04-21 10:53:12,662 [RANK 0] Epoch 10 complete - Train Loss: 0.4287, Val Loss: 0.4367, Best Val: 0.4367, LR: 1.00e-03
+2025-04-21 10:53:28,185 [RANK 0] Epoch 11, Batch 0, Current Loss: 0.4134
+2025-04-21 10:55:57,203 [RANK 0] Epoch 11, Batch 100, Current Loss: 0.2180
+2025-04-21 10:58:28,769 [RANK 0] Epoch 11, Batch 200, Current Loss: 0.6421
+2025-04-21 11:00:42,893 [RANK 0] Epoch 11, Batch 300, Current Loss: 0.2799
+2025-04-21 11:03:15,184 [RANK 0] Epoch 11, Batch 400, Current Loss: 0.5153
+2025-04-21 11:05:37,710 [RANK 0] Epoch 11, Batch 500, Current Loss: 0.2281
+2025-04-21 11:09:15,450 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.4194
+2025-04-21 11:09:15,451 [RANK 0] Epoch 11 complete - Train Loss: 0.4123, Val Loss: 0.4194, Best Val: 0.4194, LR: 1.00e-03
+2025-04-21 11:09:30,858 [RANK 0] Epoch 12, Batch 0, Current Loss: 0.4021
+2025-04-21 11:11:52,469 [RANK 0] Epoch 12, Batch 100, Current Loss: 0.2489
+2025-04-21 11:14:31,192 [RANK 0] Epoch 12, Batch 200, Current Loss: 0.7065
+2025-04-21 11:16:47,051 [RANK 0] Epoch 12, Batch 300, Current Loss: 0.2586
+2025-04-21 11:19:20,112 [RANK 0] Epoch 12, Batch 400, Current Loss: 0.3474
+2025-04-21 11:21:46,685 [RANK 0] Epoch 12, Batch 500, Current Loss: 0.3254
+2025-04-21 11:25:21,061 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.3968
+2025-04-21 11:25:21,064 [RANK 0] Epoch 12 complete - Train Loss: 0.4504, Val Loss: 0.3968, Best Val: 0.3968, LR: 1.00e-03
+2025-04-21 11:25:32,058 [RANK 0] Epoch 13, Batch 0, Current Loss: 0.3394
+2025-04-21 11:27:57,606 [RANK 0] Epoch 13, Batch 100, Current Loss: 0.2564
+2025-04-21 11:30:29,214 [RANK 0] Epoch 13, Batch 200, Current Loss: 0.5802
+2025-04-21 11:32:52,120 [RANK 0] Epoch 13, Batch 300, Current Loss: 0.2875
+2025-04-21 11:35:22,979 [RANK 0] Epoch 13, Batch 400, Current Loss: 0.3453
+2025-04-21 11:37:48,962 [RANK 0] Epoch 13, Batch 500, Current Loss: 0.3602
+2025-04-21 11:41:24,942 [RANK 0] No improvement (1/10), Current Val Loss: 0.4250, Best Val Loss: 0.3968
+2025-04-21 11:41:24,950 [RANK 0] Epoch 13 complete - Train Loss: 0.3989, Val Loss: 0.4250, Best Val: 0.3968, LR: 1.00e-03
+2025-04-21 11:41:40,270 [RANK 0] Epoch 14, Batch 0, Current Loss: 0.3352
+2025-04-21 11:44:01,847 [RANK 0] Epoch 14, Batch 100, Current Loss: 0.2250
+2025-04-21 11:46:33,960 [RANK 0] Epoch 14, Batch 200, Current Loss: 0.6571
+2025-04-21 11:49:03,264 [RANK 0] Epoch 14, Batch 300, Current Loss: 0.2534
+2025-04-21 11:51:32,117 [RANK 0] Epoch 14, Batch 400, Current Loss: 0.3483
+2025-04-21 11:53:49,402 [RANK 0] Epoch 14, Batch 500, Current Loss: 0.3147
+2025-04-21 11:57:27,312 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.3535
+2025-04-21 11:57:27,313 [RANK 0] Epoch 14 complete - Train Loss: 0.3857, Val Loss: 0.3535, Best Val: 0.3535, LR: 1.00e-03
+2025-04-21 11:57:38,520 [RANK 0] Epoch 15, Batch 0, Current Loss: 0.3457
+2025-04-21 12:00:04,110 [RANK 0] Epoch 15, Batch 100, Current Loss: 0.2320
+2025-04-21 12:02:37,098 [RANK 0] Epoch 15, Batch 200, Current Loss: 0.5710
+2025-04-21 12:04:57,117 [RANK 0] Epoch 15, Batch 300, Current Loss: 0.2468
+2025-04-21 12:07:48,316 [RANK 0] Epoch 15, Batch 400, Current Loss: 0.4016
+2025-04-21 12:09:55,443 [RANK 0] Epoch 15, Batch 500, Current Loss: 0.3482
+2025-04-21 12:13:30,640 [RANK 0] No improvement (1/10), Current Val Loss: 0.4086, Best Val Loss: 0.3535
+2025-04-21 12:13:30,642 [RANK 0] Epoch 15 complete - Train Loss: 0.3646, Val Loss: 0.4086, Best Val: 0.3535, LR: 1.00e-03
+2025-04-21 12:13:42,031 [RANK 0] Epoch 16, Batch 0, Current Loss: 0.3308
+2025-04-21 12:16:07,170 [RANK 0] Epoch 16, Batch 100, Current Loss: 0.2924
+2025-04-21 12:18:39,401 [RANK 0] Epoch 16, Batch 200, Current Loss: 0.5405
+2025-04-21 12:21:01,269 [RANK 0] Epoch 16, Batch 300, Current Loss: 0.2861
+2025-04-21 12:23:36,494 [RANK 0] Epoch 16, Batch 400, Current Loss: 0.4073
+2025-04-21 12:26:03,973 [RANK 0] Epoch 16, Batch 500, Current Loss: 0.1933
+2025-04-21 12:29:32,405 [RANK 0] No improvement (2/10), Current Val Loss: 0.3875, Best Val Loss: 0.3535
+2025-04-21 12:29:32,407 [RANK 0] Epoch 16 complete - Train Loss: 0.3686, Val Loss: 0.3875, Best Val: 0.3535, LR: 1.00e-03
+2025-04-21 12:29:55,241 [RANK 0] Epoch 17, Batch 0, Current Loss: 0.3348
+2025-04-21 12:32:16,843 [RANK 0] Epoch 17, Batch 100, Current Loss: 0.2926
+2025-04-21 12:34:40,817 [RANK 0] Epoch 17, Batch 200, Current Loss: 0.5401
+2025-04-21 12:37:02,729 [RANK 0] Epoch 17, Batch 300, Current Loss: 0.2559
+2025-04-21 12:39:34,146 [RANK 0] Epoch 17, Batch 400, Current Loss: 0.3408
+2025-04-21 12:42:07,638 [RANK 0] Epoch 17, Batch 500, Current Loss: 0.2480
+2025-04-21 12:45:36,479 [RANK 0] No improvement (3/10), Current Val Loss: 0.4223, Best Val Loss: 0.3535
+2025-04-21 12:45:36,480 [RANK 0] Epoch 17 complete - Train Loss: 0.3582, Val Loss: 0.4223, Best Val: 0.3535, LR: 1.00e-03
+2025-04-21 12:45:47,772 [RANK 0] Epoch 18, Batch 0, Current Loss: 0.3485
+2025-04-21 12:48:12,920 [RANK 0] Epoch 18, Batch 100, Current Loss: 0.3023
+2025-04-21 12:50:46,309 [RANK 0] Epoch 18, Batch 200, Current Loss: 0.5092
+2025-04-21 12:53:06,585 [RANK 0] Epoch 18, Batch 300, Current Loss: 0.4200
+2025-04-21 12:55:38,621 [RANK 0] Epoch 18, Batch 400, Current Loss: 0.4475
+2025-04-21 12:58:00,187 [RANK 0] Epoch 18, Batch 500, Current Loss: 0.2688
+2025-04-21 13:01:39,563 [RANK 0] No improvement (4/10), Current Val Loss: 0.3615, Best Val Loss: 0.3535
+2025-04-21 13:01:39,565 [RANK 0] Epoch 18 complete - Train Loss: 0.3684, Val Loss: 0.3615, Best Val: 0.3535, LR: 1.00e-03
+2025-04-21 13:01:51,037 [RANK 0] Epoch 19, Batch 0, Current Loss: 0.3442
+2025-04-21 13:04:15,843 [RANK 0] Epoch 19, Batch 100, Current Loss: 0.2071
+2025-04-21 13:06:47,756 [RANK 0] Epoch 19, Batch 200, Current Loss: 0.5262
+2025-04-21 13:09:10,051 [RANK 0] Epoch 19, Batch 300, Current Loss: 0.2477
+2025-04-21 13:11:41,629 [RANK 0] Epoch 19, Batch 400, Current Loss: 0.4033
+2025-04-21 13:14:03,398 [RANK 0] Epoch 19, Batch 500, Current Loss: 0.3351
+2025-04-21 13:17:43,468 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.3510
+2025-04-21 13:17:43,469 [RANK 0] Epoch 19 complete - Train Loss: 0.3456, Val Loss: 0.3510, Best Val: 0.3510, LR: 1.00e-03
+2025-04-21 13:17:55,082 [RANK 0] Epoch 20, Batch 0, Current Loss: 0.3201
+2025-04-21 13:20:37,248 [RANK 0] Epoch 20, Batch 100, Current Loss: 0.2911
+2025-04-21 13:22:57,384 [RANK 0] Epoch 20, Batch 200, Current Loss: 0.5080
+2025-04-21 13:25:22,670 [RANK 0] Epoch 20, Batch 300, Current Loss: 0.2095
+2025-04-21 13:27:50,200 [RANK 0] Epoch 20, Batch 400, Current Loss: 0.4144
+2025-04-21 13:30:23,581 [RANK 0] Epoch 20, Batch 500, Current Loss: 0.2071
+2025-04-21 13:33:57,385 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.3119
+2025-04-21 13:33:57,386 [RANK 0] Epoch 20 complete - Train Loss: 0.3517, Val Loss: 0.3119, Best Val: 0.3119, LR: 1.00e-03
+2025-04-21 13:34:16,087 [RANK 0] Epoch 21, Batch 0, Current Loss: 0.3045
+2025-04-21 13:36:33,383 [RANK 0] Epoch 21, Batch 100, Current Loss: 0.1856
+2025-04-21 13:39:07,813 [RANK 0] Epoch 21, Batch 200, Current Loss: 0.4823
+2025-04-21 13:41:26,900 [RANK 0] Epoch 21, Batch 300, Current Loss: 0.2089
+2025-04-21 13:43:59,330 [RANK 0] Epoch 21, Batch 400, Current Loss: 0.4430
+2025-04-21 13:46:20,690 [RANK 0] Epoch 21, Batch 500, Current Loss: 0.2617
+2025-04-21 13:49:58,348 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.3081
+2025-04-21 13:49:58,349 [RANK 0] Epoch 21 complete - Train Loss: 0.3345, Val Loss: 0.3081, Best Val: 0.3081, LR: 1.00e-03
+2025-04-21 13:50:09,451 [RANK 0] Epoch 22, Batch 0, Current Loss: 0.2847
+2025-04-21 13:52:34,228 [RANK 0] Epoch 22, Batch 100, Current Loss: 0.3052
+2025-04-21 13:55:06,908 [RANK 0] Epoch 22, Batch 200, Current Loss: 0.4837
+2025-04-21 13:57:28,532 [RANK 0] Epoch 22, Batch 300, Current Loss: 0.2199
+2025-04-21 14:00:00,941 [RANK 0] Epoch 22, Batch 400, Current Loss: 0.2729
+2025-04-21 14:02:22,578 [RANK 0] Epoch 22, Batch 500, Current Loss: 0.2329
+2025-04-21 14:06:01,194 [RANK 0] No improvement (1/10), Current Val Loss: 0.3150, Best Val Loss: 0.3081
+2025-04-21 14:06:01,195 [RANK 0] Epoch 22 complete - Train Loss: 0.3265, Val Loss: 0.3150, Best Val: 0.3081, LR: 1.00e-03
+2025-04-21 14:06:16,519 [RANK 0] Epoch 23, Batch 0, Current Loss: 0.2921
+2025-04-21 14:08:33,764 [RANK 0] Epoch 23, Batch 100, Current Loss: 0.3170
+2025-04-21 14:11:10,451 [RANK 0] Epoch 23, Batch 200, Current Loss: 0.5013
+2025-04-21 14:13:30,636 [RANK 0] Epoch 23, Batch 300, Current Loss: 0.2056
+2025-04-21 14:16:04,800 [RANK 0] Epoch 23, Batch 400, Current Loss: 0.2933
+2025-04-21 14:18:26,398 [RANK 0] Epoch 23, Batch 500, Current Loss: 0.2240
+2025-04-21 14:22:06,104 [RANK 0] No improvement (2/10), Current Val Loss: 0.3183, Best Val Loss: 0.3081
+2025-04-21 14:22:06,105 [RANK 0] Epoch 23 complete - Train Loss: 0.3124, Val Loss: 0.3183, Best Val: 0.3081, LR: 1.00e-03
+2025-04-21 14:22:17,550 [RANK 0] Epoch 24, Batch 0, Current Loss: 0.3048
+2025-04-21 14:24:49,984 [RANK 0] Epoch 24, Batch 100, Current Loss: 0.2328
+2025-04-21 14:27:14,515 [RANK 0] Epoch 24, Batch 200, Current Loss: 0.4711
+2025-04-21 14:29:43,265 [RANK 0] Epoch 24, Batch 300, Current Loss: 0.2372
+2025-04-21 14:32:08,998 [RANK 0] Epoch 24, Batch 400, Current Loss: 0.3212
+2025-04-21 14:34:31,057 [RANK 0] Epoch 24, Batch 500, Current Loss: 0.2251
+2025-04-21 14:38:12,594 [RANK 0] No improvement (3/10), Current Val Loss: 0.3126, Best Val Loss: 0.3081
+2025-04-21 14:38:12,595 [RANK 0] Epoch 24 complete - Train Loss: 0.3262, Val Loss: 0.3126, Best Val: 0.3081, LR: 1.00e-03
+2025-04-21 14:38:23,670 [RANK 0] Epoch 25, Batch 0, Current Loss: 0.2776
+2025-04-21 14:40:48,604 [RANK 0] Epoch 25, Batch 100, Current Loss: 0.2286
+2025-04-21 14:43:20,977 [RANK 0] Epoch 25, Batch 200, Current Loss: 0.4680
+2025-04-21 14:45:42,287 [RANK 0] Epoch 25, Batch 300, Current Loss: 0.2269
+2025-04-21 14:48:15,064 [RANK 0] Epoch 25, Batch 400, Current Loss: 0.3087
+2025-04-21 14:50:43,720 [RANK 0] Epoch 25, Batch 500, Current Loss: 0.3227
+2025-04-21 14:54:14,874 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.3034
+2025-04-21 14:54:14,876 [RANK 0] Epoch 25 complete - Train Loss: 0.3224, Val Loss: 0.3034, Best Val: 0.3034, LR: 1.00e-03
+2025-04-21 14:54:30,228 [RANK 0] Epoch 26, Batch 0, Current Loss: 0.2973
+2025-04-21 14:56:51,303 [RANK 0] Epoch 26, Batch 100, Current Loss: 0.2231
+2025-04-21 14:59:31,992 [RANK 0] Epoch 26, Batch 200, Current Loss: 0.5010
+2025-04-21 15:01:45,314 [RANK 0] Epoch 26, Batch 300, Current Loss: 0.2270
+2025-04-21 15:04:17,863 [RANK 0] Epoch 26, Batch 400, Current Loss: 0.2882
+2025-04-21 15:06:39,438 [RANK 0] Epoch 26, Batch 500, Current Loss: 0.1924
+2025-04-21 15:10:18,479 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.2863
+2025-04-21 15:10:18,480 [RANK 0] Epoch 26 complete - Train Loss: 0.3027, Val Loss: 0.2863, Best Val: 0.2863, LR: 1.00e-03
+2025-04-21 15:10:29,492 [RANK 0] Epoch 27, Batch 0, Current Loss: 0.2591
+2025-04-21 15:12:54,773 [RANK 0] Epoch 27, Batch 100, Current Loss: 0.1867
+2025-04-21 15:15:27,193 [RANK 0] Epoch 27, Batch 200, Current Loss: 0.4893
+2025-04-21 15:17:48,165 [RANK 0] Epoch 27, Batch 300, Current Loss: 0.2262
+2025-04-21 15:20:20,770 [RANK 0] Epoch 27, Batch 400, Current Loss: 0.2818
+2025-04-21 15:22:46,493 [RANK 0] Epoch 27, Batch 500, Current Loss: 0.1713
+2025-04-21 15:26:22,142 [RANK 0] No improvement (1/10), Current Val Loss: 0.2962, Best Val Loss: 0.2863
+2025-04-21 15:26:22,144 [RANK 0] Epoch 27 complete - Train Loss: 0.2983, Val Loss: 0.2962, Best Val: 0.2863, LR: 1.00e-03
+2025-04-21 15:26:33,215 [RANK 0] Epoch 28, Batch 0, Current Loss: 0.2969
+2025-04-21 15:29:05,918 [RANK 0] Epoch 28, Batch 100, Current Loss: 0.1923
+2025-04-21 15:31:26,458 [RANK 0] Epoch 28, Batch 200, Current Loss: 0.4931
+2025-04-21 15:34:00,022 [RANK 0] Epoch 28, Batch 300, Current Loss: 0.2498
+2025-04-21 15:36:20,295 [RANK 0] Epoch 28, Batch 400, Current Loss: 0.2656
+2025-04-21 15:38:45,120 [RANK 0] Epoch 28, Batch 500, Current Loss: 0.3599
+2025-04-21 15:42:27,979 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.2828
+2025-04-21 15:42:27,980 [RANK 0] Epoch 28 complete - Train Loss: 0.2913, Val Loss: 0.2828, Best Val: 0.2828, LR: 1.00e-03
+2025-04-21 15:42:43,642 [RANK 0] Epoch 29, Batch 0, Current Loss: 0.2500
+2025-04-21 15:45:04,607 [RANK 0] Epoch 29, Batch 100, Current Loss: 0.1633
+2025-04-21 15:47:36,500 [RANK 0] Epoch 29, Batch 200, Current Loss: 0.4623
+2025-04-21 15:49:57,762 [RANK 0] Epoch 29, Batch 300, Current Loss: 0.2056
+2025-04-21 15:52:29,995 [RANK 0] Epoch 29, Batch 400, Current Loss: 0.2535
+2025-04-21 15:54:51,862 [RANK 0] Epoch 29, Batch 500, Current Loss: 0.2828
+2025-04-21 15:58:34,456 [RANK 0] No improvement (1/10), Current Val Loss: 0.2868, Best Val Loss: 0.2828
+2025-04-21 15:58:34,458 [RANK 0] Epoch 29 complete - Train Loss: 0.2946, Val Loss: 0.2868, Best Val: 0.2828, LR: 1.00e-03
+2025-04-21 15:58:45,407 [RANK 0] Epoch 30, Batch 0, Current Loss: 0.2655
+2025-04-21 16:01:07,076 [RANK 0] Epoch 30, Batch 100, Current Loss: 0.2032
+2025-04-21 16:03:37,847 [RANK 0] Epoch 30, Batch 200, Current Loss: 0.4779
+2025-04-21 16:06:05,894 [RANK 0] Epoch 30, Batch 300, Current Loss: 0.2471
+2025-04-21 16:08:35,979 [RANK 0] Epoch 30, Batch 400, Current Loss: 0.2809
+2025-04-21 16:10:57,634 [RANK 0] Epoch 30, Batch 500, Current Loss: 0.2895
+2025-04-21 16:14:38,051 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.2796
+2025-04-21 16:14:38,052 [RANK 0] Epoch 30 complete - Train Loss: 0.2926, Val Loss: 0.2796, Best Val: 0.2796, LR: 1.00e-03
+2025-04-21 16:14:49,170 [RANK 0] Epoch 31, Batch 0, Current Loss: 0.2997
+2025-04-21 16:17:22,824 [RANK 0] Epoch 31, Batch 100, Current Loss: 0.1665
+2025-04-21 16:19:41,823 [RANK 0] Epoch 31, Batch 200, Current Loss: 0.4531
+2025-04-21 16:22:07,901 [RANK 0] Epoch 31, Batch 300, Current Loss: 0.1983
+2025-04-21 16:24:38,960 [RANK 0] Epoch 31, Batch 400, Current Loss: 0.2895
+2025-04-21 16:27:02,215 [RANK 0] Epoch 31, Batch 500, Current Loss: 0.1566
+2025-04-21 16:30:42,530 [RANK 0] No improvement (1/10), Current Val Loss: 0.2997, Best Val Loss: 0.2796
+2025-04-21 16:30:42,533 [RANK 0] Epoch 31 complete - Train Loss: 0.2847, Val Loss: 0.2997, Best Val: 0.2796, LR: 1.00e-03
+2025-04-21 16:30:53,580 [RANK 0] Epoch 32, Batch 0, Current Loss: 0.3224
+2025-04-21 16:33:19,111 [RANK 0] Epoch 32, Batch 100, Current Loss: 0.1604
+2025-04-21 16:35:46,326 [RANK 0] Epoch 32, Batch 200, Current Loss: 0.4799
+2025-04-21 16:38:17,236 [RANK 0] Epoch 32, Batch 300, Current Loss: 0.1956
+2025-04-21 16:40:40,992 [RANK 0] Epoch 32, Batch 400, Current Loss: 0.2665
+2025-04-21 16:43:14,777 [RANK 0] Epoch 32, Batch 500, Current Loss: 0.2442
+2025-04-21 16:46:47,441 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.2655
+2025-04-21 16:46:47,442 [RANK 0] Epoch 32 complete - Train Loss: 0.2867, Val Loss: 0.2655, Best Val: 0.2655, LR: 1.00e-03
+2025-04-21 16:46:58,565 [RANK 0] Epoch 33, Batch 0, Current Loss: 0.2592
+2025-04-21 16:49:24,245 [RANK 0] Epoch 33, Batch 100, Current Loss: 0.1659
+2025-04-21 16:52:01,955 [RANK 0] Epoch 33, Batch 200, Current Loss: 0.5170
+2025-04-21 16:54:18,530 [RANK 0] Epoch 33, Batch 300, Current Loss: 0.2009
+2025-04-21 16:56:54,880 [RANK 0] Epoch 33, Batch 400, Current Loss: 0.2740
+2025-04-21 16:59:15,832 [RANK 0] Epoch 33, Batch 500, Current Loss: 0.2395
+2025-04-21 17:02:52,903 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.2654
+2025-04-21 17:02:52,905 [RANK 0] Epoch 33 complete - Train Loss: 0.2797, Val Loss: 0.2654, Best Val: 0.2654, LR: 1.00e-03
+2025-04-21 17:03:03,916 [RANK 0] Epoch 34, Batch 0, Current Loss: 0.2707
+2025-04-21 17:05:25,266 [RANK 0] Epoch 34, Batch 100, Current Loss: 0.1965
+2025-04-21 17:07:56,937 [RANK 0] Epoch 34, Batch 200, Current Loss: 0.4960
+2025-04-21 17:10:22,888 [RANK 0] Epoch 34, Batch 300, Current Loss: 0.1941
+2025-04-21 17:12:54,377 [RANK 0] Epoch 34, Batch 400, Current Loss: 0.2851
+2025-04-21 17:15:17,241 [RANK 0] Epoch 34, Batch 500, Current Loss: 0.2151
+2025-04-21 17:18:59,672 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.2540
+2025-04-21 17:18:59,673 [RANK 0] Epoch 34 complete - Train Loss: 0.2790, Val Loss: 0.2540, Best Val: 0.2540, LR: 1.00e-03
+2025-04-21 17:19:10,695 [RANK 0] Epoch 35, Batch 0, Current Loss: 0.2633
+2025-04-21 17:21:32,113 [RANK 0] Epoch 35, Batch 100, Current Loss: 0.1937
+2025-04-21 17:24:03,665 [RANK 0] Epoch 35, Batch 200, Current Loss: 0.4572
+2025-04-21 17:26:29,392 [RANK 0] Epoch 35, Batch 300, Current Loss: 0.1955
+2025-04-21 17:29:01,202 [RANK 0] Epoch 35, Batch 400, Current Loss: 0.2399
+2025-04-21 17:31:22,895 [RANK 0] Epoch 35, Batch 500, Current Loss: 0.1946
+2025-04-21 17:35:02,208 [RANK 0] No improvement (1/10), Current Val Loss: 0.2812, Best Val Loss: 0.2540
+2025-04-21 17:35:02,210 [RANK 0] Epoch 35 complete - Train Loss: 0.2756, Val Loss: 0.2812, Best Val: 0.2540, LR: 1.00e-03
+2025-04-21 17:35:13,407 [RANK 0] Epoch 36, Batch 0, Current Loss: 0.3060
+2025-04-21 17:37:41,072 [RANK 0] Epoch 36, Batch 100, Current Loss: 0.1824
+2025-04-21 17:40:06,596 [RANK 0] Epoch 36, Batch 200, Current Loss: 0.4913
+2025-04-21 17:42:32,612 [RANK 0] Epoch 36, Batch 300, Current Loss: 0.2129
+2025-04-21 17:45:06,242 [RANK 0] Epoch 36, Batch 400, Current Loss: 0.3786
+2025-04-21 17:47:27,085 [RANK 0] Epoch 36, Batch 500, Current Loss: 0.1887
+2025-04-21 17:51:09,394 [RANK 0] No improvement (2/10), Current Val Loss: 0.3074, Best Val Loss: 0.2540
+2025-04-21 17:51:09,396 [RANK 0] Epoch 36 complete - Train Loss: 0.2967, Val Loss: 0.3074, Best Val: 0.2540, LR: 1.00e-03
+2025-04-21 17:51:20,414 [RANK 0] Epoch 37, Batch 0, Current Loss: 0.3284
+2025-04-21 17:53:46,360 [RANK 0] Epoch 37, Batch 100, Current Loss: 0.1859
+2025-04-21 17:56:13,556 [RANK 0] Epoch 37, Batch 200, Current Loss: 0.4330
+2025-04-21 17:58:39,446 [RANK 0] Epoch 37, Batch 300, Current Loss: 0.1974
+2025-04-21 18:01:18,880 [RANK 0] Epoch 37, Batch 400, Current Loss: 0.3494
+2025-04-21 18:03:40,793 [RANK 0] Epoch 37, Batch 500, Current Loss: 0.1796
+2025-04-21 18:07:16,307 [RANK 0] No improvement (3/10), Current Val Loss: 0.2924, Best Val Loss: 0.2540
+2025-04-21 18:07:16,310 [RANK 0] Epoch 37 complete - Train Loss: 0.2664, Val Loss: 0.2924, Best Val: 0.2540, LR: 1.00e-03
+2025-04-21 18:07:27,388 [RANK 0] Epoch 38, Batch 0, Current Loss: 0.2817
+2025-04-21 18:09:53,376 [RANK 0] Epoch 38, Batch 100, Current Loss: 0.2305
+2025-04-21 18:12:25,360 [RANK 0] Epoch 38, Batch 200, Current Loss: 0.4897
+2025-04-21 18:14:48,161 [RANK 0] Epoch 38, Batch 300, Current Loss: 0.1955
+2025-04-21 18:17:18,675 [RANK 0] Epoch 38, Batch 400, Current Loss: 0.2902
+2025-04-21 18:19:43,298 [RANK 0] Epoch 38, Batch 500, Current Loss: 0.1415
+2025-04-21 18:23:21,691 [RANK 0] No improvement (4/10), Current Val Loss: 0.2804, Best Val Loss: 0.2540
+2025-04-21 18:23:21,693 [RANK 0] Epoch 38 complete - Train Loss: 0.2722, Val Loss: 0.2804, Best Val: 0.2540, LR: 1.00e-03
+2025-04-21 18:23:32,616 [RANK 0] Epoch 39, Batch 0, Current Loss: 0.2646
+2025-04-21 18:25:54,810 [RANK 0] Epoch 39, Batch 100, Current Loss: 0.1692
+2025-04-21 18:28:38,133 [RANK 0] Epoch 39, Batch 200, Current Loss: 0.4108
+2025-04-21 18:31:00,844 [RANK 0] Epoch 39, Batch 300, Current Loss: 0.2043
+2025-04-21 18:33:22,858 [RANK 0] Epoch 39, Batch 400, Current Loss: 0.3070
+2025-04-21 18:35:48,820 [RANK 0] Epoch 39, Batch 500, Current Loss: 0.1919
+2025-04-21 18:39:27,775 [RANK 0] No improvement (5/10), Current Val Loss: 0.2653, Best Val Loss: 0.2540
+2025-04-21 18:39:27,856 [RANK 0] Epoch 39 complete - Train Loss: 0.2850, Val Loss: 0.2653, Best Val: 0.2540, LR: 1.00e-03
+2025-04-21 18:39:38,960 [RANK 0] Epoch 40, Batch 0, Current Loss: 0.2440
+2025-04-21 18:42:04,495 [RANK 0] Epoch 40, Batch 100, Current Loss: 0.1506
+2025-04-21 18:44:32,023 [RANK 0] Epoch 40, Batch 200, Current Loss: 0.4887
+2025-04-21 18:46:57,560 [RANK 0] Epoch 40, Batch 300, Current Loss: 0.1978
+2025-04-21 18:49:27,182 [RANK 0] Epoch 40, Batch 400, Current Loss: 0.2555
+2025-04-21 18:51:51,724 [RANK 0] Epoch 40, Batch 500, Current Loss: 0.2319
+2025-04-21 18:55:32,770 [RANK 0] No improvement (6/10), Current Val Loss: 0.2579, Best Val Loss: 0.2540
+2025-04-21 18:55:32,772 [RANK 0] Epoch 40 complete - Train Loss: 0.2587, Val Loss: 0.2579, Best Val: 0.2540, LR: 1.00e-03
+2025-04-21 18:55:43,889 [RANK 0] Epoch 41, Batch 0, Current Loss: 0.2879
+2025-04-21 18:58:17,625 [RANK 0] Epoch 41, Batch 100, Current Loss: 0.1531
+2025-04-21 19:00:40,319 [RANK 0] Epoch 41, Batch 200, Current Loss: 0.5225
+2025-04-21 19:03:10,519 [RANK 0] Epoch 41, Batch 300, Current Loss: 0.2301
+2025-04-21 19:05:32,985 [RANK 0] Epoch 41, Batch 400, Current Loss: 0.2936
+2025-04-21 19:08:01,358 [RANK 0] Epoch 41, Batch 500, Current Loss: 0.2650
+2025-04-21 19:11:36,730 [RANK 0] No improvement (7/10), Current Val Loss: 0.2832, Best Val Loss: 0.2540
+2025-04-21 19:11:36,732 [RANK 0] Epoch 41 complete - Train Loss: 0.2758, Val Loss: 0.2832, Best Val: 0.2540, LR: 1.00e-03
+2025-04-21 19:11:47,741 [RANK 0] Epoch 42, Batch 0, Current Loss: 0.3181
+2025-04-21 19:14:09,613 [RANK 0] Epoch 42, Batch 100, Current Loss: 0.1477
+2025-04-21 19:16:45,166 [RANK 0] Epoch 42, Batch 200, Current Loss: 0.4609
+2025-04-21 19:19:15,527 [RANK 0] Epoch 42, Batch 300, Current Loss: 0.2706
+2025-04-21 19:21:37,453 [RANK 0] Epoch 42, Batch 400, Current Loss: 0.3346
+2025-04-21 19:23:59,336 [RANK 0] Epoch 42, Batch 500, Current Loss: 0.1409
+2025-04-21 19:27:43,778 [RANK 0] No improvement (8/10), Current Val Loss: 0.2749, Best Val Loss: 0.2540
+2025-04-21 19:27:43,780 [RANK 0] Epoch 42 complete - Train Loss: 0.2610, Val Loss: 0.2749, Best Val: 0.2540, LR: 1.00e-03
+2025-04-21 19:27:55,150 [RANK 0] Epoch 43, Batch 0, Current Loss: 0.2499
+2025-04-21 19:30:16,786 [RANK 0] Epoch 43, Batch 100, Current Loss: 0.1633
+2025-04-21 19:32:48,052 [RANK 0] Epoch 43, Batch 200, Current Loss: 0.3723
+2025-04-21 19:35:16,202 [RANK 0] Epoch 43, Batch 300, Current Loss: 0.1777
+2025-04-21 19:37:45,227 [RANK 0] Epoch 43, Batch 400, Current Loss: 0.4304
+2025-04-21 19:40:11,226 [RANK 0] Epoch 43, Batch 500, Current Loss: 0.1647
+2025-04-21 19:43:48,500 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.2466
+2025-04-21 19:43:48,501 [RANK 0] Epoch 43 complete - Train Loss: 0.2610, Val Loss: 0.2466, Best Val: 0.2466, LR: 1.00e-03
+2025-04-21 19:43:59,760 [RANK 0] Epoch 44, Batch 0, Current Loss: 0.2427
+2025-04-21 19:46:21,386 [RANK 0] Epoch 44, Batch 100, Current Loss: 0.1493
+2025-04-21 19:49:00,638 [RANK 0] Epoch 44, Batch 200, Current Loss: 0.3960
+2025-04-21 19:51:20,457 [RANK 0] Epoch 44, Batch 300, Current Loss: 0.1817
+2025-04-21 19:53:51,121 [RANK 0] Epoch 44, Batch 400, Current Loss: 0.2453
+2025-04-21 19:56:16,147 [RANK 0] Epoch 44, Batch 500, Current Loss: 0.1547
+2025-04-21 19:59:53,680 [RANK 0] No improvement (1/10), Current Val Loss: 0.2507, Best Val Loss: 0.2466
+2025-04-21 19:59:53,682 [RANK 0] Epoch 44 complete - Train Loss: 0.2735, Val Loss: 0.2507, Best Val: 0.2466, LR: 1.00e-03
+2025-04-21 20:00:10,287 [RANK 0] Epoch 45, Batch 0, Current Loss: 0.2613
+2025-04-21 20:02:30,509 [RANK 0] Epoch 45, Batch 100, Current Loss: 0.1416
+2025-04-21 20:05:02,072 [RANK 0] Epoch 45, Batch 200, Current Loss: 0.4878
+2025-04-21 20:07:24,714 [RANK 0] Epoch 45, Batch 300, Current Loss: 0.1746
+2025-04-21 20:09:55,698 [RANK 0] Epoch 45, Batch 400, Current Loss: 0.2382
+2025-04-21 20:12:19,226 [RANK 0] Epoch 45, Batch 500, Current Loss: 0.1437
+2025-04-21 20:15:57,840 [RANK 0] No improvement (2/10), Current Val Loss: 0.2677, Best Val Loss: 0.2466
+2025-04-21 20:15:57,842 [RANK 0] Epoch 45 complete - Train Loss: 0.2585, Val Loss: 0.2677, Best Val: 0.2466, LR: 1.00e-03
+2025-04-21 20:16:09,424 [RANK 0] Epoch 46, Batch 0, Current Loss: 0.2715
+2025-04-21 20:18:33,648 [RANK 0] Epoch 46, Batch 100, Current Loss: 0.1506
+2025-04-21 20:21:01,413 [RANK 0] Epoch 46, Batch 200, Current Loss: 0.4811
+2025-04-21 20:23:28,875 [RANK 0] Epoch 46, Batch 300, Current Loss: 0.1902
+2025-04-21 20:25:57,884 [RANK 0] Epoch 46, Batch 400, Current Loss: 0.2622
+2025-04-21 20:28:22,719 [RANK 0] Epoch 46, Batch 500, Current Loss: 0.1340
+2025-04-21 20:32:02,863 [RANK 0] No improvement (3/10), Current Val Loss: 0.2681, Best Val Loss: 0.2466
+2025-04-21 20:32:02,865 [RANK 0] Epoch 46 complete - Train Loss: 0.2517, Val Loss: 0.2681, Best Val: 0.2466, LR: 1.00e-03
+2025-04-21 20:32:18,172 [RANK 0] Epoch 47, Batch 0, Current Loss: 0.2975
+2025-04-21 20:34:39,255 [RANK 0] Epoch 47, Batch 100, Current Loss: 0.1553
+2025-04-21 20:37:10,931 [RANK 0] Epoch 47, Batch 200, Current Loss: 0.5422
+2025-04-21 20:39:31,479 [RANK 0] Epoch 47, Batch 300, Current Loss: 0.1670
+2025-04-21 20:42:02,944 [RANK 0] Epoch 47, Batch 400, Current Loss: 0.3310
+2025-04-21 20:44:26,486 [RANK 0] Epoch 47, Batch 500, Current Loss: 0.1417
+2025-04-21 20:48:07,019 [RANK 0] No improvement (4/10), Current Val Loss: 0.2696, Best Val Loss: 0.2466
+2025-04-21 20:48:07,021 [RANK 0] Epoch 47 complete - Train Loss: 0.2651, Val Loss: 0.2696, Best Val: 0.2466, LR: 1.00e-03
+2025-04-21 20:48:26,123 [RANK 0] Epoch 48, Batch 0, Current Loss: 0.2621
+2025-04-21 20:50:43,551 [RANK 0] Epoch 48, Batch 100, Current Loss: 0.1395
+2025-04-21 20:53:10,293 [RANK 0] Epoch 48, Batch 200, Current Loss: 0.4442
+2025-04-21 20:55:53,920 [RANK 0] Epoch 48, Batch 300, Current Loss: 0.1812
+2025-04-21 20:58:06,256 [RANK 0] Epoch 48, Batch 400, Current Loss: 0.2997
+2025-04-21 21:00:35,402 [RANK 0] Epoch 48, Batch 500, Current Loss: 0.1882
+2025-04-21 21:04:11,119 [RANK 0] No improvement (5/10), Current Val Loss: 0.2600, Best Val Loss: 0.2466
+2025-04-21 21:04:11,123 [RANK 0] Epoch 48 complete - Train Loss: 0.2601, Val Loss: 0.2600, Best Val: 0.2466, LR: 1.00e-03
+2025-04-21 21:04:22,701 [RANK 0] Epoch 49, Batch 0, Current Loss: 0.2353
+2025-04-21 21:06:47,528 [RANK 0] Epoch 49, Batch 100, Current Loss: 0.1688
+2025-04-21 21:09:16,061 [RANK 0] Epoch 49, Batch 200, Current Loss: 0.3942
+2025-04-21 21:11:44,979 [RANK 0] Epoch 49, Batch 300, Current Loss: 0.1862
+2025-04-21 21:14:14,666 [RANK 0] Epoch 49, Batch 400, Current Loss: 0.2565
+2025-04-21 21:16:47,048 [RANK 0] Epoch 49, Batch 500, Current Loss: 0.2059
+2025-04-21 21:20:17,314 [RANK 0] No improvement (6/10), Current Val Loss: 0.2581, Best Val Loss: 0.2466
+2025-04-21 21:20:17,317 [RANK 0] Epoch 49 complete - Train Loss: 0.2606, Val Loss: 0.2581, Best Val: 0.2466, LR: 1.00e-03
+2025-04-21 21:20:32,680 [RANK 0] Epoch 50, Batch 0, Current Loss: 0.2548
+2025-04-21 21:22:54,859 [RANK 0] Epoch 50, Batch 100, Current Loss: 0.1438
+2025-04-21 21:25:26,378 [RANK 0] Epoch 50, Batch 200, Current Loss: 0.4473
+2025-04-21 21:27:56,876 [RANK 0] Epoch 50, Batch 300, Current Loss: 0.1608
+2025-04-21 21:30:20,065 [RANK 0] Epoch 50, Batch 400, Current Loss: 0.2528
+2025-04-21 21:32:49,556 [RANK 0] Epoch 50, Batch 500, Current Loss: 0.1738
+2025-04-21 21:36:23,573 [RANK 0] No improvement (7/10), Current Val Loss: 0.2545, Best Val Loss: 0.2466
+2025-04-21 21:36:23,575 [RANK 0] Epoch 50 complete - Train Loss: 0.2460, Val Loss: 0.2545, Best Val: 0.2466, LR: 1.00e-03
+2025-04-21 21:36:34,831 [RANK 0] Epoch 51, Batch 0, Current Loss: 0.2350
+2025-04-21 21:39:00,561 [RANK 0] Epoch 51, Batch 100, Current Loss: 0.1645
+2025-04-21 21:41:28,109 [RANK 0] Epoch 51, Batch 200, Current Loss: 0.3998
+2025-04-21 21:43:56,647 [RANK 0] Epoch 51, Batch 300, Current Loss: 0.2091
+2025-04-21 21:46:26,514 [RANK 0] Epoch 51, Batch 400, Current Loss: 0.4303
+2025-04-21 21:48:53,691 [RANK 0] Epoch 51, Batch 500, Current Loss: 0.1568
+2025-04-21 21:52:32,902 [RANK 0] No improvement (8/10), Current Val Loss: 0.2700, Best Val Loss: 0.2466
+2025-04-21 21:52:32,905 [RANK 0] Epoch 51 complete - Train Loss: 0.2678, Val Loss: 0.2700, Best Val: 0.2466, LR: 1.00e-03
+2025-04-21 21:52:43,878 [RANK 0] Epoch 52, Batch 0, Current Loss: 0.2542
+2025-04-21 21:55:17,345 [RANK 0] Epoch 52, Batch 100, Current Loss: 0.1764
+2025-04-21 21:57:41,349 [RANK 0] Epoch 52, Batch 200, Current Loss: 0.3649
+2025-04-21 22:00:04,820 [RANK 0] Epoch 52, Batch 300, Current Loss: 0.1595
+2025-04-21 22:02:34,940 [RANK 0] Epoch 52, Batch 400, Current Loss: 0.2387
+2025-04-21 22:05:00,957 [RANK 0] Epoch 52, Batch 500, Current Loss: 0.1589
+2025-04-21 22:08:38,432 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.2366
+2025-04-21 22:08:38,433 [RANK 0] Epoch 52 complete - Train Loss: 0.2462, Val Loss: 0.2366, Best Val: 0.2366, LR: 1.00e-03
+2025-04-21 22:08:54,022 [RANK 0] Epoch 53, Batch 0, Current Loss: 0.2365
+2025-04-21 22:11:15,378 [RANK 0] Epoch 53, Batch 100, Current Loss: 0.1650
+2025-04-21 22:13:47,244 [RANK 0] Epoch 53, Batch 200, Current Loss: 0.3582
+2025-04-21 22:16:18,990 [RANK 0] Epoch 53, Batch 300, Current Loss: 0.1711
+2025-04-21 22:18:39,954 [RANK 0] Epoch 53, Batch 400, Current Loss: 0.2840
+2025-04-21 22:21:07,010 [RANK 0] Epoch 53, Batch 500, Current Loss: 0.1672
+2025-04-21 22:24:47,306 [RANK 0] No improvement (1/10), Current Val Loss: 0.2447, Best Val Loss: 0.2366
+2025-04-21 22:24:47,309 [RANK 0] Epoch 53 complete - Train Loss: 0.2569, Val Loss: 0.2447, Best Val: 0.2366, LR: 1.00e-03
+2025-04-21 22:24:58,341 [RANK 0] Epoch 54, Batch 0, Current Loss: 0.2551
+2025-04-21 22:27:20,394 [RANK 0] Epoch 54, Batch 100, Current Loss: 0.1731
+2025-04-21 22:29:57,174 [RANK 0] Epoch 54, Batch 200, Current Loss: 0.4163
+2025-04-21 22:32:19,426 [RANK 0] Epoch 54, Batch 300, Current Loss: 0.1531
+2025-04-21 22:34:49,593 [RANK 0] Epoch 54, Batch 400, Current Loss: 0.2935
+2025-04-21 22:37:15,613 [RANK 0] Epoch 54, Batch 500, Current Loss: 0.1595
+2025-04-21 22:40:53,681 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.2332
+2025-04-21 22:40:53,682 [RANK 0] Epoch 54 complete - Train Loss: 0.2491, Val Loss: 0.2332, Best Val: 0.2332, LR: 1.00e-03
+2025-04-21 22:41:04,736 [RANK 0] Epoch 55, Batch 0, Current Loss: 0.2128
+2025-04-21 22:43:30,954 [RANK 0] Epoch 55, Batch 100, Current Loss: 0.1392
+2025-04-21 22:46:03,131 [RANK 0] Epoch 55, Batch 200, Current Loss: 0.4332
+2025-04-21 22:48:35,533 [RANK 0] Epoch 55, Batch 300, Current Loss: 0.1548
+2025-04-21 22:50:56,674 [RANK 0] Epoch 55, Batch 400, Current Loss: 0.2053
+2025-04-21 22:53:28,214 [RANK 0] Epoch 55, Batch 500, Current Loss: 0.1751
+2025-04-21 22:57:00,405 [RANK 0] No improvement (1/10), Current Val Loss: 0.3207, Best Val Loss: 0.2332
+2025-04-21 22:57:00,407 [RANK 0] Epoch 55 complete - Train Loss: 0.2335, Val Loss: 0.3207, Best Val: 0.2332, LR: 1.00e-03
+2025-04-21 22:57:15,667 [RANK 0] Epoch 56, Batch 0, Current Loss: 0.3112
+2025-04-21 22:59:37,673 [RANK 0] Epoch 56, Batch 100, Current Loss: 0.1559
+2025-04-21 23:02:10,314 [RANK 0] Epoch 56, Batch 200, Current Loss: 0.3766
+2025-04-21 23:04:32,282 [RANK 0] Epoch 56, Batch 300, Current Loss: 0.2000
+2025-04-21 23:07:16,570 [RANK 0] Epoch 56, Batch 400, Current Loss: 0.2167
+2025-04-21 23:09:29,318 [RANK 0] Epoch 56, Batch 500, Current Loss: 0.1474
+2025-04-21 23:13:08,182 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.2189
+2025-04-21 23:13:08,183 [RANK 0] Epoch 56 complete - Train Loss: 0.2643, Val Loss: 0.2189, Best Val: 0.2189, LR: 1.00e-03
+2025-04-21 23:13:19,288 [RANK 0] Epoch 57, Batch 0, Current Loss: 0.2126
+2025-04-21 23:15:52,152 [RANK 0] Epoch 57, Batch 100, Current Loss: 0.1375
+2025-04-21 23:18:12,104 [RANK 0] Epoch 57, Batch 200, Current Loss: 0.4193
+2025-04-21 23:20:37,886 [RANK 0] Epoch 57, Batch 300, Current Loss: 0.1823
+2025-04-21 23:23:10,602 [RANK 0] Epoch 57, Batch 400, Current Loss: 0.2164
+2025-04-21 23:25:42,799 [RANK 0] Epoch 57, Batch 500, Current Loss: 0.1409
+2025-04-21 23:29:10,780 [RANK 0] No improvement (1/10), Current Val Loss: 0.2549, Best Val Loss: 0.2189
+2025-04-21 23:29:10,785 [RANK 0] Epoch 57 complete - Train Loss: 0.2230, Val Loss: 0.2549, Best Val: 0.2189, LR: 1.00e-03
+2025-04-21 23:29:29,373 [RANK 0] Epoch 58, Batch 0, Current Loss: 0.2394
+2025-04-21 23:31:46,525 [RANK 0] Epoch 58, Batch 100, Current Loss: 0.1574
+2025-04-21 23:34:19,268 [RANK 0] Epoch 58, Batch 200, Current Loss: 0.5633
+2025-04-21 23:36:40,972 [RANK 0] Epoch 58, Batch 300, Current Loss: 0.1778
+2025-04-21 23:39:13,556 [RANK 0] Epoch 58, Batch 400, Current Loss: 0.3039
+2025-04-21 23:41:41,969 [RANK 0] Epoch 58, Batch 500, Current Loss: 0.1881
+2025-04-21 23:45:17,885 [RANK 0] No improvement (2/10), Current Val Loss: 0.2442, Best Val Loss: 0.2189
+2025-04-21 23:45:17,889 [RANK 0] Epoch 58 complete - Train Loss: 0.2551, Val Loss: 0.2442, Best Val: 0.2189, LR: 1.00e-03
+2025-04-21 23:45:33,176 [RANK 0] Epoch 59, Batch 0, Current Loss: 0.2725
+2025-04-21 23:47:55,544 [RANK 0] Epoch 59, Batch 100, Current Loss: 0.1490
+2025-04-21 23:50:23,510 [RANK 0] Epoch 59, Batch 200, Current Loss: 0.4685
+2025-04-21 23:52:52,124 [RANK 0] Epoch 59, Batch 300, Current Loss: 0.1567
+2025-04-21 23:55:22,761 [RANK 0] Epoch 59, Batch 400, Current Loss: 0.2284
+2025-04-21 23:57:53,222 [RANK 0] Epoch 59, Batch 500, Current Loss: 0.1581
+2025-04-22 00:01:26,678 [RANK 0] No improvement (3/10), Current Val Loss: 0.2442, Best Val Loss: 0.2189
+2025-04-22 00:01:26,680 [RANK 0] Epoch 59 complete - Train Loss: 0.2436, Val Loss: 0.2442, Best Val: 0.2189, LR: 1.00e-03
+2025-04-22 00:01:37,714 [RANK 0] Epoch 60, Batch 0, Current Loss: 0.2418
+2025-04-22 00:04:03,746 [RANK 0] Epoch 60, Batch 100, Current Loss: 0.1538
+2025-04-22 00:06:35,913 [RANK 0] Epoch 60, Batch 200, Current Loss: 0.4670
+2025-04-22 00:08:59,152 [RANK 0] Epoch 60, Batch 300, Current Loss: 0.1560
+2025-04-22 00:11:30,266 [RANK 0] Epoch 60, Batch 400, Current Loss: 0.2184
+2025-04-22 00:13:54,398 [RANK 0] Epoch 60, Batch 500, Current Loss: 0.1781
+2025-04-22 00:17:33,872 [RANK 0] No improvement (4/10), Current Val Loss: 0.2316, Best Val Loss: 0.2189
+2025-04-22 00:17:33,876 [RANK 0] Epoch 60 complete - Train Loss: 0.2506, Val Loss: 0.2316, Best Val: 0.2189, LR: 1.00e-03
+2025-04-22 00:17:45,226 [RANK 0] Epoch 61, Batch 0, Current Loss: 0.2039
+2025-04-22 00:20:11,599 [RANK 0] Epoch 61, Batch 100, Current Loss: 0.1508
+2025-04-22 00:22:51,147 [RANK 0] Epoch 61, Batch 200, Current Loss: 0.4170
+2025-04-22 00:25:06,538 [RANK 0] Epoch 61, Batch 300, Current Loss: 0.1799
+2025-04-22 00:27:44,815 [RANK 0] Epoch 61, Batch 400, Current Loss: 0.2453
+2025-04-22 00:30:06,421 [RANK 0] Epoch 61, Batch 500, Current Loss: 0.1893
+2025-04-22 00:33:40,311 [RANK 0] No improvement (5/10), Current Val Loss: 0.2555, Best Val Loss: 0.2189
+2025-04-22 00:33:40,313 [RANK 0] Epoch 61 complete - Train Loss: 0.2351, Val Loss: 0.2555, Best Val: 0.2189, LR: 1.00e-03
+2025-04-22 00:33:55,921 [RANK 0] Epoch 62, Batch 0, Current Loss: 0.2347
+2025-04-22 00:36:24,236 [RANK 0] Epoch 62, Batch 100, Current Loss: 0.1607
+2025-04-22 00:38:49,177 [RANK 0] Epoch 62, Batch 200, Current Loss: 0.5005
+2025-04-22 00:41:12,648 [RANK 0] Epoch 62, Batch 300, Current Loss: 0.2359
+2025-04-22 00:43:43,278 [RANK 0] Epoch 62, Batch 400, Current Loss: 0.2142
+2025-04-22 00:46:08,374 [RANK 0] Epoch 62, Batch 500, Current Loss: 0.1498
+2025-04-22 00:49:48,066 [RANK 0] No improvement (6/10), Current Val Loss: 0.2234, Best Val Loss: 0.2189
+2025-04-22 00:49:48,068 [RANK 0] Epoch 62 complete - Train Loss: 0.2557, Val Loss: 0.2234, Best Val: 0.2189, LR: 1.00e-03
+2025-04-22 00:49:59,745 [RANK 0] Epoch 63, Batch 0, Current Loss: 0.1979
+2025-04-22 00:52:24,303 [RANK 0] Epoch 63, Batch 100, Current Loss: 0.1451
+2025-04-22 00:54:53,081 [RANK 0] Epoch 63, Batch 200, Current Loss: 0.3478
+2025-04-22 00:57:18,175 [RANK 0] Epoch 63, Batch 300, Current Loss: 0.1796
+2025-04-22 00:59:50,951 [RANK 0] Epoch 63, Batch 400, Current Loss: 0.3809
+2025-04-22 01:02:16,290 [RANK 0] Epoch 63, Batch 500, Current Loss: 0.2072
+2025-04-22 01:05:53,217 [RANK 0] No improvement (7/10), Current Val Loss: 0.2395, Best Val Loss: 0.2189
+2025-04-22 01:05:53,221 [RANK 0] Epoch 63 complete - Train Loss: 0.2446, Val Loss: 0.2395, Best Val: 0.2189, LR: 1.00e-03
+2025-04-22 01:06:04,306 [RANK 0] Epoch 64, Batch 0, Current Loss: 0.2305
+2025-04-22 01:08:30,857 [RANK 0] Epoch 64, Batch 100, Current Loss: 0.1697
+2025-04-22 01:10:58,409 [RANK 0] Epoch 64, Batch 200, Current Loss: 0.4207
+2025-04-22 01:13:34,493 [RANK 0] Epoch 64, Batch 300, Current Loss: 0.1843
+2025-04-22 01:15:59,976 [RANK 0] Epoch 64, Batch 400, Current Loss: 0.2644
+2025-04-22 01:18:22,592 [RANK 0] Epoch 64, Batch 500, Current Loss: 0.1757
+2025-04-22 01:22:02,896 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.2100
+2025-04-22 01:22:02,898 [RANK 0] Epoch 64 complete - Train Loss: 0.2351, Val Loss: 0.2100, Best Val: 0.2100, LR: 1.00e-03
+2025-04-22 01:22:13,855 [RANK 0] Epoch 65, Batch 0, Current Loss: 0.2059
+2025-04-22 01:24:36,533 [RANK 0] Epoch 65, Batch 100, Current Loss: 0.1424
+2025-04-22 01:27:12,331 [RANK 0] Epoch 65, Batch 200, Current Loss: 0.3813
+2025-04-22 01:29:39,501 [RANK 0] Epoch 65, Batch 300, Current Loss: 0.1999
+2025-04-22 01:32:06,311 [RANK 0] Epoch 65, Batch 400, Current Loss: 0.2239
+2025-04-22 01:34:32,081 [RANK 0] Epoch 65, Batch 500, Current Loss: 0.1679
+2025-04-22 01:38:08,770 [RANK 0] No improvement (1/10), Current Val Loss: 0.2226, Best Val Loss: 0.2100
+2025-04-22 01:38:08,776 [RANK 0] Epoch 65 complete - Train Loss: 0.2460, Val Loss: 0.2226, Best Val: 0.2100, LR: 1.00e-03
+2025-04-22 01:38:20,122 [RANK 0] Epoch 66, Batch 0, Current Loss: 0.2059
+2025-04-22 01:40:46,268 [RANK 0] Epoch 66, Batch 100, Current Loss: 0.1518
+2025-04-22 01:43:13,938 [RANK 0] Epoch 66, Batch 200, Current Loss: 0.3884
+2025-04-22 01:45:42,282 [RANK 0] Epoch 66, Batch 300, Current Loss: 0.2058
+2025-04-22 01:48:21,074 [RANK 0] Epoch 66, Batch 400, Current Loss: 0.2001
+2025-04-22 01:50:41,845 [RANK 0] Epoch 66, Batch 500, Current Loss: 0.1848
+2025-04-22 01:54:14,901 [RANK 0] No improvement (2/10), Current Val Loss: 0.2159, Best Val Loss: 0.2100
+2025-04-22 01:54:14,904 [RANK 0] Epoch 66 complete - Train Loss: 0.2286, Val Loss: 0.2159, Best Val: 0.2100, LR: 1.00e-03
+2025-04-22 01:54:26,331 [RANK 0] Epoch 67, Batch 0, Current Loss: 0.2105
+2025-04-22 01:56:48,085 [RANK 0] Epoch 67, Batch 100, Current Loss: 0.1499
+2025-04-22 01:59:23,582 [RANK 0] Epoch 67, Batch 200, Current Loss: 0.3441
+2025-04-22 02:01:47,325 [RANK 0] Epoch 67, Batch 300, Current Loss: 0.1809
+2025-04-22 02:04:17,889 [RANK 0] Epoch 67, Batch 400, Current Loss: 0.2239
+2025-04-22 02:06:40,652 [RANK 0] Epoch 67, Batch 500, Current Loss: 0.1686
+2025-04-22 02:10:20,784 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.2035
+2025-04-22 02:10:20,785 [RANK 0] Epoch 67 complete - Train Loss: 0.2435, Val Loss: 0.2035, Best Val: 0.2035, LR: 1.00e-03
+2025-04-22 02:10:36,154 [RANK 0] Epoch 68, Batch 0, Current Loss: 0.1898
+2025-04-22 02:13:04,459 [RANK 0] Epoch 68, Batch 100, Current Loss: 0.1429
+2025-04-22 02:15:37,007 [RANK 0] Epoch 68, Batch 200, Current Loss: 0.3602
+2025-04-22 02:17:52,105 [RANK 0] Epoch 68, Batch 300, Current Loss: 0.1780
+2025-04-22 02:20:22,219 [RANK 0] Epoch 68, Batch 400, Current Loss: 0.3016
+2025-04-22 02:22:48,712 [RANK 0] Epoch 68, Batch 500, Current Loss: 0.2995
+2025-04-22 02:26:26,938 [RANK 0] No improvement (1/10), Current Val Loss: 0.2452, Best Val Loss: 0.2035
+2025-04-22 02:26:26,941 [RANK 0] Epoch 68 complete - Train Loss: 0.2348, Val Loss: 0.2452, Best Val: 0.2035, LR: 1.00e-03
+2025-04-22 02:26:38,064 [RANK 0] Epoch 69, Batch 0, Current Loss: 0.2171
+2025-04-22 02:28:59,821 [RANK 0] Epoch 69, Batch 100, Current Loss: 0.2258
+2025-04-22 02:31:31,568 [RANK 0] Epoch 69, Batch 200, Current Loss: 0.4499
+2025-04-22 02:33:56,510 [RANK 0] Epoch 69, Batch 300, Current Loss: 0.1871
+2025-04-22 02:36:29,692 [RANK 0] Epoch 69, Batch 400, Current Loss: 0.2191
+2025-04-22 02:38:55,625 [RANK 0] Epoch 69, Batch 500, Current Loss: 0.1442
+2025-04-22 02:42:33,891 [RANK 0] No improvement (2/10), Current Val Loss: 0.2257, Best Val Loss: 0.2035
+2025-04-22 02:42:33,894 [RANK 0] Epoch 69 complete - Train Loss: 0.2492, Val Loss: 0.2257, Best Val: 0.2035, LR: 1.00e-03
+2025-04-22 02:42:44,966 [RANK 0] Epoch 70, Batch 0, Current Loss: 0.2309
+2025-04-22 02:45:07,394 [RANK 0] Epoch 70, Batch 100, Current Loss: 0.1400
+2025-04-22 02:47:42,802 [RANK 0] Epoch 70, Batch 200, Current Loss: 0.4153
+2025-04-22 02:50:06,448 [RANK 0] Epoch 70, Batch 300, Current Loss: 0.1629
+2025-04-22 02:52:37,144 [RANK 0] Epoch 70, Batch 400, Current Loss: 0.2346
+2025-04-22 02:55:04,405 [RANK 0] Epoch 70, Batch 500, Current Loss: 0.1731
+2025-04-22 02:58:40,735 [RANK 0] No improvement (3/10), Current Val Loss: 0.2636, Best Val Loss: 0.2035
+2025-04-22 02:58:40,738 [RANK 0] Epoch 70 complete - Train Loss: 0.2293, Val Loss: 0.2636, Best Val: 0.2035, LR: 1.00e-03
+2025-04-22 02:58:51,878 [RANK 0] Epoch 71, Batch 0, Current Loss: 0.2311
+2025-04-22 03:01:18,436 [RANK 0] Epoch 71, Batch 100, Current Loss: 0.1549
+2025-04-22 03:03:45,580 [RANK 0] Epoch 71, Batch 200, Current Loss: 0.3766
+2025-04-22 03:06:14,368 [RANK 0] Epoch 71, Batch 300, Current Loss: 0.1739
+2025-04-22 03:08:43,491 [RANK 0] Epoch 71, Batch 400, Current Loss: 0.2129
+2025-04-22 03:11:14,594 [RANK 0] Epoch 71, Batch 500, Current Loss: 0.2244
+2025-04-22 03:14:50,298 [RANK 0] No improvement (4/10), Current Val Loss: 0.2217, Best Val Loss: 0.2035
+2025-04-22 03:14:50,301 [RANK 0] Epoch 71 complete - Train Loss: 0.2405, Val Loss: 0.2217, Best Val: 0.2035, LR: 1.00e-03
+2025-04-22 03:15:01,485 [RANK 0] Epoch 72, Batch 0, Current Loss: 0.1957
+2025-04-22 03:17:23,827 [RANK 0] Epoch 72, Batch 100, Current Loss: 0.1812
+2025-04-22 03:19:59,096 [RANK 0] Epoch 72, Batch 200, Current Loss: 0.3687
+2025-04-22 03:22:20,638 [RANK 0] Epoch 72, Batch 300, Current Loss: 0.1749
+2025-04-22 03:24:53,417 [RANK 0] Epoch 72, Batch 400, Current Loss: 0.2106
+2025-04-22 03:27:20,248 [RANK 0] Epoch 72, Batch 500, Current Loss: 0.1545
+2025-04-22 03:30:53,676 [RANK 0] No improvement (5/10), Current Val Loss: 0.2077, Best Val Loss: 0.2035
+2025-04-22 03:30:53,681 [RANK 0] Epoch 72 complete - Train Loss: 0.2336, Val Loss: 0.2077, Best Val: 0.2035, LR: 1.00e-03
+2025-04-22 03:31:04,722 [RANK 0] Epoch 73, Batch 0, Current Loss: 0.2044
+2025-04-22 03:33:30,989 [RANK 0] Epoch 73, Batch 100, Current Loss: 0.1498
+2025-04-22 03:36:02,442 [RANK 0] Epoch 73, Batch 200, Current Loss: 0.3687
+2025-04-22 03:38:26,452 [RANK 0] Epoch 73, Batch 300, Current Loss: 0.1531
+2025-04-22 03:40:55,740 [RANK 0] Epoch 73, Batch 400, Current Loss: 0.2033
+2025-04-22 03:43:21,699 [RANK 0] Epoch 73, Batch 500, Current Loss: 0.1644
+2025-04-22 03:47:03,450 [RANK 0] No improvement (6/10), Current Val Loss: 0.2206, Best Val Loss: 0.2035
+2025-04-22 03:47:03,452 [RANK 0] Epoch 73 complete - Train Loss: 0.2227, Val Loss: 0.2206, Best Val: 0.2035, LR: 1.00e-03
+2025-04-22 03:47:14,460 [RANK 0] Epoch 74, Batch 0, Current Loss: 0.2045
+2025-04-22 03:49:41,399 [RANK 0] Epoch 74, Batch 100, Current Loss: 0.1702
+2025-04-22 03:52:08,050 [RANK 0] Epoch 74, Batch 200, Current Loss: 0.4401
+2025-04-22 03:54:36,378 [RANK 0] Epoch 74, Batch 300, Current Loss: 0.2315
+2025-04-22 03:57:11,868 [RANK 0] Epoch 74, Batch 400, Current Loss: 0.1928
+2025-04-22 03:59:36,476 [RANK 0] Epoch 74, Batch 500, Current Loss: 0.1352
+2025-04-22 04:03:10,038 [RANK 0] No improvement (7/10), Current Val Loss: 0.2349, Best Val Loss: 0.2035
+2025-04-22 04:03:10,040 [RANK 0] Epoch 74 complete - Train Loss: 0.2304, Val Loss: 0.2349, Best Val: 0.2035, LR: 1.00e-03
+2025-04-22 04:03:20,990 [RANK 0] Epoch 75, Batch 0, Current Loss: 0.2329
+2025-04-22 04:05:46,434 [RANK 0] Epoch 75, Batch 100, Current Loss: 0.1523
+2025-04-22 04:08:18,639 [RANK 0] Epoch 75, Batch 200, Current Loss: 0.3926
+2025-04-22 04:10:43,543 [RANK 0] Epoch 75, Batch 300, Current Loss: 0.1665
+2025-04-22 04:13:13,149 [RANK 0] Epoch 75, Batch 400, Current Loss: 0.2049
+2025-04-22 04:15:39,700 [RANK 0] Epoch 75, Batch 500, Current Loss: 0.1621
+2025-04-22 04:19:18,848 [RANK 0] No improvement (8/10), Current Val Loss: 0.2746, Best Val Loss: 0.2035
+2025-04-22 04:19:18,850 [RANK 0] Epoch 75 complete - Train Loss: 0.2285, Val Loss: 0.2746, Best Val: 0.2035, LR: 1.00e-03
+2025-04-22 04:19:34,351 [RANK 0] Epoch 76, Batch 0, Current Loss: 0.1971
+2025-04-22 04:21:56,116 [RANK 0] Epoch 76, Batch 100, Current Loss: 0.1616
+2025-04-22 04:24:36,883 [RANK 0] Epoch 76, Batch 200, Current Loss: 0.4521
+2025-04-22 04:26:50,939 [RANK 0] Epoch 76, Batch 300, Current Loss: 0.1764
+2025-04-22 04:29:21,898 [RANK 0] Epoch 76, Batch 400, Current Loss: 0.2161
+2025-04-22 04:31:45,604 [RANK 0] Epoch 76, Batch 500, Current Loss: 0.2162
+2025-04-22 04:35:24,414 [RANK 0] New best model saved to best_model_ssrd.pth with val loss 0.2029
+2025-04-22 04:35:24,415 [RANK 0] Epoch 76 complete - Train Loss: 0.2481, Val Loss: 0.2029, Best Val: 0.2029, LR: 1.00e-03
+2025-04-22 04:35:35,431 [RANK 0] Epoch 77, Batch 0, Current Loss: 0.1863
+2025-04-22 04:37:58,222 [RANK 0] Epoch 77, Batch 100, Current Loss: 0.1802
+2025-04-22 04:40:33,728 [RANK 0] Epoch 77, Batch 200, Current Loss: 0.3553
+2025-04-22 04:42:58,486 [RANK 0] Epoch 77, Batch 300, Current Loss: 0.2059
+2025-04-22 04:45:27,817 [RANK 0] Epoch 77, Batch 400, Current Loss: 0.2361
+2025-04-22 04:47:56,011 [RANK 0] Epoch 77, Batch 500, Current Loss: 0.1895
+2025-04-22 04:51:30,490 [RANK 0] No improvement (1/10), Current Val Loss: 0.2197, Best Val Loss: 0.2029
+2025-04-22 04:51:30,493 [RANK 0] Epoch 77 complete - Train Loss: 0.2257, Val Loss: 0.2197, Best Val: 0.2029, LR: 1.00e-03
+2025-04-22 04:51:47,105 [RANK 0] Epoch 78, Batch 0, Current Loss: 0.1978
+2025-04-22 04:54:07,117 [RANK 0] Epoch 78, Batch 100, Current Loss: 0.1458
+2025-04-22 04:56:46,001 [RANK 0] Epoch 78, Batch 200, Current Loss: 0.4075
+2025-04-22 04:59:01,523 [RANK 0] Epoch 78, Batch 300, Current Loss: 0.1601
+2025-04-22 05:01:33,389 [RANK 0] Epoch 78, Batch 400, Current Loss: 0.2254
+2025-04-22 05:04:07,988 [RANK 0] Epoch 78, Batch 500, Current Loss: 0.1456
+2025-04-22 05:07:38,642 [RANK 0] No improvement (2/10), Current Val Loss: 0.2655, Best Val Loss: 0.2029
+2025-04-22 05:07:38,644 [RANK 0] Epoch 78 complete - Train Loss: 0.2342, Val Loss: 0.2655, Best Val: 0.2029, LR: 1.00e-03
+2025-04-22 05:07:54,174 [RANK 0] Epoch 79, Batch 0, Current Loss: 0.2823
+2025-04-22 05:10:16,417 [RANK 0] Epoch 79, Batch 100, Current Loss: 0.1441
+2025-04-22 05:12:48,783 [RANK 0] Epoch 79, Batch 200, Current Loss: 0.3445
+2025-04-22 05:15:13,060 [RANK 0] Epoch 79, Batch 300, Current Loss: 0.1587
+2025-04-22 05:17:47,153 [RANK 0] Epoch 79, Batch 400, Current Loss: 0.2321
+2025-04-22 05:20:13,175 [RANK 0] Epoch 79, Batch 500, Current Loss: 0.3229
+2025-04-22 05:23:45,179 [RANK 0] No improvement (3/10), Current Val Loss: 0.2394, Best Val Loss: 0.2029
+2025-04-22 05:23:45,182 [RANK 0] Epoch 79 complete - Train Loss: 0.2292, Val Loss: 0.2394, Best Val: 0.2029, LR: 1.00e-03
+2025-04-22 05:23:56,162 [RANK 0] Epoch 80, Batch 0, Current Loss: 0.2074
+2025-04-22 05:26:22,607 [RANK 0] Epoch 80, Batch 100, Current Loss: 0.1494
+2025-04-22 05:28:50,317 [RANK 0] Epoch 80, Batch 200, Current Loss: 0.3804
+2025-04-22 05:31:26,371 [RANK 0] Epoch 80, Batch 300, Current Loss: 0.1685
+2025-04-22 05:33:54,516 [RANK 0] Epoch 80, Batch 400, Current Loss: 0.1963
+2025-04-22 05:36:19,022 [RANK 0] Epoch 80, Batch 500, Current Loss: 0.2197
+2025-04-22 05:39:51,506 [RANK 0] No improvement (4/10), Current Val Loss: 0.2220, Best Val Loss: 0.2029
+2025-04-22 05:39:51,509 [RANK 0] Epoch 80 complete - Train Loss: 0.2279, Val Loss: 0.2220, Best Val: 0.2029, LR: 1.00e-03
+2025-04-22 05:40:02,601 [RANK 0] Epoch 81, Batch 0, Current Loss: 0.2179
+2025-04-22 05:42:28,704 [RANK 0] Epoch 81, Batch 100, Current Loss: 0.1327
+2025-04-22 05:45:09,618 [RANK 0] Epoch 81, Batch 200, Current Loss: 0.3945
+2025-04-22 05:47:29,478 [RANK 0] Epoch 81, Batch 300, Current Loss: 0.2161
+2025-04-22 05:49:56,163 [RANK 0] Epoch 81, Batch 400, Current Loss: 0.2099
+2025-04-22 05:52:20,217 [RANK 0] Epoch 81, Batch 500, Current Loss: 0.1733
+2025-04-22 05:55:57,277 [RANK 0] No improvement (5/10), Current Val Loss: 0.2356, Best Val Loss: 0.2029
+2025-04-22 05:55:57,279 [RANK 0] Epoch 81 complete - Train Loss: 0.2260, Val Loss: 0.2356, Best Val: 0.2029, LR: 1.00e-03
+2025-04-22 05:56:08,501 [RANK 0] Epoch 82, Batch 0, Current Loss: 0.1979
+2025-04-22 05:58:33,892 [RANK 0] Epoch 82, Batch 100, Current Loss: 0.1516
+2025-04-22 06:01:06,790 [RANK 0] Epoch 82, Batch 200, Current Loss: 0.3881
+2025-04-22 06:03:38,033 [RANK 0] Epoch 82, Batch 300, Current Loss: 0.2034
+2025-04-22 06:06:01,506 [RANK 0] Epoch 82, Batch 400, Current Loss: 0.2093
+2025-04-22 06:08:27,162 [RANK 0] Epoch 82, Batch 500, Current Loss: 0.1225
+2025-04-22 06:12:05,170 [RANK 0] No improvement (6/10), Current Val Loss: 0.2184, Best Val Loss: 0.2029
+2025-04-22 06:12:05,173 [RANK 0] Epoch 82 complete - Train Loss: 0.2261, Val Loss: 0.2184, Best Val: 0.2029, LR: 1.00e-03
+2025-04-22 06:12:16,151 [RANK 0] Epoch 83, Batch 0, Current Loss: 0.1932
+2025-04-22 06:14:42,883 [RANK 0] Epoch 83, Batch 100, Current Loss: 0.1602
+2025-04-22 06:17:16,748 [RANK 0] Epoch 83, Batch 200, Current Loss: 0.3340
+2025-04-22 06:19:37,649 [RANK 0] Epoch 83, Batch 300, Current Loss: 0.1690
+2025-04-22 06:22:08,558 [RANK 0] Epoch 83, Batch 400, Current Loss: 0.2465
+2025-04-22 06:24:39,143 [RANK 0] Epoch 83, Batch 500, Current Loss: 0.1909
+2025-04-22 06:28:11,390 [RANK 0] No improvement (7/10), Current Val Loss: 0.2239, Best Val Loss: 0.2029
+2025-04-22 06:28:11,392 [RANK 0] Epoch 83 complete - Train Loss: 0.2236, Val Loss: 0.2239, Best Val: 0.2029, LR: 1.00e-03
+2025-04-22 06:28:22,552 [RANK 0] Epoch 84, Batch 0, Current Loss: 0.2015
+2025-04-22 06:30:49,556 [RANK 0] Epoch 84, Batch 100, Current Loss: 0.1452
+2025-04-22 06:33:20,839 [RANK 0] Epoch 84, Batch 200, Current Loss: 0.3616
+2025-04-22 06:35:44,759 [RANK 0] Epoch 84, Batch 300, Current Loss: 0.1612
+2025-04-22 06:38:19,476 [RANK 0] Epoch 84, Batch 400, Current Loss: 0.2177
+2025-04-22 06:40:39,182 [RANK 0] Epoch 84, Batch 500, Current Loss: 0.1731
+2025-04-22 06:44:18,138 [RANK 0] No improvement (8/10), Current Val Loss: 0.2274, Best Val Loss: 0.2029
+2025-04-22 06:44:18,140 [RANK 0] Epoch 84 complete - Train Loss: 0.2330, Val Loss: 0.2274, Best Val: 0.2029, LR: 1.00e-03
+2025-04-22 06:44:29,246 [RANK 0] Epoch 85, Batch 0, Current Loss: 0.2111
+2025-04-22 06:46:55,778 [RANK 0] Epoch 85, Batch 100, Current Loss: 0.1495
+2025-04-22 06:49:26,961 [RANK 0] Epoch 85, Batch 200, Current Loss: 0.3481
+2025-04-22 06:51:51,070 [RANK 0] Epoch 85, Batch 300, Current Loss: 0.1615
+2025-04-22 06:54:21,092 [RANK 0] Epoch 85, Batch 400, Current Loss: 0.2736
+2025-04-22 06:56:46,912 [RANK 0] Epoch 85, Batch 500, Current Loss: 0.1401
+2025-04-22 07:00:23,994 [RANK 0] No improvement (9/10), Current Val Loss: 0.2299, Best Val Loss: 0.2029
+2025-04-22 07:00:23,998 [RANK 0] Epoch 85 complete - Train Loss: 0.2169, Val Loss: 0.2299, Best Val: 0.2029, LR: 1.00e-03
+2025-04-22 07:00:34,968 [RANK 0] Epoch 86, Batch 0, Current Loss: 0.2196
+2025-04-22 07:03:00,005 [RANK 0] Epoch 86, Batch 100, Current Loss: 0.1367
+2025-04-22 07:05:33,448 [RANK 0] Epoch 86, Batch 200, Current Loss: 0.4418
+2025-04-22 07:07:57,240 [RANK 0] Epoch 86, Batch 300, Current Loss: 0.1929
+2025-04-22 07:10:27,463 [RANK 0] Epoch 86, Batch 400, Current Loss: 0.2477
+2025-04-22 07:12:53,652 [RANK 0] Epoch 86, Batch 500, Current Loss: 0.1375
+2025-04-22 07:16:30,682 [RANK 0] No improvement (10/10), Current Val Loss: 0.2302, Best Val Loss: 0.2029
+2025-04-22 07:16:30,685 [RANK 0] Early stopping triggered at epoch 86
+2025-04-22 07:16:30,685 [RANK 0] Training completed at 2025-04-22 07:16:30
+2025-04-22 07:16:35,564 [RANK 0] Running inference with the trained model
+2025-04-22 07:16:35,565 [RANK 0] Starting inference process
+2025-04-22 07:16:35,565 [RANK 0] Initializing full dataset with patch_size=3, time_steps=5
+2025-04-22 07:16:38,282 [RANK 0] Padded data shape: (7674, 137, 182, 9)
+2025-04-22 07:16:50,328 [RANK 0] Total samples in full dataset: 186283800
+2025-04-22 07:16:50,329 [RANK 0] Inference dataset loaded with 186283800 samples
+2025-04-22 07:16:50,329 [RANK 0] Initializing autoencoder with input_dim=405, latent_dim=9
+2025-04-22 07:16:50,331 [RANK 0] Model architecture:
+WeatherAutoencoder(
+  (encoder): Sequential(
+    (0): Linear(in_features=405, out_features=256, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=256, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=64, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=64, out_features=9, bias=True)
+  )
+  (decoder): Sequential(
+    (0): Linear(in_features=9, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=64, out_features=128, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=128, out_features=256, bias=True)
+    (5): ReLU()
+    (6): Linear(in_features=256, out_features=405, bias=True)
+  )
+)
+2025-04-22 07:16:50,332 [RANK 0] Loading model from best_model_ssrd.pth
+2025-04-22 07:16:50,371 [RANK 0] Running inference...
+2025-04-22 07:18:19,141 [RANK 0] Processed 0/1447 batches
+2025-04-22 07:29:26,075 [RANK 0] Processed 100/1447 batches
+2025-04-22 07:41:30,563 [RANK 0] Processed 200/1447 batches
+2025-04-22 07:52:40,414 [RANK 0] Processed 300/1447 batches
+2025-04-22 08:04:13,531 [RANK 0] Processed 400/1447 batches
+2025-04-22 08:15:24,497 [RANK 0] Processed 500/1447 batches
+2025-04-22 08:27:35,128 [RANK 0] Processed 600/1447 batches
+2025-04-22 08:38:46,968 [RANK 0] Processed 700/1447 batches
+2025-04-22 08:50:31,101 [RANK 0] Processed 800/1447 batches
+2025-04-22 09:01:43,392 [RANK 0] Processed 900/1447 batches
+2025-04-22 09:13:22,345 [RANK 0] Processed 1000/1447 batches
+2025-04-22 09:24:35,362 [RANK 0] Processed 1100/1447 batches
