@@ -56,25 +56,29 @@ class WeatherUNet(nn.Module):
         self.input_channels = TIME_STEPS * num_vars
         
         # Encoder
-        self.enc1 = self._block(self.input_channels, 64)
-        self.enc2 = self._block(64, 128)
-        self.enc3 = self._block(128, 256)
+        self.enc1 = self._block(self.input_channels, 64)  # [B, 5*9, 5, 5] -> [B, 64, 5, 5]
+        self.enc2 = self._block(64, 128)                  # [B, 64, 2, 2] -> [B, 128, 2, 2]
+        self.enc3 = self._block(128, 256)                 # [B, 128, 1, 1] -> [B, 256, 1, 1]
         
         # Bottleneck
-        self.bottleneck = self._block(256, latent_dim)
+        self.bottleneck = self._block(256, latent_dim)     # [B, 256, 1, 1] -> [B, latent_dim, 1, 1]
         
         # Decoder
-        self.up1 = nn.ConvTranspose2d(latent_dim, 256, kernel_size=2, stride=2)
-        self.dec1 = self._block(512, 128)  # 256 (up) + 256 (skip)
+        self.up1 = nn.ConvTranspose2d(latent_dim, 128, kernel_size=2, stride=2)  # [B, latent_dim, 1, 1] -> [B, 128, 2, 2]
+        self.dec1 = self._block(256, 128)  # 128 (up) + 128 (skip) -> [B, 128, 2, 2]
         
-        self.up2 = nn.ConvTranspose2d(128, 128, kernel_size=2, stride=2)
-        self.dec2 = self._block(256, 64)  # 128 (up) + 128 (skip)
+        self.up2 = nn.ConvTranspose2d(128, 64, kernel_size=2, stride=2)  # [B, 128, 2, 2] -> [B, 64, 4, 4]
+        self.dec2 = self._block(128, 64)   # 64 (up) + 64 (skip) -> [B, 64, 4, 4]
         
         # Final output
         self.final_conv = nn.Sequential(
-            nn.Conv2d(64, self.input_channels, kernel_size=1),
+            nn.Conv2d(64, self.input_channels, kernel_size=1),  # [B, 64, 5, 5] -> [B, 5*9, 5, 5]
             nn.Tanh()
         )
+        
+        # Pooling layers
+        self.pool1 = nn.MaxPool2d(2)  # [B, 64, 5, 5] -> [B, 64, 2, 2]
+        self.pool2 = nn.MaxPool2d(2)  # [B, 128, 2, 2] -> [B, 128, 1, 1]
         
     def _block(self, in_channels: int, out_channels: int) -> nn.Sequential:
         """Create a basic convolutional block with batch norm and ReLU."""
@@ -88,43 +92,36 @@ class WeatherUNet(nn.Module):
         )
     
     def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
-        """Forward pass through the network.
-        
-        Args:
-            x: Input tensor of shape (batch_size, PATCH_SIZE*PATCH_SIZE*TIME_STEPS*num_vars)
-            
-        Returns:
-            Tuple of (reconstructed output, latent representation)
-        """
-        # Reshape input: [B, 5*5*5*num_vars] -> [B, 5*num_vars, 5, 5]
+        """Forward pass through the network."""
+        # Reshape input: [B, 5*5*5*9] -> [B, 5*9, 5, 5]
         x = x.view(-1, self.input_channels, PATCH_SIZE, PATCH_SIZE)
         
-        # Encoder
-        e1 = self.enc1(x)  # [B, 64, 5, 5]
-        e2 = F.max_pool2d(e1, 2)  # [B, 64, 2, 2]
-        e2 = self.enc2(e2)  # [B, 128, 2, 2]
-        e3 = F.max_pool2d(e2, 2)  # [B, 128, 1, 1]
-        e3 = self.enc3(e3)  # [B, 256, 1, 1]
+        # Encoder path
+        e1 = self.enc1(x)        # [B, 64, 5, 5]
+        e2 = self.pool1(e1)      # [B, 64, 2, 2]
+        e2 = self.enc2(e2)       # [B, 128, 2, 2]
+        e3 = self.pool2(e2)      # [B, 128, 1, 1]
+        e3 = self.enc3(e3)       # [B, 256, 1, 1]
         
         # Bottleneck
         z = self.bottleneck(e3)  # [B, latent_dim, 1, 1]
         
-        # Decoder
-        d1 = self.up1(z)  # [B, 256, 2, 2]
-        d1 = torch.cat([d1, e2], dim=1)  # [B, 512, 2, 2]
-        d1 = self.dec1(d1)  # [B, 128, 2, 2]
+        # Decoder path
+        d1 = self.up1(z)         # [B, 128, 2, 2]
+        d1 = torch.cat([d1, e2], dim=1)  # [B, 256, 2, 2]
+        d1 = self.dec1(d1)       # [B, 128, 2, 2]
         
-        d2 = self.up2(d1)  # [B, 128, 4, 4]
-        d2 = torch.cat([d2, e1[:, :, :4, :4]], dim=1)  # [B, 192, 4, 4]
-        d2 = self.dec2(d2)  # [B, 64, 4, 4]
+        d2 = self.up2(d1)        # [B, 64, 4, 4]
+        d2 = torch.cat([d2, e1[:, :, :4, :4]], dim=1)  # [B, 128, 4, 4]
+        d2 = self.dec2(d2)       # [B, 64, 4, 4]
         
         # Final output
         out = F.interpolate(d2, size=(PATCH_SIZE, PATCH_SIZE), mode='bilinear', align_corners=False)
-        out = self.final_conv(out)  # [B, 5*num_vars, 5, 5]
+        out = self.final_conv(out)  # [B, 45, 5, 5]
         
         # Flatten outputs
         out = out.view(-1, PATCH_SIZE * PATCH_SIZE * self.input_channels)
-        z = z.view(-1, latent_dim)
+        z = z.view(-1, LATENT_DIM)
         
         return out, z
 
