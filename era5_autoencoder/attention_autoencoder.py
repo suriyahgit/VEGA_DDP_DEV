@@ -36,8 +36,8 @@ def setup_logging(rank: int) -> logging.Logger:
     return logging.getLogger(__name__)
 
 # --- Constants ---
-PATCH_SIZE = 5
-TIME_STEPS = 5
+PATCH_SIZE = 4  # Changed from 5 to 4
+TIME_STEPS = 6  # Changed from 5 to 6
 LATENT_DIM = 16
 NUM_TILES_PER_TIME = 5000
 DEFAULT_BATCH_SIZE = 8048
@@ -46,7 +46,8 @@ EARLY_STOPPING_PATIENCE = 10
 MIN_LR = 1e-6
 DEFAULT_PREFETCH_FACTOR = 25
 VALIDATION_SIZE = 1000
-INPUT_CHANNELS = TIME_STEPS * 9  # 5 time steps × 9 variables
+NUM_VARS = 9
+INPUT_CHANNELS = TIME_STEPS * NUM_VARS  # 6 × 9 = 54
 
 # --- Model Components ---
 class ResBlock(nn.Module):
@@ -78,18 +79,16 @@ class SEBlock(nn.Module):
         return x * self.fc(x)
 
 class WeatherUNetImproved(nn.Module):
-    def __init__(self, num_vars: int = 9):
+    def __init__(self):
         super().__init__()
-        self.num_vars = num_vars
-        self.input_channels = TIME_STEPS * num_vars
 
         # Encoder path
         self.enc1 = nn.Sequential(
-            nn.Conv2d(self.input_channels, 64, kernel_size=3, padding=1),
+            nn.Conv2d(INPUT_CHANNELS, 64, kernel_size=3, padding=1),
             ResBlock(64)
         )
         self.enc2 = nn.Sequential(
-            nn.MaxPool2d(2),
+            nn.MaxPool2d(2),  # [B,64,4,4] -> [B,64,2,2]
             nn.Conv2d(64, 128, kernel_size=3, padding=1),
             ResBlock(128)
         )
@@ -105,20 +104,24 @@ class WeatherUNetImproved(nn.Module):
         # Decoder path
         self.decode_fc = nn.Linear(LATENT_DIM, 128)
         self.up1 = nn.Sequential(
-            nn.ConvTranspose2d(128, 64, kernel_size=2, stride=2),
+            nn.ConvTranspose2d(128, 64, kernel_size=2, stride=2),  # [B,128,1,1] -> [B,64,2,2]
+            ResBlock(64)
+        )
+        self.up2 = nn.Sequential(
+            nn.ConvTranspose2d(64, 64, kernel_size=2, stride=2),  # [B,64,2,2] -> [B,64,4,4]
             ResBlock(64)
         )
         self.final = nn.Sequential(
-            nn.Conv2d(64, self.input_channels, kernel_size=1),
+            nn.Conv2d(64, INPUT_CHANNELS, kernel_size=1),
             nn.Tanh()
         )
 
     def forward(self, x):
         B = x.shape[0]
-        x = x.view(B, self.input_channels, PATCH_SIZE, PATCH_SIZE)
+        x = x.view(B, INPUT_CHANNELS, PATCH_SIZE, PATCH_SIZE)
 
         # Encoder
-        e1 = self.enc1(x)           # [B, 64, 5, 5]
+        e1 = self.enc1(x)           # [B, 64, 4, 4]
         e2 = self.enc2(e1)          # [B, 128, 2, 2]
 
         # Bottleneck
@@ -127,16 +130,14 @@ class WeatherUNetImproved(nn.Module):
 
         # Decoder
         x = self.decode_fc(z).view(B, 128, 1, 1)
-        x = F.interpolate(x, size=e2.shape[-2:], mode='nearest')
-        x = self.up1(x + e2)        # [B, 64, 4, 4]
+        x = F.interpolate(x, size=e2.shape[-2:], mode='nearest')  # [B,128,2,2]
+        x = self.up1(x + e2)        # [B,64,2,2] + [B,128,2,2] -> [B,64,2,2]
+        x = self.up2(x)             # [B,64,4,4]
         
-        # Final output with residual connection
-        out = self.final(x + F.pad(e1, (0, 1, 0, 1)))  # Pad e1 to match 4x4
+        # Final output
+        out = self.final(x)         # [B,54,4,4]
         
-        # Resize to original patch size
-        out = F.interpolate(out, size=(PATCH_SIZE, PATCH_SIZE), mode='bilinear', align_corners=False)
-        
-        return out.view(B, -1), z  # Flatten output, return latent
+        return out.view(B, -1), z   # Flatten output, return latent
 
 # --- Dataset Classes ---
 class WeatherDataset(Dataset):
