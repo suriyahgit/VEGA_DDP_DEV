@@ -84,7 +84,7 @@ class WeatherUNetImproved(nn.Module):
 
         # Encoder path
         self.enc1 = nn.Sequential(
-            nn.Conv2d(INPUT_CHANNELS, 64, kernel_size=3, padding=1),
+            nn.Conv2d(self.input_channels, 64, kernel_size=3, padding=1),
             ResBlock(64)
         )
         self.enc2 = nn.Sequential(
@@ -112,13 +112,13 @@ class WeatherUNetImproved(nn.Module):
             ResBlock(64)
         )
         self.final = nn.Sequential(
-            nn.Conv2d(64, INPUT_CHANNELS, kernel_size=1),
+            nn.Conv2d(64, self.input_channels, kernel_size=1),
             nn.Tanh()
         )
 
     def forward(self, x):
         B = x.shape[0]
-        x = x.view(B, INPUT_CHANNELS, PATCH_SIZE, PATCH_SIZE)
+        x = x.view(B, self.input_channels, PATCH_SIZE, PATCH_SIZE)
 
         # Encoder
         e1 = self.enc1(x)           # [B, 64, 4, 4]
