@@ -81,6 +81,7 @@ class WeatherUNetImproved(nn.Module):
         super().__init__()
         self.num_vars = num_vars
         self.input_channels = TIME_STEPS * num_vars
+        self.output_elements = TIME_STEPS * num_vars * PATCH_SIZE * PATCH_SIZE  # Total elements per sample
 
         # Encoder path
         self.enc1 = nn.Sequential(
@@ -200,6 +201,7 @@ class WeatherDataset(Dataset):
             lon : lon + self.patch_size,
             :
         ]
+        # Flatten to [time_steps * patch_size * patch_size * num_vars]
         return torch.tensor(patch, dtype=torch.float32).flatten()
 
 class FullWeatherDataset(Dataset):
@@ -242,6 +244,7 @@ class FullWeatherDataset(Dataset):
             lon : lon + self.patch_size,
             :
         ]
+        # Flatten to [time_steps * patch_size * patch_size * num_vars]
         return torch.tensor(patch, dtype=torch.float32).flatten()
 
 # --- Training Functions ---
