@@ -689,13 +689,16 @@ def main():
             world_size = torch.cuda.device_count() if torch.cuda.is_available() else 1
             if world_size > 1:
                 logger.info("Starting multi-GPU training with %d GPUs", world_size)
-                mp.spawn(train, args=(world_size, data, args.model_output, args.output_zarr, 
-                                    args.batch_size, args.num_workers, args.prefetch_factor), 
+                mp.spawn(train, 
+                        args=(world_size, data, args.model_output, args.output_zarr, 
+                             args.batch_size, args.num_workers, args.prefetch_factor,
+                             args.model_type, args.unet_channels),  # All arguments now
                         nprocs=world_size, join=True)
             else:
                 logger.info("Starting single-GPU/CPU training")
                 train(0, 1, data, args.model_output, args.output_zarr, 
-                      args.batch_size, args.num_workers, args.prefetch_factor)
+                     args.batch_size, args.num_workers, args.prefetch_factor,
+                     args.model_type, args.unet_channels)  # All arguments now
             
             # After training, run inference if output_zarr is specified
             if args.output_zarr:
