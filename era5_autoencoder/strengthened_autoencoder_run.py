@@ -32,9 +32,9 @@ def setup_logging(rank):
     return logging.getLogger(__name__)
 
 # --- Constants ---
-PATCH_SIZE = 3
-TIME_STEPS = 5  # Creates t-4, t-3, t-2, t-1, t patterns
-LATENT_DIM = 9
+PATCH_SIZE = 5
+TIME_STEPS = 7  # Creates t-4, t-3, t-2, t-1, t patterns
+LATENT_DIM = 16
 NUM_TILES_PER_TIME = 5000
 DEFAULT_BATCH_SIZE = 64384
 DEFAULT_NUM_WORKERS = 8
@@ -198,23 +198,23 @@ class WeatherUNet(nn.Module):
         self.latent_dim = latent_dim
         
         # Encoder (contracting path)
-        self.enc1 = self._block(input_channels, base_channels, "enc1")
-        self.enc2 = self._block(base_channels, base_channels*2, "enc2")
-        self.enc3 = self._block(base_channels*2, base_channels*4, "enc3")
-        self.enc4 = self._block(base_channels*4, base_channels*8, "enc4")
+        self.enc1 = self._block(input_channels, base_channels)
+        self.enc2 = self._block(base_channels, base_channels*2)
+        self.enc3 = self._block(base_channels*2, base_channels*4)
+        self.enc4 = self._block(base_channels*4, base_channels*8)
         
         # Bottleneck
-        self.bottleneck = self._block(base_channels*8, latent_dim, "bottleneck")
+        self.bottleneck = self._block(base_channels*8, latent_dim)
         
         # Decoder (expanding path)
-        self.up1 = self._up_block(latent_dim, base_channels*8, "up1")
-        self.dec1 = self._block(base_channels*16, base_channels*8, "dec1")  # *2 for skip connection
-        self.up2 = self._up_block(base_channels*8, base_channels*4, "up2")
-        self.dec2 = self._block(base_channels*8, base_channels*4, "dec2")
-        self.up3 = self._up_block(base_channels*4, base_channels*2, "up3")
-        self.dec3 = self._block(base_channels*4, base_channels*2, "dec3")
-        self.up4 = self._up_block(base_channels*2, base_channels, "up4")
-        self.dec4 = self._block(base_channels*2, base_channels, "dec4")
+        self.up1 = self._up_block(latent_dim, base_channels*8)
+        self.dec1 = self._block(base_channels*16, base_channels*8)  # *2 for skip connection
+        self.up2 = self._up_block(base_channels*8, base_channels*4)
+        self.dec2 = self._block(base_channels*8, base_channels*4)
+        self.up3 = self._up_block(base_channels*4, base_channels*2)
+        self.dec3 = self._block(base_channels*4, base_channels*2)
+        self.up4 = self._up_block(base_channels*2, base_channels)
+        self.dec4 = self._block(base_channels*2, base_channels)
         
         # Final convolution
         self.final = nn.Conv2d(base_channels, input_channels, kernel_size=1)
@@ -224,23 +224,21 @@ class WeatherUNet(nn.Module):
         
         self.logger.info("Model architecture:\n%s", self)
 
-    def _block(self, in_channels, out_channels, name):
+    def _block(self, in_channels, out_channels):
         return nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1),
             nn.BatchNorm2d(out_channels),
             nn.LeakyReLU(0.2, inplace=True),
             nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1),
             nn.BatchNorm2d(out_channels),
-            nn.LeakyReLU(0.2, inplace=True),
-            name=name
+            nn.LeakyReLU(0.2, inplace=True)
         )
     
-    def _up_block(self, in_channels, out_channels, name):
+    def _up_block(self, in_channels, out_channels):
         return nn.Sequential(
             nn.ConvTranspose2d(in_channels, out_channels, kernel_size=2, stride=2),
             nn.BatchNorm2d(out_channels),
-            nn.LeakyReLU(0.2, inplace=True),
-            name=name
+            nn.LeakyReLU(0.2, inplace=True)
         )
 
     def forward(self, x):
