@@ -45,9 +45,7 @@ DEFAULT_NUM_WORKERS = 8
 EARLY_STOPPING_PATIENCE = 10
 MIN_LR = 1e-6
 DEFAULT_PREFETCH_FACTOR = 25
-VALIDATION_SIZE = 1000
-NUM_VARS = 9
-INPUT_CHANNELS = TIME_STEPS * NUM_VARS  # 6 × 9 = 54
+VALIDATION_SIZE = 500
 
 # --- Model Components ---
 class ResBlock(nn.Module):
@@ -79,8 +77,10 @@ class SEBlock(nn.Module):
         return x * self.fc(x)
 
 class WeatherUNetImproved(nn.Module):
-    def __init__(self):
+    def __init__(self, num_vars: int):
         super().__init__()
+        self.num_vars = num_vars
+        self.input_channels = TIME_STEPS * num_vars
 
         # Encoder path
         self.enc1 = nn.Sequential(
