@@ -188,28 +188,28 @@ class WeatherAutoencoder(nn.Module):
         return recon, latent
 
 class WeatherUNet(nn.Module):
-    def __init__(self, input_channels, latent_dim=16, base_channels=32):
+    def __init__(self, time_steps=7, num_vars=9, latent_dim=16, base_channels=32):
         super().__init__()
-        self.input_channels = input_channels
+        self.input_channels = time_steps * num_vars  # 7*9=63 channels
         self.latent_dim = latent_dim
         
-        # Encoder (only 1 downsampling step)
-        self.enc1 = self._block(input_channels, base_channels)  # 5x5 -> 5x5
-        self.enc2 = self._block(base_channels, base_channels*2) # 5x5 -> 2x2 (after pool)
+        # Encoder
+        self.enc1 = self._block(self.input_channels, base_channels)  # [B, 63, 5,5] -> [B, 32,5,5]
+        self.enc2 = self._block(base_channels, base_channels*2)       # [B, 32,2,2] -> [B, 64,2,2]
         
-        # Bottleneck (no downsampling)
-        self.bottleneck = self._block(base_channels*2, latent_dim)  # 2x2 -> 2x2
+        # Bottleneck
+        self.bottleneck = self._block(base_channels*2, latent_dim)    # [B, 64,2,2] -> [B,16,2,2]
         
-        # Decoder
-        self.up1 = self._up_block(latent_dim, base_channels*2)  # 2x2 -> 4x4
-        self.dec1 = self._block(base_channels*4, base_channels)  # Skip connection adds channels
+        # Decoder (adjusted for 63 input vars)
+        self.up1 = self._up_block(latent_dim, base_channels*2)       # [B,16,2,2] -> [B,64,4,4]
+        self.dec1 = self._block(base_channels*3, base_channels)      # [B,96,4,4] -> [B,32,4,4]
         
-        # Final output (4x4 -> 5x5)
-        self.final_upsample = nn.Upsample(scale_factor=1.25, mode='bilinear', align_corners=False)
-        self.final = nn.Conv2d(base_channels, input_channels, kernel_size=3, padding=1)
+        # Final output
+        self.final_upsample = nn.Upsample(size=5, mode='bilinear')
+        self.final = nn.Conv2d(base_channels, self.input_channels, kernel_size=3, padding=1)
         
         self.pool = nn.MaxPool2d(2)
-        
+
     def _block(self, in_channels, out_channels):
         return nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1),
@@ -221,33 +221,29 @@ class WeatherUNet(nn.Module):
         )
     
     def _up_block(self, in_channels, out_channels):
-        return nn.Sequential(
-            nn.ConvTranspose2d(in_channels, out_channels, kernel_size=2, stride=2),
-            nn.BatchNorm2d(out_channels),
-            nn.LeakyReLU(0.2)
-        )
+        return nn.ConvTranspose2d(in_channels, out_channels, kernel_size=2, stride=2)
 
     def forward(self, x):
-        # Reshape input: [batch, time_steps*vars] -> [batch, channels, 5, 5]
+        # Reshape: [B, 63*5*5] -> [B, 63,5,5]
         x = x.view(-1, self.input_channels, 5, 5)
         
         # Encoder
-        e1 = self.enc1(x)        # [B, C, 5, 5]
-        e2 = self.enc2(self.pool(e1))  # [B, 2C, 2, 2]
+        e1 = self.enc1(x)               # [B,32,5,5]
+        e2 = self.enc2(self.pool(e1))    # [B,64,2,2]
         
         # Bottleneck
-        z = self.bottleneck(e2)  # [B, latent_dim, 2, 2]
+        z = self.bottleneck(e2)          # [B,16,2,2]
         
         # Decoder
-        d1 = self.up1(z)         # [B, 2C, 4, 4]
-        d1 = torch.cat([d1, e1[:, :, :4, :4]], dim=1)  # Skip connection
-        d1 = self.dec1(d1)       # [B, C, 4, 4]
+        d1 = self.up1(z)                 # [B,64,4,4]
+        d1 = torch.cat([d1, e1[:,:,:4,:4]], dim=1)  # [B,96,4,4] (64+32)
+        d1 = self.dec1(d1)               # [B,32,4,4]
         
-        # Final upscale to 5x5
-        out = self.final_upsample(d1)  # [B, C, 5, 5]
-        out = self.final(out)     # [B, input_channels, 5, 5]
+        # Output
+        out = self.final_upsample(d1)     # [B,32,5,5]
+        out = self.final(out)             # [B,63,5,5]
         
-        return out.view(out.size(0), -1), z.view(z.size(0), -1)  # Flatten outputs
+        return out.view(out.size(0), -1), z.view(z.size(0), -1)
 
 def train(rank, world_size, data, model_path=None, output_zarr_path=None, batch_size=DEFAULT_BATCH_SIZE, 
           num_workers=DEFAULT_NUM_WORKERS, prefetch_factor=DEFAULT_PREFETCH_FACTOR, 
