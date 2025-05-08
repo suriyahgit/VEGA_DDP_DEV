@@ -434,7 +434,7 @@ def preprocess_data(input_zarr_path, variable_type):
     # 1. Open Zarr dataset with Dask chunks
     ds = xr.open_zarr(input_zarr_path, chunks={})
     ds = ds.sel(lat=slice(42, 51), lon=slice(4, 16))
-    ds = ds.isel(time=slice(0, 100))
+    #ds = ds.isel(time=slice(0, 100))
     
     logger.info("Initial dataset loaded. Shape: %s, Variables: %s", 
                dict(ds.dims), list(ds.data_vars.keys()))
