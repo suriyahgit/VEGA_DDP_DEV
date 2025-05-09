@@ -201,7 +201,6 @@ class WeatherDataset(Dataset):
         
         # Calculate total possible patches per time step
         patches_per_time = max_lat * max_lon
-        logger.info(f"Possible patches per time step: {patches_per_time}")
         
         # Generate coordinates without striding first
         attempts = 0
