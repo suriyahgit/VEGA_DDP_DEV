@@ -145,34 +145,23 @@ class WeatherDataset(Dataset):
     def __init__(self, data: np.ndarray, patch_size: int = PATCH_SIZE,
                  time_steps: int = TIME_STEPS, num_samples: int = NUM_TILES_PER_TIME,
                  validation: bool = False):
-        """Initialize the Weather Dataset.
-        
-        Args:
-            data: Input data array of shape (time, lat, lon, num_vars)
-            patch_size: Size of the square patches to extract
-            time_steps: Number of time steps to include in each sample
-            num_samples: Number of samples to generate per time step
-            validation: Whether this is for validation (uses fixed random seed)
-        """
-        # Convert data to torch tensor right away (more efficient)
-        self.data = torch.from_numpy(np.ascontiguousarray(data)).float()
+        self.data = np.ascontiguousarray(data)  # Ensure memory alignment
         self.patch_size = patch_size
         self.time_steps = time_steps
         self.num_vars = data.shape[-1]
         self.pad = patch_size // 2
         self.validation = validation
         
-        # Pad data (using PyTorch's circular padding for spatial continuity)
-        # PyTorch padding order is reverse of numpy: starts from last dimension backwards
-        self.data = F.pad(
+        # Pad data (wrap for spatial continuity)
+        self.data = np.pad(
             self.data,
-            pad=(
-                0, 0,  # Variables dimension (no padding)
-                self.pad, self.pad,  # Longitude dimension (right, left)
-                self.pad, self.pad,  # Latitude dimension (right, left)
-                time_steps-1, 0  # Time dimension (pre-padding only)
+            pad_width=(
+                (time_steps-1, 0),  # Time
+                (self.pad, self.pad),  # Lat
+                (self.pad, self.pad),  # Lon
+                (0, 0)  # Vars
             ),
-            mode='circular'  # Equivalent to numpy's 'wrap'
+            mode='wrap'
         )
         
         # Generate indices
@@ -193,13 +182,13 @@ class WeatherDataset(Dataset):
             max_lon = self.data.shape[2] - self.patch_size
             
             if self.validation:
-                np.random.seed(42)  # Fixed seed for validation
+                np.random.seed(42)
                 
             lats = np.random.randint(0, max_lat, size=num_samples)
             lons = np.random.randint(0, max_lon, size=num_samples)
             
             if self.validation:
-                np.random.seed()  # Reset random seed
+                np.random.seed()
                 
             indices.extend([(t, lat, lon) for lat, lon in zip(lats, lons)])
         
@@ -211,12 +200,12 @@ class WeatherDataset(Dataset):
         for idx in tqdm(range(len(self.indices)), desc="Preloading data to RAM"):
             t, lat, lon = self.indices[idx]
             patch = self.data[
-                t - self.time_steps + 1 : t + 1,  # Time steps
-                lat : lat + self.patch_size,      # Latitude
-                lon : lon + self.patch_size,      # Longitude
-                :                                 # Variables
+                t - self.time_steps + 1 : t + 1,
+                lat : lat + self.patch_size,
+                lon : lon + self.patch_size,
+                :
             ]
-            patches.append(patch.flatten())  # Already a tensor
+            patches.append(torch.from_numpy(patch.flatten()))
         
         return torch.stack(patches)  # Returns [num_samples, time_steps * patch_size^2 * num_vars]
 
@@ -226,7 +215,6 @@ class WeatherDataset(Dataset):
     def __getitem__(self, idx: int) -> torch.Tensor:
         # Directly return preloaded tensor (no on-the-fly computation)
         return self.preloaded_patches[idx]
-
 
 class FullWeatherDataset(Dataset):
     def __init__(self, data: np.ndarray, patch_size: int = PATCH_SIZE,
@@ -472,7 +460,7 @@ def preprocess_data(input_zarr_path, variable_type):
         ds['precip_binary'] = xr.where(ds['tp'] >= 0.01, 1, 0)
         ds['tp'] = np.cbrt(ds["tp"])
         logger.info("Using only t2m variable")  
-        #ds_sel = ds.sel(time=slice("2008", "2020"))
+        ds_sel = ds.sel(time=slice("2015", "2020"))
 
         
     else:
