@@ -140,85 +140,105 @@ class WeatherUNetImproved(nn.Module):
         
         return out.view(B, -1), z   # Flatten output, return latent
 
-# --- Dataset Classes ---
 class WeatherDataset(Dataset):
     def __init__(self, data: np.ndarray, patch_size: int = PATCH_SIZE,
                  time_steps: int = TIME_STEPS, num_samples: int = NUM_TILES_PER_TIME,
-                 validation: bool = False):
-        self.data = np.ascontiguousarray(data.astype(np.float32))  # Combine operations
-        self.patch_size = patch_size
-        self.time_steps = time_steps
-        self.num_vars = data.shape[-1]
-        self.pad = patch_size // 2
-        self.validation = validation
-        
-        # Pad data (wrap for spatial continuity)
+                 validation: bool = False, used_coords: set = None):
+        """
+        Args:
+            data: Input array of shape (time, lat, lon, vars)
+            patch_size: Size of spatial patches
+            time_steps: Number of time steps in each sample
+            num_samples: Number of samples per time point
+            validation: Whether this is for validation
+            used_coords: Set of coordinates already used (to ensure uniqueness)
+        """
+        # Convert and pad data in one operation (float32)
         self.data = np.pad(
-            self.data,
+            data.astype(np.float32),
             pad_width=(
                 (time_steps-1, 0),  # Time
-                (self.pad, self.pad),  # Lat
-                (self.pad, self.pad),  # Lon
+                (patch_size//2, patch_size//2),  # Lat
+                (patch_size//2, patch_size//2),  # Lon
                 (0, 0)  # Vars
             ),
             mode='wrap'
         )
         
-        # Generate indices
-        self.indices = self._generate_indices(
-            num_samples if not validation else VALIDATION_SIZE
+        self.patch_size = patch_size
+        self.time_steps = time_steps
+        self.num_vars = data.shape[-1]
+        self.validation = validation
+        
+        # Generate unique indices
+        self.indices, self.used_coords = self._generate_indices(
+            num_samples if not validation else VALIDATION_SIZE,
+            used_coords
         )
         
-        # PRELOAD ALL PATCHES INTO RAM
+        # Preload all patches into contiguous float32 tensor
         self.preloaded_patches = self._preload_patches()
 
-    def _generate_indices(self, num_samples: int) -> list:
-        """Generate random patch indices for training/validation."""
+    def _generate_indices(self, num_samples: int, used_coords: set = None) -> tuple:
+        """Generate indices ensuring validation uniqueness"""
         indices = []
+        new_coords = set()
         valid_times = range(self.time_steps-1, self.data.shape[0])
         
-        for t in valid_times:
+        if self.validation:
+            np.random.seed(42)  # Fixed seed for validation
+            
+        attempts = 0
+        max_attempts = num_samples * 10  # Prevent infinite loops
+        
+        while len(indices) < num_samples and attempts < max_attempts:
+            t = np.random.choice(valid_times)
             max_lat = self.data.shape[1] - self.patch_size
             max_lon = self.data.shape[2] - self.patch_size
+            lat = np.random.randint(0, max_lat)
+            lon = np.random.randint(0, max_lon)
             
-            if self.validation:
-                np.random.seed(42)
-                
-            lats = np.random.randint(0, max_lat, size=num_samples)
-            lons = np.random.randint(0, max_lon, size=num_samples)
+            coord = (t, lat, lon)
             
-            if self.validation:
-                np.random.seed()
-                
-            indices.extend([(t, lat, lon) for lat, lon in zip(lats, lons)])
-        
-        return indices
+            # Skip if coordinate was already used
+            if used_coords is None or coord not in used_coords:
+                indices.append(coord)
+                new_coords.add(coord)
+            attempts += 1
+            
+        if self.validation:
+            np.random.seed()  # Reset random seed
+            
+        if len(indices) < num_samples:
+            warnings.warn(f"Only generated {len(indices)} unique patches out of {num_samples} requested")
+            
+        return indices, new_coords
 
     def _preload_patches(self) -> torch.Tensor:
-        """More memory-efficient patch loading"""
-        # Pre-allocate tensor
         num_patches = len(self.indices)
-        patch_size = self.time_steps * self.patch_size**2 * self.num_vars
-        patches = torch.empty((num_patches, patch_size), dtype=torch.float32)
+        patch_shape = (self.time_steps, self.patch_size, self.patch_size, self.num_vars)
+        patches = torch.empty((num_patches, np.prod(patch_shape)), dtype=torch.float32)
         
-        for idx in tqdm(range(num_patches), desc="Preloading data to RAM"):
-            t, lat, lon = self.indices[idx]
+        for i, (t, lat, lon) in enumerate(self.indices):
             patch = self.data[
                 t - self.time_steps + 1 : t + 1,
                 lat : lat + self.patch_size,
                 lon : lon + self.patch_size,
                 :
             ]
-            patches[idx] = torch.from_numpy(patch).float().flatten()
-        
+            patches[i] = torch.as_tensor(patch, dtype=torch.float32).flatten()
+            
         return patches
 
     def __len__(self) -> int:
         return len(self.indices)
     
     def __getitem__(self, idx: int) -> torch.Tensor:
-        # Directly return preloaded tensor (no on-the-fly computation)
-        return self.preloaded_patches[idx]
+        return self.preloaded_patches[idx]  # Already float32
+
+    def get_used_coords(self) -> set:
+        """Get coordinates used by this dataset"""
+        return self.used_coords
 
 class FullWeatherDataset(Dataset):
     def __init__(self, data: np.ndarray, patch_size: int = PATCH_SIZE,
@@ -285,7 +305,7 @@ def train(rank: int, world_size: int, data: np.ndarray,
     
     # Create datasets and dataloaders
     train_dataset = WeatherDataset(data, validation=False)
-    val_dataset = WeatherDataset(data, validation=True)
+    val_dataset = WeatherDataset(data, validation=True, used_coords=train_dataset.get_used_coords())
     
     if device.type == 'cuda' and world_size > 1:
         train_sampler = torch.utils.data.distributed.DistributedSampler(
