@@ -44,7 +44,7 @@ DEFAULT_BATCH_SIZE = 8048
 DEFAULT_NUM_WORKERS = 8
 EARLY_STOPPING_PATIENCE = 10
 MIN_LR = 1e-6
-DEFAULT_PREFETCH_FACTOR = 25
+DEFAULT_PREFETCH_FACTOR = 200
 VALIDATION_SIZE = 500
 
 # --- Model Components ---
@@ -317,7 +317,7 @@ def train(rank: int, world_size: int, data: np.ndarray,
         
         # Training loop with progress bar
         train_loss = 0
-        train_bar = tqdm(train_loader, desc=f'Epoch {epoch+1} [Train]', disable=rank!=0)
+        train_bar = tqdm(train_loader, desc=f'Epoch {epoch+1} [Train]', disable=rank!=0, leave=True)
         for batch in train_bar:
             batch = batch.to(device, non_blocking=True)
             
