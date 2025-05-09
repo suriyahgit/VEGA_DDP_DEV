@@ -170,13 +170,12 @@ class WeatherDataset(Dataset):
         self.num_vars = data.shape[-1]
         self.validation = validation
         
-        # Generate unique indices
-        self.indices, self.used_coords = self._generate_indices(
-            num_samples if not validation else VALIDATION_SIZE,
-            used_coords
+        # Generate indices
+        self.indices = self._generate_indices(
+            num_samples if not validation else VALIDATION_SIZE
         )
         
-        # Preload all patches into contiguous float32 tensor
+        # PRELOAD ALL PATCHES INTO RAM
         self.preloaded_patches = self._preload_patches()
 
     def _generate_indices(self, num_samples: int) -> list:
@@ -206,7 +205,7 @@ class WeatherDataset(Dataset):
         patch_shape = (self.time_steps, self.patch_size, self.patch_size, self.num_vars)
         patches = torch.empty((num_patches, np.prod(patch_shape)), dtype=torch.float32)
         
-        for i, (t, lat, lon) in enumerate(self.indices):
+        for idx in tqdm(range(len(self.indices)), desc="Preloading data to RAM"):
             patch = self.data[
                 t - self.time_steps + 1 : t + 1,
                 lat : lat + self.patch_size,
