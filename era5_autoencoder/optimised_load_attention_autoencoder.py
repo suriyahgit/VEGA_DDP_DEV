@@ -206,13 +206,14 @@ class WeatherDataset(Dataset):
         patches = torch.empty((num_patches, np.prod(patch_shape)), dtype=torch.float32)
         
         for idx in tqdm(range(len(self.indices)), desc="Preloading data to RAM"):
+            t, lat, lon = self.indices[idx]
             patch = self.data[
                 t - self.time_steps + 1 : t + 1,
                 lat : lat + self.patch_size,
                 lon : lon + self.patch_size,
                 :
             ]
-            patches[i] = torch.as_tensor(patch, dtype=torch.float32).flatten()
+            patches[idx] = torch.as_tensor(patch, dtype=torch.float32).flatten()
             
         return patches
 
