@@ -184,38 +184,51 @@ class WeatherDataset(Dataset):
         indices = []
         new_coords = set()
         
-        # 1. Calculate valid ranges
-        valid_times = range(self.time_steps - 1, self.data.shape[0])  # Time dimension
-        max_lat = self.data.shape[1] - self.patch_size  # 180 - 4 = 176
-        max_lon = self.data.shape[2] - self.patch_size  # 240 - 4 = 236
+        # Calculate valid ranges
+        valid_times = range(self.time_steps - 1, self.data.shape[0])
+        max_lat = self.data.shape[1] - self.patch_size
+        max_lon = self.data.shape[2] - self.patch_size
         
-        # 2. Create grid of all possible coordinates
-        all_possible_coords = [
-            (t, lat, lon)
-            for t in valid_times
-            for lat in range(0, max_lat, self.patch_size)  # Stride by patch_size
-            for lon in range(0, max_lon, self.patch_size)
-        ]
+        # Validate dimensions
+        if not valid_times:
+            raise ValueError(f"No valid time steps (data shape: {self.data.shape}, time_steps: {self.time_steps})")
+        if max_lat <= 0 or max_lon <= 0:
+            raise ValueError(
+                f"Invalid spatial dimensions after padding: "
+                f"lat={self.data.shape[1]}, lon={self.data.shape[2]} "
+                f"(patch_size={self.patch_size})"
+            )
         
-        # 3. Shuffle for randomness
-        np.random.shuffle(all_possible_coords)
+        # Calculate total possible patches per time step
+        patches_per_time = max_lat * max_lon
+        logger.info(f"Possible patches per time step: {patches_per_time}")
         
-        # 4. Select unique coordinates
-        for coord in all_possible_coords:
+        # Generate coordinates without striding first
+        attempts = 0
+        max_attempts = num_samples * 2  # Give up after reasonable attempts
+        
+        while len(indices) < num_samples and attempts < max_attempts:
+            t = np.random.choice(valid_times)
+            lat = np.random.randint(0, max_lat)
+            lon = np.random.randint(0, max_lon)
+            
+            coord = (t, lat, lon)
+            
+            # Skip if coordinate was already used
             if used_coords is None or coord not in used_coords:
                 indices.append(coord)
                 new_coords.add(coord)
-                if len(indices) >= num_samples:
-                    break
+            
+            attempts += 1
         
-        # 5. Fallback mechanism
+        # Fallback: if we didn't get enough unique samples
         if len(indices) < num_samples:
             if self.validation:
                 warnings.warn(f"Only generated {len(indices)} validation samples (requested {num_samples})")
             else:
-                # For training, allow some coordinate reuse if needed
-                repeats = num_samples // len(indices) + 1
-                indices = (indices * repeats)[:num_samples]
+                # For training, we can reuse some coordinates
+                needed = num_samples - len(indices)
+                indices.extend(indices[:needed])
         
         return indices, new_coords
 
