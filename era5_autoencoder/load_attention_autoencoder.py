@@ -41,7 +41,7 @@ TIME_STEPS = 6  # Changed from 5 to 6
 LATENT_DIM = 16
 NUM_TILES_PER_TIME = 5000
 DEFAULT_BATCH_SIZE = 64384
-DEFAULT_NUM_WORKERS = 4
+DEFAULT_NUM_WORKERS = 2
 EARLY_STOPPING_PATIENCE = 10
 MIN_LR = 1e-6
 DEFAULT_PREFETCH_FACTOR = 2
@@ -145,7 +145,7 @@ class WeatherDataset(Dataset):
     def __init__(self, data: np.ndarray, patch_size: int = PATCH_SIZE,
                  time_steps: int = TIME_STEPS, num_samples: int = NUM_TILES_PER_TIME,
                  validation: bool = False):
-        self.data = np.ascontiguousarray(data)  # Ensure memory alignment
+        self.data = np.ascontiguousarray(data).astype(np.float32)  # Ensure memory alignment
         self.patch_size = patch_size
         self.time_steps = time_steps
         self.num_vars = data.shape[-1]
@@ -205,7 +205,7 @@ class WeatherDataset(Dataset):
                 lon : lon + self.patch_size,
                 :
             ]
-            patches.append(torch.from_numpy(patch.flatten()))
+            patches.append(torch.from_numpy(patch).float().flatten())
         
         return torch.stack(patches)  # Returns [num_samples, time_steps * patch_size^2 * num_vars]
 
