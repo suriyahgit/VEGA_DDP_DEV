@@ -172,6 +172,28 @@ class WeatherDataset(Dataset):
         # PRELOAD ALL PATCHES INTO RAM
         self.preloaded_patches = self._preload_patches()
 
+    def _generate_indices(self, num_samples: int) -> list:
+        """Generate random patch indices for training/validation."""
+        indices = []
+        valid_times = range(self.time_steps-1, self.data.shape[0])
+        
+        for t in valid_times:
+            max_lat = self.data.shape[1] - self.patch_size
+            max_lon = self.data.shape[2] - self.patch_size
+            
+            if self.validation:
+                np.random.seed(42)
+                
+            lats = np.random.randint(0, max_lat, size=num_samples)
+            lons = np.random.randint(0, max_lon, size=num_samples)
+            
+            if self.validation:
+                np.random.seed()
+                
+            indices.extend([(t, lat, lon) for lat, lon in zip(lats, lons)])
+        
+        return indices
+
     def _preload_patches(self) -> torch.Tensor:
         """Load all patches into a contiguous torch tensor."""
         patches = []
