@@ -39,13 +39,13 @@ def setup_logging(rank: int) -> logging.Logger:
 PATCH_SIZE = 4  # Changed from 5 to 4
 TIME_STEPS = 6  # Changed from 5 to 6
 LATENT_DIM = 16
-NUM_TILES_PER_TIME = 5000
+NUM_TILES_PER_TIME = 8000
 DEFAULT_BATCH_SIZE = 64384
 DEFAULT_NUM_WORKERS = 2
 EARLY_STOPPING_PATIENCE = 10
 MIN_LR = 1e-6
 DEFAULT_PREFETCH_FACTOR = 2
-VALIDATION_SIZE = 500
+VALIDATION_SIZE = 800
 
 # --- Model Components ---
 class ResBlock(nn.Module):
@@ -460,7 +460,7 @@ def preprocess_data(input_zarr_path, variable_type):
         ds['precip_binary'] = xr.where(ds['tp'] >= 0.01, 1, 0)
         ds['tp'] = np.cbrt(ds["tp"])
         logger.info("Using only t2m variable")  
-        ds = ds.sel(time=slice("2015-01-01", "2020-12-31"))
+        ds = ds.sel(time=slice("2008-01-01", "2020-12-31"))
 
         
     else:
