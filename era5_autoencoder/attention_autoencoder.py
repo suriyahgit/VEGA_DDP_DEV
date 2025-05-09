@@ -133,7 +133,7 @@ class WeatherUNetImproved(nn.Module):
         x = self.decode_fc(z).view(B, 128, 1, 1)
         x = F.interpolate(x, size=e2.shape[-2:], mode='nearest')  # [B,128,2,2]
         x = self.up1(x + e2)        # [B,64,2,2] + [B,128,2,2] -> [B,64,2,2]
-        x = self.up2(x)             # [B,64,4,4]
+        #x = self.up2(x)             # [B,64,4,4]
         
         # Final output
         out = self.final(x)         # [B,54,4,4]
