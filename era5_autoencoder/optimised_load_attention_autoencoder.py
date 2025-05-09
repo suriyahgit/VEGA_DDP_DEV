@@ -489,7 +489,7 @@ def preprocess_data(input_zarr_path, variable_type):
         ds['precip_binary'] = xr.where(ds['tp'] >= 0.01, 1, 0)
         ds['tp'] = np.cbrt(ds["tp"])
         logger.info("Using only t2m variable")  
-        ds = ds.sel(time=slice("2008-01-01", "2020-12-31"))
+        ds = ds.sel(time=slice("2019-01-01", "2020-12-31"))
 
         
     else:
