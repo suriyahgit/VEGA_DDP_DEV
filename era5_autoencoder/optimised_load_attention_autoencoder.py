@@ -183,30 +183,24 @@ class WeatherDataset(Dataset):
         """Generate indices ensuring validation uniqueness"""
         indices = []
         new_coords = set()
-        valid_times = range(self.time_steps-1, self.data.shape[0])
         
-        # Calculate spatial bounds
-        max_lat = self.data.shape[1] - self.patch_size
-        max_lon = self.data.shape[2] - self.patch_size
+        # 1. Calculate valid ranges
+        valid_times = range(self.time_steps - 1, self.data.shape[0])  # Time dimension
+        max_lat = self.data.shape[1] - self.patch_size  # 180 - 4 = 176
+        max_lon = self.data.shape[2] - self.patch_size  # 240 - 4 = 236
         
-        if max_lat <= 0 or max_lon <= 0:
-            raise ValueError(
-                f"Invalid spatial dimensions after padding: "
-                f"lat={self.data.shape[1]}, lon={self.data.shape[2]} "
-                f"(patch_size={self.patch_size})"
-            )
-        
-        # Generate all possible coordinates first
+        # 2. Create grid of all possible coordinates
         all_possible_coords = [
             (t, lat, lon)
             for t in valid_times
-            for lat in range(0, max_lat)
-            for lon in range(0, max_lon)
+            for lat in range(0, max_lat, self.patch_size)  # Stride by patch_size
+            for lon in range(0, max_lon, self.patch_size)
         ]
         
-        # Shuffle and select
+        # 3. Shuffle for randomness
         np.random.shuffle(all_possible_coords)
         
+        # 4. Select unique coordinates
         for coord in all_possible_coords:
             if used_coords is None or coord not in used_coords:
                 indices.append(coord)
@@ -214,11 +208,14 @@ class WeatherDataset(Dataset):
                 if len(indices) >= num_samples:
                     break
         
+        # 5. Fallback mechanism
         if len(indices) < num_samples:
-            warnings.warn(
-                f"Only generated {len(indices)} unique patches out of {num_samples} requested. "
-                f"Total possible: {len(all_possible_coords)}"
-            )
+            if self.validation:
+                warnings.warn(f"Only generated {len(indices)} validation samples (requested {num_samples})")
+            else:
+                # For training, allow some coordinate reuse if needed
+                repeats = num_samples // len(indices) + 1
+                indices = (indices * repeats)[:num_samples]
         
         return indices, new_coords
 
