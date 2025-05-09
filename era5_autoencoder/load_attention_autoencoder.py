@@ -453,14 +453,14 @@ def preprocess_data(input_zarr_path, variable_type):
     # 2. Select variables based on variable_type
     if variable_type == 't2m' or 'ssrd' or 'tp':
         logger.info("Using only tp variable with log1p transformation")
-        ds = ds.drop_vars(["z_850", "q_850", "u_850", "v_850"])
+        ds = ds.drop_vars(["u_850", "v_850"])
         # Apply log1p transformation to tp
         ds['tp'] = ds['tp'] * 1000
         # Create binary precipitation variable (0 for <0.01mm, 1 for ≥0.01mm)
         ds['precip_binary'] = xr.where(ds['tp'] >= 0.01, 1, 0)
         ds['tp'] = np.cbrt(ds["tp"])
         logger.info("Using only t2m variable")  
-        ds_sel = ds.sel(time=slice("2008", "2020"))
+        #ds_sel = ds.sel(time=slice("2008", "2020"))
 
         
     else:
