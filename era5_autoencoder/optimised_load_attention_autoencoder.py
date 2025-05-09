@@ -185,33 +185,41 @@ class WeatherDataset(Dataset):
         new_coords = set()
         valid_times = range(self.time_steps-1, self.data.shape[0])
         
-        if self.validation:
-            np.random.seed(42)  # Fixed seed for validation
-            
-        attempts = 0
-        max_attempts = num_samples * 10  # Prevent infinite loops
+        # Calculate spatial bounds
+        max_lat = self.data.shape[1] - self.patch_size
+        max_lon = self.data.shape[2] - self.patch_size
         
-        while len(indices) < num_samples and attempts < max_attempts:
-            t = np.random.choice(valid_times)
-            max_lat = self.data.shape[1] - self.patch_size
-            max_lon = self.data.shape[2] - self.patch_size
-            lat = np.random.randint(0, max_lat)
-            lon = np.random.randint(0, max_lon)
-            
-            coord = (t, lat, lon)
-            
-            # Skip if coordinate was already used
+        if max_lat <= 0 or max_lon <= 0:
+            raise ValueError(
+                f"Invalid spatial dimensions after padding: "
+                f"lat={self.data.shape[1]}, lon={self.data.shape[2]} "
+                f"(patch_size={self.patch_size})"
+            )
+        
+        # Generate all possible coordinates first
+        all_possible_coords = [
+            (t, lat, lon)
+            for t in valid_times
+            for lat in range(0, max_lat)
+            for lon in range(0, max_lon)
+        ]
+        
+        # Shuffle and select
+        np.random.shuffle(all_possible_coords)
+        
+        for coord in all_possible_coords:
             if used_coords is None or coord not in used_coords:
                 indices.append(coord)
                 new_coords.add(coord)
-            attempts += 1
-            
-        if self.validation:
-            np.random.seed()  # Reset random seed
-            
+                if len(indices) >= num_samples:
+                    break
+        
         if len(indices) < num_samples:
-            warnings.warn(f"Only generated {len(indices)} unique patches out of {num_samples} requested")
-            
+            warnings.warn(
+                f"Only generated {len(indices)} unique patches out of {num_samples} requested. "
+                f"Total possible: {len(all_possible_coords)}"
+            )
+        
         return indices, new_coords
 
     def _preload_patches(self) -> torch.Tensor:
