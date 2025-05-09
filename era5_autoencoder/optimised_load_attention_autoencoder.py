@@ -179,57 +179,27 @@ class WeatherDataset(Dataset):
         # Preload all patches into contiguous float32 tensor
         self.preloaded_patches = self._preload_patches()
 
-    def _generate_indices(self, num_samples: int, used_coords: set = None) -> tuple:
-        """Generate indices ensuring validation uniqueness"""
+    def _generate_indices(self, num_samples: int) -> list:
+        """Generate random patch indices for training/validation."""
         indices = []
-        new_coords = set()
+        valid_times = range(self.time_steps-1, self.data.shape[0])
         
-        # Calculate valid ranges
-        valid_times = range(self.time_steps - 1, self.data.shape[0])
-        max_lat = self.data.shape[1] - self.patch_size
-        max_lon = self.data.shape[2] - self.patch_size
-        
-        # Validate dimensions
-        if not valid_times:
-            raise ValueError(f"No valid time steps (data shape: {self.data.shape}, time_steps: {self.time_steps})")
-        if max_lat <= 0 or max_lon <= 0:
-            raise ValueError(
-                f"Invalid spatial dimensions after padding: "
-                f"lat={self.data.shape[1]}, lon={self.data.shape[2]} "
-                f"(patch_size={self.patch_size})"
-            )
-        
-        # Calculate total possible patches per time step
-        patches_per_time = max_lat * max_lon
-        
-        # Generate coordinates without striding first
-        attempts = 0
-        max_attempts = num_samples * 2  # Give up after reasonable attempts
-        
-        while len(indices) < num_samples and attempts < max_attempts:
-            t = np.random.choice(valid_times)
-            lat = np.random.randint(0, max_lat)
-            lon = np.random.randint(0, max_lon)
+        for t in valid_times:
+            max_lat = self.data.shape[1] - self.patch_size
+            max_lon = self.data.shape[2] - self.patch_size
             
-            coord = (t, lat, lon)
-            
-            # Skip if coordinate was already used
-            if used_coords is None or coord not in used_coords:
-                indices.append(coord)
-                new_coords.add(coord)
-            
-            attempts += 1
-        
-        # Fallback: if we didn't get enough unique samples
-        if len(indices) < num_samples:
             if self.validation:
-                warnings.warn(f"Only generated {len(indices)} validation samples (requested {num_samples})")
-            else:
-                # For training, we can reuse some coordinates
-                needed = num_samples - len(indices)
-                indices.extend(indices[:needed])
+                np.random.seed(42)
+                
+            lats = np.random.randint(0, max_lat, size=num_samples)
+            lons = np.random.randint(0, max_lon, size=num_samples)
+            
+            if self.validation:
+                np.random.seed()
+                
+            indices.extend([(t, lat, lon) for lat, lon in zip(lats, lons)])
         
-        return indices, new_coords
+        return indices
 
     def _preload_patches(self) -> torch.Tensor:
         num_patches = len(self.indices)
@@ -252,10 +222,6 @@ class WeatherDataset(Dataset):
     
     def __getitem__(self, idx: int) -> torch.Tensor:
         return self.preloaded_patches[idx]  # Already float32
-
-    def get_used_coords(self) -> set:
-        """Get coordinates used by this dataset"""
-        return self.used_coords
 
 class FullWeatherDataset(Dataset):
     def __init__(self, data: np.ndarray, patch_size: int = PATCH_SIZE,
@@ -322,7 +288,7 @@ def train(rank: int, world_size: int, data: np.ndarray,
     
     # Create datasets and dataloaders
     train_dataset = WeatherDataset(data, validation=False)
-    val_dataset = WeatherDataset(data, validation=True, used_coords=train_dataset.get_used_coords())
+    val_dataset = WeatherDataset(data, validation=True)
     
     if device.type == 'cuda' and world_size > 1:
         train_sampler = torch.utils.data.distributed.DistributedSampler(
