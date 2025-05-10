@@ -245,6 +245,7 @@ class FullWeatherDataset(Dataset):
         )
         
         # Generate indices
+        # In FullWeatherDataset.__init__()
         self.indices = [
             (t, i, j)
             for t in range(time_steps-1, self.data.shape[0])
@@ -419,10 +420,25 @@ def run_inference(data: np.ndarray, model_path: str = "best_model.pth",
     
     all_latents = torch.cat(all_latents, dim=0)
     
-    # Reshape and pad time dimension
+    # Calculate expected and actual sizes
     valid_time = data.shape[0] - TIME_STEPS + 1
     H, W = data.shape[1], data.shape[2]
-    all_latents = all_latents.numpy().reshape(valid_time, H, W, LATENT_DIM)
+    total_patches = valid_time * H * W
+    actual_size = all_latents.shape[0]
+    
+    # Verify size matches
+    if actual_size != total_patches:
+        logger.error(f"Size mismatch! Expected {total_patches} patches but got {actual_size}")
+        raise ValueError(f"Expected {total_patches} patches but got {actual_size}")
+    
+    # Reshape and pad time dimension
+    try:
+        all_latents = all_latents.numpy().reshape(valid_time, H, W, LATENT_DIM)
+    except ValueError as e:
+        logger.error(f"Reshape failed: {str(e)}")
+        logger.error(f"Input shape: {all_latents.shape}, Target shape: {(valid_time, H, W, LATENT_DIM)}")
+        raise
+    
     full_latents = np.concatenate([
         np.repeat(all_latents[[0]], TIME_STEPS - 1, axis=0),
         all_latents
