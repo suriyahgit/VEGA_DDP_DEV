@@ -230,41 +230,49 @@ class FullWeatherDataset(Dataset):
         self.patch_size = patch_size
         self.time_steps = time_steps
         self.num_vars = data.shape[-1]
-        self.pad = patch_size // 2
         
-        # Pad data
-        self.data = np.pad(
-            data,
-            pad_width=(
-                (time_steps-1, 0),
-                (self.pad, self.pad),
-                (self.pad, self.pad),
-                (0, 0)
-            ),
-            mode='wrap'
-        )
+        # No padding needed since we're using all possible patches
+        # Generate indices for all possible patches
+        self.indices = []
         
-        # Generate indices
-        # In FullWeatherDataset.__init__()
-        self.indices = [
-            (t, i, j)
-            for t in range(time_steps-1, self.data.shape[0])
-            for i in range(self.data.shape[1] - patch_size + 1)
-            for j in range(self.data.shape[2] - patch_size + 1)
-        ]
+        # For each valid time window (from time_steps-1 to end)
+        for t in range(time_steps-1, data.shape[0]):
+            # For each possible latitude (no overlap)
+            for lat in range(data.shape[1]):
+                # For each possible longitude (no overlap)
+                for lon in range(data.shape[2]):
+                    self.indices.append((t, lat, lon))
     
     def __len__(self) -> int:
         return len(self.indices)
     
     def __getitem__(self, idx: int) -> torch.Tensor:
         t, lat, lon = self.indices[idx]
-        patch = self.data[
-            t - self.time_steps + 1 : t + 1,
-            lat : lat + self.patch_size,
-            lon : lon + self.patch_size,
-            :
-        ]
-        # Flatten to [time_steps * patch_size * patch_size * num_vars]
+        
+        # Get the patch (time_steps × patch_size × patch_size × num_vars)
+        # Using circular padding for spatial dimensions
+        patch = np.zeros((self.time_steps, self.patch_size, self.patch_size, self.num_vars), 
+                       dtype=np.float32)
+        
+        # Fill the patch with data (with padding)
+        for i in range(self.time_steps):
+            time_idx = t - self.time_steps + 1 + i
+            # Spatial padding using numpy.pad with wrap mode
+            padded_frame = np.pad(
+                self.data[time_idx],
+                pad_width=(
+                    (self.patch_size//2, self.patch_size//2),  # lat
+                    (self.patch_size//2, self.patch_size//2),  # lon
+                    (0, 0)  # vars
+                ),
+                mode='wrap'
+            )
+            patch[i] = padded_frame[
+                lat : lat + self.patch_size,
+                lon : lon + self.patch_size,
+                :
+            ]
+        
         return torch.tensor(patch, dtype=torch.float32).flatten()
 
 # --- Training Functions ---
